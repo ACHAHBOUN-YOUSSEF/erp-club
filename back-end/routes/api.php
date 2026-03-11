@@ -1,0 +1,49 @@
+<?php
+
+use App\Http\Controllers\AbonnementsController;
+use App\Http\Controllers\Adherents\Files\FileController;
+use App\Http\Controllers\Adherents\IndexController;
+use App\Http\Controllers\Adherents\Periodes\PeriodeController;
+use App\Http\Controllers\Adherents\Subscriptions\SubscriptionsController;
+use App\Http\Controllers\Auth\RolePermissionController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BrancheController;
+use App\Http\Controllers\DashBoardController;
+use App\Http\Controllers\GroupeAbonnementController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VilleController;
+use App\Http\Middleware\AuthenticateSanctumJson;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+Route::apiResource('villes', VilleController::class);
+Route::apiResource('clubs', BrancheController::class);
+Route::get("clubs/villes/{villeId}", [BrancheController::class, "getClubsByVilleId"]);
+Route::apiResource('users', UserController::class);
+Route::get("users/clubs/{brancheId}", [UserController::class, "getUsersByClubId"]);
+Route::post('users/{id}/update-image', [UserController::class, 'updateImage']);
+Route::apiResource('groupes_abonnements', GroupeAbonnementController::class);
+Route::get("groupes_abonnements/clubs/{brancheId}", [GroupeAbonnementController::class, "getGroupesAbonnements"]);
+Route::apiResource('abonnements', AbonnementsController::class);
+Route::get("abonnements/groupes/{GroupeId}", [AbonnementsController::class, "getByGroupe"]);
+Route::post('login', [AuthController::class, 'login']);
+Route::middleware(AuthenticateSanctumJson::class)->group(function () {
+    Route::apiResource("subscriptions", SubscriptionsController::class);
+    Route::post('logout', [AuthController::class, 'logout']);
+    Route::get('me',[AuthController::class,"me"]);
+    Route::apiResource("adherents", IndexController::class);
+    Route::get("adherents/clubs/{ClubId}", [IndexController::class, "getAdherentsByClubId"]);
+    Route::apiResource("transactions", TransactionController::class);
+    Route::get('adherents/transactions/{transactionId}/recus', [FileController::class, "DownloadRecuPaiment"]);
+    Route::get("adherents/subscriptions/{subscriptionId}/contrats", [FileController::class, "DownloadContrat"]);
+    Route::get("adherents/subscriptions/{subscriptionId}/factures", [FileController::class, "DownloadFacture"]);
+    Route::get("adherents/subscriptions/{subscriptionId}/recus", [FileController::class, "DownloadRecuSubscription"]);
+    Route::get("adherents/periodes/{periodeId}/recus", [FileController::class, "DownloadRecuPeriode"]);
+    Route::post("adherents/search", [IndexController::class, "search"]);
+    Route::get("transactions/days/{day}", [TransactionController::class, "getDailyTransactionTotal"]);
+    Route::get("transactions/periode/{startDate}/{endDate}", [TransactionController::class, "getPeriodTransactionTotal"]);
+    Route::get("dashboard",[DashBoardController::class,"getStatistique"]);
+    Route::apiResource("periodes",PeriodeController::class);
+});
+Route::get('roles-permissions', [RolePermissionController::class, 'index']);

@@ -1,0 +1,16 @@
+# Node
+node_modules
+.next
+npm-debug.log
+yarn-error.log
+
+# Laravel
+/vendor
+/storage/*.key
+/storage/logs
+/storage/framework
+.env
+
+# OS
+.DS_Store
+Thumbs.db
