@@ -33,7 +33,7 @@ export const AbonnementSchema = z.object({
         .int({ message: "Le groupe doit être valide." })
         .positive({ message: "Le groupe doit être valide." }),
     groupe: z.object({
-        id: z.number(),
+        id: z.number().nullable().optional(),
         name: z.string(),
     }).optional()
 });

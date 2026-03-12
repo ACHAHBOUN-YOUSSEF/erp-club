@@ -14,7 +14,7 @@ export const userSchema = z.object({
             message: "Formats acceptés : JPG, PNG, WEBP",
         })
         .optional(),
-    image_url: z.string().optional(),
+    image_url: z.string().optional().nullable(),
     phone: z
         .string()
         .regex(/^(05|06|07)[0-9]{8}$/, "Numéro de téléphone invalide"),
@@ -29,7 +29,7 @@ export const userSchema = z.object({
         (val) => (val === "" ? undefined : val),
         z.string({ message: "Le genre est obligatoire" })
             .refine(
-                (val) => val === "homme" || val === "femme",
+                (val) => val === "HOMME" || val === "FEMME",
                 { message: "Le genre doit être homme ou femme" }
             )
     ),
@@ -39,7 +39,7 @@ export const userSchema = z.object({
     adresse: z
         .string()
         .min(1, "L'adresse est obligatoire")
-        .max(255, "L'adresse ne doit pas dépasser 255 caractères"),
+        .max(255, "L'adresse ne doit pas dépasser 255 caractères").nullable(),
 
     email: z.string().email("Veuillez saisir une adresse e-mail valide"),
 
@@ -69,13 +69,13 @@ export const userSchema = z.object({
             id: z.number().optional(),
             name: z.string().optional()
         })
-    }).optional(),
+    }).optional().nullable(),
 
     brancheId: z.coerce
         .number({ message: "Veuillez choisir un club" })
-        .int()
-        .positive(),
+        .int("Veuillez choisir un club")
+        .positive("Veuillez choisir un club"),
 
-    role: z.string().min(1, "Le rôle est obligatoire"),
+    role: z.string().min(1, "Le rôle est obligatoire").nullable(),
     permissions: z.array(z.string()).default([]),
 });

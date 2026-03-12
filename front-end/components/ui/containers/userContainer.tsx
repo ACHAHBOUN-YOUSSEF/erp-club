@@ -33,6 +33,8 @@ export default function UserContainer({ users, loading, clubs, isBusy }: Props) 
         try {
             isBusy(true)
             const res = await userService.getById(userId)
+            console.log(res);
+            
             setUserOnEdit(res.data);
             setIsEditing(true)
             isBusy(false)

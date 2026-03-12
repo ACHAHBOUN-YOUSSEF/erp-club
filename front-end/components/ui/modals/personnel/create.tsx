@@ -24,7 +24,7 @@ type RolesAndPermissions = {
     permissions: Permission[]
 }
 export default function Create({ onClose, clubs }: props) {
-    const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset } = useForm<userType>({ resolver: zodResolver(userSchema) })
+    const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset } = useForm<userType>({ resolver: zodResolver(userSchema) as any})
     const [rolesAndPermissions, setRolesAndPermissions] = useState<RolesAndPermissions>({ roles: [], permissions: [] })
     const [preview, setPreview] = useState<string | null>(null);
 

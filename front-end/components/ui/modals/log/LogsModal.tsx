@@ -7,9 +7,9 @@ type Log = {
     updated_at: string
     action: string
     description: string
-    oldValue?: string
-    newValue?: string
-    fieldName?: string
+    oldValue?: string|null
+    newValue?: string|null
+    fieldName?: string|null
     executedByUser?: string
 }
 type props = {

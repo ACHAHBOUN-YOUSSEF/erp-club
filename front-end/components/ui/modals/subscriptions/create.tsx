@@ -27,7 +27,7 @@ export default function NewSubscription({ onClose, clubs, adherentId ,Cancel}: p
     const [selectedAbonnement, setSelectedAbonnement] = useState<number | null>(null);
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
 
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<newSubscriptionType>({ resolver: zodResolver(newSubscriptionShema) })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<newSubscriptionType>({ resolver: zodResolver(newSubscriptionShema)as any})
 
     const onSubmit: SubmitHandler<newSubscriptionType> = async (subscription: newSubscriptionType) => {
         try {            

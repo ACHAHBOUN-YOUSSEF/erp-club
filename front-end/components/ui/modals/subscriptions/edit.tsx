@@ -13,7 +13,7 @@ type props = {
     subscription: SubscriptionType
 }
 export default function EditSubscription({ onClose, adherentId, subscription,Cancel}: props) {
-    const { register, handleSubmit, watch, formState: { errors, isSubmitting }, reset } = useForm<SubscriptionType>({ resolver: zodResolver(SubscriptionSchema), defaultValues: subscription })
+    const { register, handleSubmit, watch, formState: { errors, isSubmitting }, reset } = useForm<SubscriptionType>({ resolver: zodResolver(SubscriptionSchema) as any, defaultValues: subscription })
     const remainingAmountValue = watch("remainingAmount");
     const onSubmit: SubmitHandler<SubscriptionType> = async (subscription: SubscriptionType) => {
         try {            

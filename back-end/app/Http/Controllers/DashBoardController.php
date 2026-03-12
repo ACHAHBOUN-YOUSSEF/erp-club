@@ -42,7 +42,9 @@ class DashBoardController extends Controller
                 ->get();
             $NbAdherentByGenre = DB::table("adherents")->select("gender", DB::raw("COUNT('id') as nombreTotal"))->where("brancheId", $request->user()->brancheId)->groupBy("gender")->get();
             /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-            $groupes = GroupeAbonnement::with('abonnements')->get();
+            $groupes = GroupeAbonnement::with(['abonnements' => function ($query) {
+                $query->orderBy('durationMonths', 'asc');
+            }])->get();
 
             foreach ($groupes as $groupe) {
                 foreach ($groupe->abonnements as $abonnement) {

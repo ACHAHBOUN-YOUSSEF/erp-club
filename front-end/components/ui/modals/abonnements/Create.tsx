@@ -10,7 +10,7 @@ type props = {
     GroupeId: number
 }
 export default function Create({ onClose, GroupeId }: props) {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<AbonnementType>({ resolver: zodResolver(AbonnementSchema) })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<AbonnementType>({ resolver: zodResolver(AbonnementSchema) as any})
     const onSubmit = async (abonnement: AbonnementType) => {
 
         try {

@@ -268,7 +268,7 @@ export default function Abonnements() {
                 </div>
             </div>
             {
-                isOpneModalEditAdherent && <EditAdherent onClose={() => { setAdherents([]); setIsOpneModalEditAdherent(false) }} Cancel={() => setIsOpneModalEditAdherent(false)} adherent={adherentToEdit} />
+                isOpneModalEditAdherent&&adherentToEdit && <EditAdherent onClose={() => { setAdherents([]); setIsOpneModalEditAdherent(false) }} Cancel={() => setIsOpneModalEditAdherent(false)} adherent={adherentToEdit} />
             }
             {
                 isOpneModalDeleteAdherent && <DeleteAdherent loading={isDeleting} onConfirm={confirmDelete} onClose={() => {setIsOpneModalDeleteAdherent(false) }} />

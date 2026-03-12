@@ -27,7 +27,8 @@ class AdherentResource extends JsonResource
             "imagePath" => $this->imagePath,
             "brancheId" => $this->brancheId,
             "resteJoursAssurance" => $this->resteJoursAssurance,
-            "addedBy" =>  $this->added_by ? $this->added_by : $this->addedBy->firstName . " " . $this->addedBy->lastName,
+            "addedBy" => $this->added_by
+                ?: (($this->addedBy?->firstName ?? '') . ' ' . ($this->addedBy?->lastName ?? '')),
             "club" => $this->whenLoaded("branche"),
             "subscriptions" => $this->subscriptions
                 ? $this->subscriptions->map(function ($sub) {
@@ -64,7 +65,11 @@ class AdherentResource extends JsonResource
                     "oldValue" => $log->oldValue,
                     "newValue" => $log->newValue,
                     "description" => $log->description,
-                    "executedByUser" => strtoupper($log->user->roles->first()->name) . " " . $log->user->firstName . " " . $log->user->lastName,
+                    "executedByUser" => ($log->user->roles->first()?->name ? strtoupper($log->user->roles->first()->name) : 'ROLE INCONNU')
+                        . " "
+                        . ($log->user->firstName ?? '')
+                        . " "
+                        . ($log->user->lastName ?? ''),
                     "created_at" => $log->created_at,
                     "updated_at" => $log->updated_at
                 ];
@@ -89,7 +94,7 @@ class AdherentResource extends JsonResource
                     "startDate" => $periode->startDate,
                     "endDate" => $periode->endDate,
                     "adherentId" => $periode->adherentId,
-                    "resteJours"=>$resteJours
+                    "resteJours" => $resteJours
                 ];
             }) : [],
             "transactions" => $this->transactions ? $this->transactions->map(function ($transaction) {

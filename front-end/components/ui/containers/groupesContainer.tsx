@@ -174,7 +174,6 @@ export default function GroupeContainer({ groupes, isBusy, reload, clubs }: prop
 
                                     <p className="text-sm text-gray-800 mt-2 leading-relaxed">
                                         {groupe.description}
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. A, delectus maxime nesciunt ad quibusdam, perspiciatis explicabo, veritatis similique eius nulla soluta illum? Libero quidem omnis ad dolorum, eligendi dolor aspernatur!
                                     </p>
 
                                     <div className="flex cursor-pointer items-center gap-2 mt-3 text-red-600 text-sm font-semibold">

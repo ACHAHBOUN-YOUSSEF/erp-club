@@ -20,10 +20,10 @@ import { clubsService } from "@/services/clubs.Service";
 import { FilesService } from "@/services/filesServices";
 import { PeriodeService } from "@/services/periode.Service";
 import { SubscriptionService } from "@/services/subscrptionService";
-import { Download, Edit, File, FileDown, FileIcon, FilePlus, FileText, RefreshCcw, Trash2, X } from "lucide-react";
+import { Copy, Download, Edit, File, FileDown, FileIcon, FilePlus, FileText, RefreshCcw, Trash2, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify"
 
 export default function AdherentFiche() {
     const router = useRouter()
@@ -316,9 +316,18 @@ export default function AdherentFiche() {
                         Informations Personnelles
                     </h2>
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
-                        <Info label="ID" value={adherent?.id} />
-                        <Info label="CIN" value={adherent?.cin?.toLocaleUpperCase()} />
-                        <Info label="Nom & Prénom" value={`${adherent?.firstName.toLocaleUpperCase()} ${adherent?.lastName.toLocaleUpperCase()}`} />
+                        <div className="flex items-center" onClick={() => navigator.clipboard.writeText(String(adherent?.id)).then(()=>toast.success("Id copiée",{position: "bottom-center"}))}>
+                            <Info label="ID" value={adherent?.id} />
+                            <Copy size={16} className="rounded cursor-pointer ml-4" />
+                        </div>
+                        <div className="flex items-center" onClick={() => navigator.clipboard.writeText(String(adherent?.cin?.toLocaleUpperCase())).then(()=>toast.success("Cin copiée",{position: "bottom-center"}))}>
+                            <Info label="CIN" value={adherent?.cin?.toLocaleUpperCase()} />
+                            <Copy size={16} className="rounded cursor-pointer ml-4" />
+                        </div>
+                        <div className="flex items-center" onClick={() => navigator.clipboard.writeText(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase())).then(()=>toast.success("Nom Complet copiée",{position: "bottom-center"}))}>
+                            <Info label="Nom & Prénom" value={`${adherent?.firstName.toLocaleUpperCase()} ${adherent?.lastName.toLocaleUpperCase()}`} />
+                            <Copy size={16} className="rounded cursor-pointer ml-4" />
+                        </div>
                         <Info label="Branche" value={adherent?.club?.name} />
                         <Info label="Téléphone" value={adherent?.phonePrimary} />
                         <Info label="Téléphone Secondaire" value={adherent?.phoneSecondary} />
@@ -676,19 +685,24 @@ export default function AdherentFiche() {
                 isOpneModalNewPeriode && <NewPeriode onClose={() => { loadAdherentInfos(id); setisOpneModalNewPeriode(false) }} Cancel={() => setisOpneModalNewPeriode(false)} adherentId={id} />
             }
             {
-                isOpneModalEditPeriode&&<EditPeriode Cancel={()=>setIsOpneModalEditPeriode(false)} onClose={()=>{setIsOpneModalEditPeriode(false);loadAdherentInfos(id)}} adherentId={id} periode={periodeToEdit} />
+                isOpneModalEditPeriode && periodeToEdit && <EditPeriode Cancel={() => setIsOpneModalEditPeriode(false)} onClose={() => { setIsOpneModalEditPeriode(false); loadAdherentInfos(id) }} adherentId={id} periode={periodeToEdit} />
             }
             {
                 subscriptionOnEdit && <EditSubscription Cancel={() => setSubscriptionOnEdit(null)} subscription={subscriptionOnEdit} adherentId={id} onClose={() => { setSubscriptionOnEdit(null); loadAdherentInfos(id) }} />
             }
             {
-                isOpneModalEditAdherent && <EditAdherent onClose={() => { loadAdherentInfos(id); setIsOpneModalEditAdherent(false) }} Cancel={() => setIsOpneModalEditAdherent(false)} adherent={adherentToEdit} />
+                isOpneModalEditAdherent && adherentToEdit && <EditAdherent onClose={() => { loadAdherentInfos(id); setIsOpneModalEditAdherent(false) }} Cancel={() => setIsOpneModalEditAdherent(false)} adherent={adherentToEdit} />
             }
         </div>
 
     );
 };
-const Info = ({ label, value }: any) => (
+type InfoProps = {
+    label: string;
+    value?: ReactNode;
+};
+
+const Info = ({ label, value }: InfoProps) => (
     <div>
         <span className="font-semibold text-gray-700">{label} :</span>{" "}
         <span className="text-gray-900">{value || "Non disponible"}</span>

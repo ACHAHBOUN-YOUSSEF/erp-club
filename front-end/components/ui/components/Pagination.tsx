@@ -59,9 +59,9 @@ export default function Pagination({ totalPages, currentPage, pathname, searchPa
             )}
 
             {/* Pages */}
-            {getVisiblePages().map((page, index) => (
+            {getVisiblePages().map((page) => (
                 page === '...' ? (
-                    <span key={index} className="px-2 py-2 text-gray-400">...</span>
+                    <span key={page} className="px-2 py-2 text-gray-400">...</span>
                 ) : (
                     <Link 
                         key={page}

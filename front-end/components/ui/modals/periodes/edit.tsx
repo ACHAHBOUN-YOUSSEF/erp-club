@@ -11,11 +11,11 @@ type props = {
     onClose: () => void;
     Cancel: () => void;
     adherentId: number;
-    periode:PeriodeType|null
+    periode:PeriodeType
 }
 export default function EditPeriode({ onClose, adherentId, Cancel ,periode}: props) {
     const [isBusy, setIsBusy] = useState(false)
-    const { register, handleSubmit,watch, formState: { errors, isSubmitting }, reset } = useForm<PeriodeType>({ resolver: zodResolver(PeriodeSchema),defaultValues:periode})
+    const { register, handleSubmit,watch, formState: { errors, isSubmitting }, reset } = useForm<PeriodeType>({ resolver: zodResolver(PeriodeSchema) as any,defaultValues:periode})
     const remainingAmountValue = watch("remainingAmount");
 
     const onSubmit: SubmitHandler<PeriodeType> = async (periode: PeriodeType) => {

@@ -89,13 +89,13 @@ export default function Profile() {
 }
 
 /* Composant réutilisable pour chaque info */
-function Info({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
+function Info({ label, value, icon }: { label: string; value?: string | null; icon: React.ReactNode }) {
     return (
         <div className="flex items-start gap-3 p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition">
             <div className="text-red-600 mt-1">{icon}</div>
             <div>
                 <p className="text-xs text-gray-500 uppercase">{label}</p>
-                <p className="font-semibold text-gray-800 break-words">{value}</p>
+                <p className="font-semibold text-gray-800 break-words">{value ?? "Non disponible"}</p>
             </div>
         </div>
     )

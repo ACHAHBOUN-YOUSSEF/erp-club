@@ -12,7 +12,7 @@ type props = {
     reload:()=>void
 }
 export default function EditTransaction({ onClose, transaction ,reload}: props) {
-    const { register, handleSubmit,  formState: { errors, isSubmitting }, reset } =useForm<TransactionType>({resolver: zodResolver(TransactionSchema),defaultValues: transaction});
+    const { register, handleSubmit,  formState: { errors, isSubmitting }, reset } =useForm<TransactionType>({resolver: zodResolver(TransactionSchema)as any,defaultValues: transaction});
     const onSubmit: SubmitHandler<TransactionType> = async (transaction: TransactionType) => {
         try {
             const res = await transactionService.update(transaction,Number(transaction.id))

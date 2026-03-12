@@ -12,7 +12,7 @@ type props = {
     abonnement: AbonnementType
 }
 export default function EditAbonnement({ onClose, groupes, abonnement }: props) {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<AbonnementType>({ resolver: zodResolver(AbonnementSchema), defaultValues: abonnement })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<AbonnementType>({ resolver: zodResolver(AbonnementSchema) as any, defaultValues: abonnement })
     const onSubmit = async (abonnement: AbonnementType) => {
 
         try {
@@ -67,7 +67,7 @@ export default function EditAbonnement({ onClose, groupes, abonnement }: props) 
                         <div className="mb-3">
                             <label className="block font-semibold mb-1">Groupe d'abonnement</label>
                             <select
-                                  defaultValue={abonnement.groupe.id?? ""}
+                                  defaultValue={abonnement.groupe?.id??""}
                                 {...register("groupeId")} className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5">
                                 <option value="">-- Choisir un club --</option>
                                 {groupes.length > 0 ? (

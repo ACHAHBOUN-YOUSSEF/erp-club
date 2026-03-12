@@ -194,7 +194,7 @@ export default function TransactionsHistory({ transactions, reload }: props) {
                 ModalDeleteTransaction && <DeleteTransaction onConfirm={confirmDelete} loading={isDeleting} onClose={() => openModalDeleteTransaction(false)} />
             }
             {
-                ModalEditTransaction && <EditTransaction onClose={() => openModalEditTransaction(false)} reload={reload} transaction={Transaction} />
+                ModalEditTransaction &&Transaction&& <EditTransaction onClose={() => openModalEditTransaction(false)} reload={reload} transaction={Transaction} />
             }
         </>
     )

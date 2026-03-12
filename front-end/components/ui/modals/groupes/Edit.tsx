@@ -12,7 +12,7 @@ type props = {
     groupe: GroupeAbonnementType
 }
 export default function EditGroupe({ onClose, clubs, groupe }: props) {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<GroupeAbonnementType>({ resolver: zodResolver(GroupeAbonnements), defaultValues: groupe })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<GroupeAbonnementType>({ resolver: zodResolver(GroupeAbonnements)as any, defaultValues: groupe })
     const onSubmit = async (groupe: GroupeAbonnementType) => {
         try {
             const res = await groupeAbonnementsService.update(groupe, Number(groupe.id))

@@ -7,4 +7,3 @@ export const VilleSchemaData = z.object({
     .number("Code Postal de ville est requis")
     .min(1, "Code Postal doit etre un nombre positif"),
 });
-6

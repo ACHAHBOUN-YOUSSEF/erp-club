@@ -1,4 +1,4 @@
-import { clubSchema, clubType } from "@/lib/validators/clubs";
+// import { clubSchema, clubType } from "@/lib/validators/clubs";
 import { VilleSchema } from "@/lib/validators/villes";
 import { clubsService } from "@/services/clubs.Service";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,12 +6,13 @@ import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Loader from "../../loader";
+import { clubSchema, clubType } from "@/lib/validators/clubs";
 type props = {
     onClose: () => void;
     villes: VilleSchema[]
 }
 export default function Create({ onClose, villes }: props) {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<clubType>({ resolver: zodResolver(clubSchema) })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<clubType>({ resolver: zodResolver(clubSchema) as any})
     const onSubmit = async (club: clubType) => {
         try {
             const res=await clubsService.create(club)

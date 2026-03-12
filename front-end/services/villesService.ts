@@ -1,5 +1,5 @@
 import { http } from "@/lib/api/http"
-import {  VilleFormData } from "@/lib/validators/villes"
+import { VilleSchema } from "@/lib/validators/villes"
 export const villesService = {
     async getAll() {
         const res = await http.get("/api/villes")        
@@ -9,11 +9,11 @@ export const villesService = {
         const res = await http.get(`/api/villes/${id}`)
         return res.data
     },
-    async create(ville:VilleFormData){
+    async create(ville:VilleSchema){
         const res=await http.post("/api/villes",ville)
         return res.data
     },
-    async update(id:Number,ville:VilleFormData){
+    async update(id:Number,ville:VilleSchema){
         const res=await http.put(`/api/villes/${id}`,ville)
         return res.data
     },

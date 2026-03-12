@@ -4,10 +4,10 @@ import { clubsService } from "@/services/clubs.Service"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
 import Spinner from "@/components/ui/spinner"
-import Create from "@/components/ui/modals/groupes/Create"
 import { transactionService } from "@/services/transactionService";
 import { TransactionCards } from "@/components/ui/cards/TransactionCards";
 import { TransactionType } from "@/lib/validators/transactions";
+import Create from "@/components/ui/modals/transactions/Create";
 
 export default function Transactions() {
     const [clubs, setClubs] = useState([])

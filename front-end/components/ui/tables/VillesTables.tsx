@@ -57,17 +57,26 @@ export default function VillesTables({ villes, loading, onDelete, onUpdate, isBu
 
         setIsEditingVille(true)
         try {
-            const res=await villesService.update(updatedVille.id!, updatedVille);
+            const res = await villesService.update(updatedVille.id!, updatedVille);
             toast.success(res.message);
             onUpdate(updatedVille);
             setModalEditOpen(false);
-        } catch (error: any) {
-            const errors = error.response?.data?.errors;
-            if (errors) {
-                const firstError = Object.values(errors)[0][0];
-                toast.error(firstError);
+        } catch (error: unknown) {
+            if (error && typeof error === 'object' && 'response' in error) {
+                const axiosError = error as any;
+                const errors = axiosError.response?.data?.errors;
+
+                // ✅ FIX : Typage explicite
+                if (errors && typeof errors === 'object' && !Array.isArray(errors)) {
+                    const errorObj = errors as Record<string, string[]>;
+                    const firstError = Object.values(errorObj)[0]?.[0];
+                    if (typeof firstError === 'string') {
+                        toast.error(firstError);
+                    }
+                }
             }
         }
+
 
     };
 
@@ -103,13 +112,13 @@ export default function VillesTables({ villes, loading, onDelete, onUpdate, isBu
                                     <td className="py-1 flex items-center justify-center">
                                         <button
                                             className="cursor-pointer m-1 hover:text-red-500"
-                                            onClick={() => handleEditClick(v.id)}
+                                            onClick={() => handleEditClick(Number(v.id))}
                                         >
                                             <Edit />
                                         </button>
                                         <button
                                             className="cursor-pointer m-1 hover:text-red-500"
-                                            onClick={() => handleDeleteClick(v.id)}
+                                            onClick={() => handleDeleteClick(Number(v.id))}
                                         >
                                             <Trash />
                                         </button>

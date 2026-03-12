@@ -22,8 +22,7 @@ class IndexController extends Controller
     public function index(Request $request)
     {
         try {
-            $adherents = Adherent::paginate(15);
-
+            $adherents = Adherent::orderBy('id', 'desc')->paginate(15);
             if ($adherents->isEmpty()) {
                 return ApiResponse::success([], 'Aucune adhérent trouvée');
             }
@@ -37,7 +36,6 @@ class IndexController extends Controller
                 'has_next' => $adherents->hasMorePages(),
                 'has_prev' => $adherents->onFirstPage() === false,
             ];
-
             return response()->json([  // ✅ Bypass ApiResponse pour pagination
                 'success' => true,
                 'message' => 'Liste des adhérents',
@@ -46,7 +44,7 @@ class IndexController extends Controller
                 'timestamp' => now()->toISOString()
             ]);
         } catch (\Exception $e) {
-            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
+            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 200);
         }
     }
 
@@ -172,7 +170,7 @@ class IndexController extends Controller
                     "phoneSecondary" => "nullable|string|max:20",
                     "gender" => "required|string",
                     "registrationDate" => "required|date|before:insuranceEndDate",
-                    "insuranceEndDate" => "required|date|after:today|after:registrationDate",
+                    "insuranceEndDate" => "required|date|after:registrationDate",
 
                 ],
                 [
@@ -201,26 +199,43 @@ class IndexController extends Controller
                 ]
             );
             $adherent = Adherent::find($id);
+
+            if (!$adherent) {
+                return ApiResponse::error("Adhérent introuvable", 404);
+            }
+
+            // Récupérer l'état original avant modification
+            $original = $adherent->getOriginal();
+
+            // Appliquer les changements
             $adherent->fill($validated);
-            $adherent->save();
-            $changes = $adherent->getChanges();
+
+            // Récupérer les champs modifiés (avant save)
+            $changes = $adherent->getDirty();
 
             foreach ($changes as $champ => $nouvelleValeur) {
                 if (in_array($champ, ['updated_at', 'created_at'])) {
                     continue;
                 }
+
                 $ancienneValeur = $original[$champ] ?? null;
 
-                // Format dates
-                if ($ancienneValeur instanceof \DateTimeInterface ?? false) {
+                // Formater les dates
+                if ($ancienneValeur instanceof \DateTimeInterface) {
                     $ancienneValeur = $ancienneValeur->format('Y-m-d');
                 }
                 if (is_string($nouvelleValeur) && strtotime($nouvelleValeur)) {
                     $nouvelleValeur = date('Y-m-d', strtotime($nouvelleValeur));
                 }
 
+                // Ignorer si valeur inchangée
+                if ((string)$ancienneValeur === (string)$nouvelleValeur) {
+                    continue;
+                }
+
                 $champLisible = str_replace('_', ' ', $champ);
                 $label = $champLisible == 'gender' ? 'genre' : $champLisible;
+
                 AdherentLog::create([
                     'action' => 'modification adherent',
                     'fieldName' => $champ,
@@ -232,9 +247,12 @@ class IndexController extends Controller
                 ]);
             }
 
+            // Sauvegarder enfin
+            $adherent->save();
+
             return ApiResponse::success(new AdherentResource($adherent->load("branche", "addedBy")), "Adherent mis à jour");
         } catch (ValidationException $e) {
-            return ApiResponse::error('Erreur de validation', 400, $e->errors());
+            return ApiResponse::error('Erreur de validation', 422, $e->errors());
         } catch (\Exception $e) {
             return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
         }

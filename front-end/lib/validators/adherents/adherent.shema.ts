@@ -80,7 +80,7 @@ export const adherentSchema = z.object({
     insuranceRemainingAmount: z.string()
         .min(1, { message: "Le reste de paiement est obligatoire." })
         .refine((val) => !isNaN(Number(val)), { message: "Doit être un nombre valide." })
-        .refine((val) => Number(val) > 0, { message: "Le montant doit être supérieur à 0." })
+        // .refine((val) => Number(val) > 0, { message: "Le montant doit être supérieur à 0." })
         .optional().nullable(),
     brancheId: z.coerce.number({ message: "Veuillez choisir un club" }).int().positive().optional(),
     id: z.number().optional(),

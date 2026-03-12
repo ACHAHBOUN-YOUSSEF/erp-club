@@ -25,9 +25,10 @@ type RolesAndPermissions = {
     permissions: Permission[];
 }
 export default function EditUser({ onClose, clubs, user }: props) {
-    const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset, setValue, watch } = useForm<userType>({ resolver: zodResolver(userSchema), defaultValues: { ...user, imagePath: undefined, password: "", brancheId: user.brancheId, role: user.role } })
+    const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset, setValue, watch } = useForm<userType>({ resolver: zodResolver(userSchema) as any, defaultValues: { ...user, imagePath: undefined, password: "", brancheId: user.brancheId, role: user.role } })
     const [rolesAndPermissions, setRolesAndPermissions] = useState<RolesAndPermissions>({ roles: [], permissions: [] })
     const currentRole = watch("role");
+
     const onSubmit = async (user: userType) => {
         try {
             const res = await userService.update(user.id!, user)
@@ -35,7 +36,6 @@ export default function EditUser({ onClose, clubs, user }: props) {
             reset()
             onClose()
         } catch (err: any) {
-            console.log(err);
             toast.error(err.message || "Erreur serveur")
         }
     }
@@ -119,7 +119,7 @@ export default function EditUser({ onClose, clubs, user }: props) {
                                             <label className="flex items-center gap-2 cursor-pointer">
                                                 <input
                                                     type="radio"
-                                                    value="homme"
+                                                    value="HOMME"
                                                     {...register("gender")}
                                                     className="accent-red-600"
                                                 />
@@ -129,7 +129,7 @@ export default function EditUser({ onClose, clubs, user }: props) {
                                             <label className="flex items-center gap-2 cursor-pointer">
                                                 <input
                                                     type="radio"
-                                                    value="femme"
+                                                    value="FEMME"
                                                     {...register("gender")}
                                                     className="accent-red-600"
                                                 />

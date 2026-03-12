@@ -12,19 +12,9 @@ type props = {
     Cancel: () => void;
 }
 export default function Create({ onClose, Cancel }: props) {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<adherentType>({ resolver: zodResolver(adherentSchema) })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<adherentType>({ resolver: zodResolver(adherentSchema)as any })
     const router = useRouter()
     const onSubmit: SubmitHandler<adherentType> = async (adherent: adherentType) => {
-        const formData = new FormData();
-        Object.entries(adherent).forEach(([key, value]) => {
-            if (value === undefined || value === null) return;
-
-            if (key === "permissions" && Array.isArray(value)) {
-                value.forEach((p) => formData.append("permissions[]", p));
-            } else {
-                formData.append(key, value as any);
-            }
-        });
         try {
             const res = await ServiceAdherent.create(adherent)
             toast.success(res.message)

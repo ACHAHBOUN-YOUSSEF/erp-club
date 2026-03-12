@@ -12,7 +12,7 @@ type props = {
     club: clubType
 }
 export default function EditClub({ onClose, villes, club }: props) {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<clubType>({ resolver: zodResolver(clubSchema), defaultValues: club })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<clubType>({ resolver: zodResolver(clubSchema) as any, defaultValues: club })
     const onSubmit = async (club: clubType) => {
         try {
             await clubsService.update(club.id!, club)

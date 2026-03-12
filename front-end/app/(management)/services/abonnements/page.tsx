@@ -1,6 +1,6 @@
 "use client"
 
-import { Edit, Plus, Trash2, ChevronDown, Filter } from "lucide-react"
+import { Plus, Filter } from "lucide-react"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { clubsService } from "@/services/clubs.Service"
@@ -10,8 +10,9 @@ import { clubType } from "@/lib/validators/clubs"
 import { groupeAbonnementsService } from "@/services/groupeAbonnementsService"
 import Spinner from "@/components/ui/spinner"
 import { GroupeAbonnementType } from "@/lib/validators/groupeAbonnements"
-import Create from "@/components/ui/modals/groupes/Create"
 import GroupeContainer from "@/components/ui/containers/groupesContainer"
+import Create from "@/components/ui/modals/abonnements/Create"
+import CreateGroupe from "@/components/ui/modals/groupes/Create"
 
 export default function Abonnements() {
     const [clubs, setClubs] = useState([])
@@ -100,14 +101,14 @@ export default function Abonnements() {
                         <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">
                             <div className=" p-4 sm:p-8">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto items-start">
-                                    <GroupeContainer reload={()=>loadAllGroupes()} clubs={clubs} isBusy={(value)=>setIsBusy(value)} groupes={groupes} />
+                                    <GroupeContainer reload={() => loadAllGroupes()} clubs={clubs} isBusy={(value) => setIsBusy(value)} groupes={groupes} />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {isOpneModalCreateGroupe && <Create clubs={clubs} onClose={() => {
+            {isOpneModalCreateGroupe && <CreateGroupe clubs={clubs} cancel={() => setIsOpneModalCreateGroupe(false)} onClose={() => {
                 setIsOpneModalCreateGroupe(false)
                 loadAllGroupes()
             }} />}

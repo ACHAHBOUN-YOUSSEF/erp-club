@@ -14,10 +14,9 @@ type props = {
 }
 export default function NewPeriode({ onClose, adherentId, Cancel }: props) {
     const [isBusy, setIsBusy] = useState(false)
-
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
 
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<PeriodeType>({ resolver: zodResolver(PeriodeSchema) })
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<PeriodeType>({ resolver: zodResolver(PeriodeSchema)as any })
 
     const onSubmit: SubmitHandler<PeriodeType> = async (periode: PeriodeType) => {
         try {            
