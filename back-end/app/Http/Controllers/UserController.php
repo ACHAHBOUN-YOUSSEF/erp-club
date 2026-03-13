@@ -225,9 +225,9 @@ class UserController extends Controller
                 "phone.string" => "Le téléphone  doit être une chaîne de caractères.",
                 "birthDate.required" => "Date de naissance est obligatoire.",
                 "birthDate.date" => "La date de naissance doit être une date valide.",
-                // 'imagePath.image' => 'Le fichier doit être une image valide.',
-                // 'imagePath.mimes' => 'L\'image doit être au format : jpeg, png, jpg ou gif.',
-                // 'imagePath.max' => 'La taille maximale de l\'image est de 2 Mo.',
+                'imagePath.image' => 'Le fichier doit être une image valide.',
+                'imagePath.mimes' => 'L\'image doit être au format : jpeg, png, jpg ou gif.',
+                'imagePath.max' => 'La taille maximale de l\'image est de 2 Mo.',
                 "gender.required" => "Le Genre est obligatoire.",
                 "email.required" => "Email est obligatoire.",
                 'password.min' => 'Le mot de passe doit avoir au moins 8 caractères.',
@@ -251,13 +251,13 @@ class UserController extends Controller
             // Charger relation
             $user->load("branche");
 
-            // if ($request->hasFile('imagePath')) {
-            //     if ($user->imagePath && Storage::disk('public')->exists($user->imagePath)) {
-            //         Storage::disk('public')->delete($user->imagePath);
-            //     }
-            //     $path = $request->file('imagePath')->store('users', 'public');
-            //     $user->imagePath = asset('storage/' . $path);
-            // }
+            if ($request->hasFile('imagePath')) {
+                if ($user->imagePath && Storage::disk('public')->exists($user->imagePath)) {
+                    Storage::disk('public')->delete($user->imagePath);
+                }
+                $path = $request->file('imagePath')->store('users', 'public');
+                $user->imagePath = asset('storage/' . $path);
+            }
 
             $user->save();
             return ApiResponse::success(new UserResource($user), "Modifié avec succès");

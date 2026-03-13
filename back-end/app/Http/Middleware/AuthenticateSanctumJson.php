@@ -7,8 +7,6 @@ use Closure;
 use Illuminate\Http\Request;
 use Laravel\Sanctum\PersonalAccessToken;
 
-use function Symfony\Component\Clock\now;
-
 class AuthenticateSanctumJson
 {
     public function handle(Request $request, Closure $next)
