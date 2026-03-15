@@ -8,6 +8,7 @@ import { TransactionType } from "@/lib/validators/transactions"
 import EditTransaction from "./edit"
 import { FilesService } from "@/services/filesServices"
 import { downloadBlob } from "@/helpers/helpers"
+import { usePermission } from "@/hooks/usePermission"
 
 type Transaction = {
     id: number
@@ -33,6 +34,8 @@ export default function TransactionsHistory({ transactions, reload }: props) {
     const [isDeleting, setIsDeleting] = useState<boolean>(false)
     const [isBusy, setIsBusy] = useState<boolean>(false)
     const [Transaction, setTransaction] = useState<TransactionType | null>(null)
+    const CanDeleteTransaction = usePermission("delete_transactions")
+    const CanEditTransaction = usePermission("edit_transactions")
     const hadnleDelete = (id: number) => {
         openModalDeleteTransaction(true)
         setTransactionId(id)
@@ -84,7 +87,7 @@ export default function TransactionsHistory({ transactions, reload }: props) {
             setIsDeleting(false)
         }
     }
-    const DownloadRecu = async (transaction:Transaction) => {
+    const DownloadRecu = async (transaction: Transaction) => {
         setIsBusy(true);
         try {
             const response = await FilesService.DownloadRecu(transaction.id);
@@ -169,14 +172,19 @@ export default function TransactionsHistory({ transactions, reload }: props) {
                                         <p><strong>Mode de paiement :</strong> {transaction.modePaiement}</p>
                                         <p><strong>Par :</strong> {transaction.executedByUser ?? 'Système'}</p>
                                         <div className="flex flex-col sm:flex-row justify-end mt-4 gap-3">
-                                            <button onClick={() => handleEdit(transaction.id)} className="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition-all duration-200 text-sm sm:text-base">
-                                                <Edit />
-                                            </button>
-                                            <button
-                                                onClick={() => hadnleDelete(transaction.id)}
-                                                className="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition-all duration-200 text-sm sm:text-base">
-                                                <Trash2 />
-                                            </button>
+                                            {
+                                                CanEditTransaction && (<button onClick={() => handleEdit(transaction.id)} className="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition-all duration-200 text-sm sm:text-base">
+                                                    <Edit />
+                                                </button>)
+                                            }
+                                            {
+                                                CanDeleteTransaction && (
+                                                    <button
+                                                        onClick={() => hadnleDelete(transaction.id)}
+                                                        className="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition-all duration-200 text-sm sm:text-base">
+                                                        <Trash2 />
+                                                    </button>)
+                                            }
                                             <button
                                                 onClick={() => DownloadRecu(transaction)}
                                                 className="cursor-pointer inline-flex items-center justify-center gap-2 px-4 py-2 border border-red-600 text-red-600 rounded-md hover:bg-red-600 hover:text-white transition-all duration-200 text-sm sm:text-base">
@@ -194,7 +202,7 @@ export default function TransactionsHistory({ transactions, reload }: props) {
                 ModalDeleteTransaction && <DeleteTransaction onConfirm={confirmDelete} loading={isDeleting} onClose={() => openModalDeleteTransaction(false)} />
             }
             {
-                ModalEditTransaction &&Transaction&& <EditTransaction onClose={() => openModalEditTransaction(false)} reload={reload} transaction={Transaction} />
+                ModalEditTransaction && Transaction && <EditTransaction onClose={() => openModalEditTransaction(false)} reload={reload} transaction={Transaction} />
             }
         </>
     )

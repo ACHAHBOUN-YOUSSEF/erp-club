@@ -153,7 +153,6 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
 
-            // Validation avec messages personnalisés en français
             $request->validate([
                 'imagePath' => 'image|mimes:jpeg,jpg,png,webp|max:2048',
             ], [
@@ -162,19 +161,16 @@ class UserController extends Controller
                 'imagePath.max' => 'L’image ne doit pas dépasser 2 Mo.',
             ]);
 
-            // Supprimer l'ancienne image si elle existe
             if ($user->imagePath && Storage::disk('public')->exists($user->imagePath)) {
                 Storage::disk('public')->delete($user->imagePath);
             }
 
-            // Stocker la nouvelle image
             if ($request->hasFile('imagePath')) {
                 $path = $request->file('imagePath')->store('users', 'public');
                 $user->imagePath = $path;
                 $user->save();
             }
 
-            // Retourner succès avec UserResource
             return ApiResponse::success(
                 new UserResource($user),
                 'Image mise à jour avec succès.'
@@ -225,9 +221,9 @@ class UserController extends Controller
                 "phone.string" => "Le téléphone  doit être une chaîne de caractères.",
                 "birthDate.required" => "Date de naissance est obligatoire.",
                 "birthDate.date" => "La date de naissance doit être une date valide.",
-                'imagePath.image' => 'Le fichier doit être une image valide.',
-                'imagePath.mimes' => 'L\'image doit être au format : jpeg, png, jpg ou gif.',
-                'imagePath.max' => 'La taille maximale de l\'image est de 2 Mo.',
+                // 'imagePath.image' => 'Le fichier doit être une image valide.',
+                // 'imagePath.mimes' => 'L\'image doit être au format : jpeg, png, jpg ou gif.',
+                // 'imagePath.max' => 'La taille maximale de l\'image est de 2 Mo.',
                 "gender.required" => "Le Genre est obligatoire.",
                 "email.required" => "Email est obligatoire.",
                 'password.min' => 'Le mot de passe doit avoir au moins 8 caractères.',
@@ -247,17 +243,15 @@ class UserController extends Controller
             if ($request->filled('permissions')) {
                 $user->syncPermissions($request->permissions);
             }
-
-            // Charger relation
             $user->load("branche");
 
-            if ($request->hasFile('imagePath')) {
-                if ($user->imagePath && Storage::disk('public')->exists($user->imagePath)) {
-                    Storage::disk('public')->delete($user->imagePath);
-                }
-                $path = $request->file('imagePath')->store('users', 'public');
-                $user->imagePath = asset('storage/' . $path);
-            }
+            // if ($request->hasFile('imagePath')) {
+            //     if ($user->imagePath && Storage::disk('public')->exists($user->imagePath)) {
+            //         Storage::disk('public')->delete($user->imagePath);
+            //     }
+            //     $path = $request->file('imagePath')->store('users', 'public');
+            //     $user->imagePath = asset('storage/' . $path);
+            // }
 
             $user->save();
             return ApiResponse::success(new UserResource($user), "Modifié avec succès");
@@ -277,7 +271,7 @@ class UserController extends Controller
             if ($user->imagePath && Storage::disk('public')->exists($user->imagePath)) {
                 Storage::disk('public')->delete($user->imagePath);
             }
-            $user->syncRoles([]);          // supprime tous les rôles
+            $user->syncRoles([]);
             $user->syncPermissions([]);
             $user->delete();
             return ApiResponse::success(null, 'Utilisateur supprimé avec succès');

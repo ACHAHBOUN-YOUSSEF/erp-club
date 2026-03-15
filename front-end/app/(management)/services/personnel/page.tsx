@@ -92,7 +92,8 @@ export default function Personnel() {
                         <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">
                             <UserContainer clubs={clubs} loading={() => loadAllUsers()} isBusy={(value) => setIsBusy(value)} users={users} />
                         </div>
-                    </div>                </div>
+                    </div>
+                </div>
 
             </div>
             {isOpneModalCreatePersonnel && (<Create clubs={clubs} onClose={() => {

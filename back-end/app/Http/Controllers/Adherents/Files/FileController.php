@@ -101,6 +101,9 @@ class FileController extends Controller
             if (empty($subscription)) {
                 return ApiResponse::error("Subscription non trouvé", 404);
             }
+            // if ($subscription->remainingAmount > 0) {
+            //     return ApiResponse::error("Impossible de télécharger le contrat : la souscription n'est pas totalement payée.", 404);
+            // }
             $contrat = Contrat::create([
                 "targetAdherentId" => $subscription->adherentId,
                 "executedByUserId" => $request->user()->id,

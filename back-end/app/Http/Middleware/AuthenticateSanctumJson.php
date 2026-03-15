@@ -25,7 +25,7 @@ class AuthenticateSanctumJson
             return ApiResponse::error(
                 'Utilisateur non authentifié',
                 401,
-                ['token' => ['Token invalide ou expiré']]
+                ['token' => ['Token invalide ou expirée']]
             );
         }
         if ($accessToken->expires_at->isPast()) {

@@ -1,16 +1,19 @@
-// Header.jsx (JavaScript pur ✅)
 "use client"
 import { useEffect, useState } from "react";
 import ProfileDropdown from "../../../components/ui/ProfileDropdown";
-import GradientText from "@/components/ui/textType/GradientText";
 import { AuthService } from "@/services/authService";
 import { useDispatch } from "react-redux";
 import { setPermissions } from "@/store/permissionsSlice";
-
-export default function Header() {
+import { Menu, X } from "lucide-react";
+type props = {
+  openSideBar: (value: boolean) => void
+}
+export default function Header({ openSideBar }: props) {
+  // export default function Header() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expiresAt, setExpiresAt] = useState("")
+  const [SidebarOpen, setSideBarOpen] = useState(true)
   const dispatch = useDispatch()
   useEffect(() => {
     async function fetchUser() {
@@ -31,17 +34,30 @@ export default function Header() {
   }, []);
 
   return (
-    <header className="bg-black/15 shadow-2xs border-b border-white mx-2 mt-2 rounded-lg">
-      <div className="max-w-7xl mx-auto py-4 px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+    <header className="bg-black/15 shadow-2xs border-b border-white mx-2 mt-0.5 rounded-lg">
+      <div className="max-w-7xl mx-auto py-2 px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
         <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white text-center sm:text-left">
-          <GradientText
-            colors={["#ff0000", "#000000", "#ffffff", "#ff0000"]}
-            animationSpeed={3}
-            showBorder={false}
-            className="font-bold text-3xl"
-          >
-            ERP-STARGYM
-          </GradientText>
+
+
+          {SidebarOpen ? (
+            <Menu
+              onClick={() => {
+                const value = !SidebarOpen;
+                setSideBarOpen(value);
+                openSideBar(value);
+              }}
+              className="cursor-pointer hover:bg-red-50/20 rounded-sm"
+            />
+          ) : (
+            <X
+              onClick={() => {
+                const value = !SidebarOpen;
+                setSideBarOpen(value);
+                openSideBar(value);
+              }}
+              className="cursor-pointer hover:bg-red-50/20 rounded-sm"
+            />
+          )}
         </h1>
 
         <div className="flex items-center">

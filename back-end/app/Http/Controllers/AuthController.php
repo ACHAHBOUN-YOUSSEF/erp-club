@@ -14,7 +14,6 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
-            // return response()->json($request->email);
             $validated = $request->validate([
                 'email' => 'required|email',
                 'password' => 'required'
@@ -27,9 +26,10 @@ class AuthController extends Controller
             $user = User::where('email', $validated['email'])->first();
 
             if (!$user || !Hash::check($validated['password'], $user->password)) {
-                throw ValidationException::withMessages([
-                    'email' => ['Les identifiants fournis sont invalides.'],
-                ]);
+                return ApiResponse::error(
+                    'Les identifiants fournis sont invalides.',
+                    422,
+                );
             }
 
             $token = $user->createToken(
@@ -70,7 +70,7 @@ class AuthController extends Controller
                     ['token' => ['Token invalide ou expiré']]
                 );
             }
-            $user=User::with(['roles', 'permissions', 'branche.ville'])->find($user->id);
+            $user = User::with(['roles', 'permissions', 'branche.ville'])->find($user->id);
             return ApiResponse::success([
                 'token' => $request->bearerToken(),
                 'expiresAt' => $user->tokens()->first()?->expires_at ?? now()->addMinutes(60),
@@ -85,8 +85,19 @@ class AuthController extends Controller
         } catch (\Exception $e) {
             return ApiResponse::error(
                 'Erreur serveur',
-                500
+                500,
+                $e
             );
+        }
+    }
+    public function logout(Request $request)
+    {
+        try {
+            $request->user()->tokens()->delete();
+
+            return ApiResponse::success(null, "Logout success", 200);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Erreur serveur', 500, $e->getMessage());
         }
     }
 }

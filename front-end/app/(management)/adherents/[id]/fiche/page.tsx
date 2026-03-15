@@ -50,7 +50,6 @@ export default function AdherentFiche() {
     const [subscriptionOnEdit, setSubscriptionOnEdit] = useState<SubscriptionType | null>(null)
     const [adherentToEdit, setAdherentToEdit] = useState<adherentType | null>(null)
     const [isOpneModalEditAdherent, setIsOpneModalEditAdherent] = useState(false)
-    const CanDeleteUser = usePermission("delete")
     const handleDelete = (id: number) => {
         setAherentIdToDelete(id)
         setIsOpneModalDeleteAdherent(true)
@@ -199,7 +198,6 @@ export default function AdherentFiche() {
         setIsBusy(true)
         try {
             const res = await PeriodeService.getOne(id)
-            toast.success(res.message)
             setPeriodeToEdit(res.data)
             setIsOpneModalEditPeriode(true)
             setIsBusy(false)
@@ -221,8 +219,8 @@ export default function AdherentFiche() {
         }
     }
     useEffect(() => {
-        loadClubs();
-        loadAdherentInfos(id);
+        loadClubs()
+        loadAdherentInfos(id)
     }, [id]);
 
     useEffect(() => {
@@ -245,8 +243,6 @@ export default function AdherentFiche() {
             const response = await FilesService.DownloadContrant(Number(subscription.id));
             let filename = `contrat--${adherent?.firstName.toLowerCase() + " " + adherent?.lastName.toLocaleLowerCase()}--${subscription.id}.docx`
             downloadBlob(response.data, filename);
-            console.log(response);
-
             toast.success('Contrat téléchargé !');
         } catch (err) {
             toast.error('Probléme téléchargement');
@@ -276,8 +272,6 @@ export default function AdherentFiche() {
             downloadBlob(response.data, filename);
             toast.success('Recus téléchargé !');
         } catch (err) {
-            console.log(err);
-
             toast.error('Probléme téléchargement');
         } finally {
             setIsBusy(false);
@@ -299,38 +293,36 @@ export default function AdherentFiche() {
 
     }
     return (
-        <div className="p-2 mt-2 min-h-screen">
+        <div className="p-2  min-h-screen">
             {isBusy && <Spinner />}
-            <div className="max-w-6xl mx-auto bg-white shadow-2xl rounded-2xl p-6 space-y-8" ref={dropdownRef}>
-
-                {/* HEADER */}
-                <div className="border-b pb-4">
+            <div className="w-full mx-auto bg-white shadow-2xl rounded-2xl p-3 space-y-8" ref={dropdownRef}>
+                <div className="border-b pb-2">
                     <h1 className="text-3xl font-bold text-red-700">
-                        Fiche Adhérent
+                        Fiche Adhérent <span className="text-black underline">{adherent?.firstName + " " + adherent?.lastName}</span>
                     </h1>
                 </div>
-
-                {/* INFORMATIONS PERSONNELLES */}
-                <section className="bg-gray-50 rounded-xl p-4 shadow">
+                <section className="bg-gray-50 rounded-xl p-2 shadow">
                     <h2 className="text-xl font-bold text-red-600 mb-4">
                         Informations Personnelles
                     </h2>
                     <div className="grid md:grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-center" onClick={() => navigator.clipboard.writeText(String(adherent?.id)).then(()=>toast.success("Id copiée",{position: "bottom-center"}))}>
+                        <div className="flex items-center">
                             <Info label="ID" value={adherent?.id} />
-                            <Copy size={16} className="rounded cursor-pointer ml-4" />
+                            <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.id)).then(() => toast.success("Id copiée", { position: "bottom-center" }))} />
                         </div>
-                        <div className="flex items-center" onClick={() => navigator.clipboard.writeText(String(adherent?.cin?.toLocaleUpperCase())).then(()=>toast.success("Cin copiée",{position: "bottom-center"}))}>
+                        <div className="flex items-center" >
                             <Info label="CIN" value={adherent?.cin?.toLocaleUpperCase()} />
-                            <Copy size={16} className="rounded cursor-pointer ml-4" />
+                            {adherent?.cin && (<Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.cin?.toLocaleUpperCase() ? adherent?.cin?.toLocaleUpperCase() : "")).then(() => toast.success("Cin copiée", { position: "bottom-center" }))} />)}
                         </div>
-                        <div className="flex items-center" onClick={() => navigator.clipboard.writeText(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase())).then(()=>toast.success("Nom Complet copiée",{position: "bottom-center"}))}>
+                        <div className="flex items-center" >
                             <Info label="Nom & Prénom" value={`${adherent?.firstName.toLocaleUpperCase()} ${adherent?.lastName.toLocaleUpperCase()}`} />
-                            <Copy size={16} className="rounded cursor-pointer ml-4" />
+                            <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase())).then(() => toast.success("Nom Complet copiée", { position: "bottom-center" }))} />
                         </div>
                         <Info label="Branche" value={adherent?.club?.name} />
                         <Info label="Téléphone" value={adherent?.phonePrimary} />
-                        <Info label="Téléphone Secondaire" value={adherent?.phoneSecondary} />
+                        {
+                            adherent?.phoneSecondary && (<Info label="Téléphone Secondaire" value={adherent?.phoneSecondary} />)
+                        }
                         <Info label="Genre" value={adherent?.gender} />
                         <Info label="Date Inscription" value={adherent?.registrationDate} />
                         <Info label="Date fin assurance" value={adherent?.insuranceEndDate} />
@@ -359,15 +351,12 @@ export default function AdherentFiche() {
                         <button onClick={() => handleEdit(id)} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
                             <Edit />
                         </button>
-                        {
-                            CanDeleteUser && (
-                                <button onClick={() => handleDelete(Number(adherent?.id))}
-                                    className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                                >
-                                    <Trash2 />
-                                </button>
-                            )
-                        }
+                        <button onClick={() => handleDelete(Number(adherent?.id))}
+                            className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                        >
+                            <Trash2 />
+                        </button>
+
                         <button onClick={() => loadAdherentInfos(id)}
                             className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                         >

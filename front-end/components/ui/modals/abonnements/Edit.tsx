@@ -92,7 +92,7 @@ export default function EditAbonnement({ onClose, groupes, abonnement }: props) 
                                 type="submit"
                                 disabled={isSubmitting}
                                 className={`cursor-pointer px-4 py-2 bg-red-600 text-white rounded ${isSubmitting ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700"}`}>
-                                {isSubmitting ? "En cours..." : "Crier"}
+                                {isSubmitting ? "En cours..." : "Modifier"}
 
                             </button>
                         </div>

@@ -1,5 +1,5 @@
 "use client";
-import { Plus, Trash2, FilePlus, Edit, UserCircle, CheckCircle } from "lucide-react"
+import { Trash2, FilePlus, Edit, UserCircle } from "lucide-react"
 import { clubsService } from "@/services/clubs.Service"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -11,6 +11,7 @@ import DeleteAdherent from "@/components/ui/modals/adherents/delete"
 import NewSubscription from "@/components/ui/modals/subscriptions/create";
 import { useRouter } from "next/navigation";
 import EditAdherent from "@/components/ui/modals/adherents/edit";
+import LineLoader from "@/components/ui/LineLoader";
 
 export default function Abonnements() {
     const [clubs, setClubs] = useState([])
@@ -24,6 +25,8 @@ export default function Abonnements() {
     const [adherentId, setAdherentId] = useState<number>()
     const [adherentToEdit, setAdherentToEdit] = useState<adherentType | null>(null)
     const [serachable, setSearchable] = useState<boolean>(false);
+    const [onSearch, setOnSearch] = useState(true)
+
     const router = useRouter()
     const handleEdit = async (id: number) => {
         try {
@@ -68,7 +71,7 @@ export default function Abonnements() {
         try {
             const res = await ServiceAdherent.delete(Number(AherentIdToDelete))
             toast.success(res.message)
-            setAdherents(adherents?.filter((adherent)=>adherent.id!=adherentId))
+            setAdherents(adherents?.filter((adherent) => adherent.id != adherentId))
             setIsDeleting(false)
             setIsOpneModalDeleteAdherent(false)
         } catch (err: any) {
@@ -90,16 +93,16 @@ export default function Abonnements() {
             setSearchable(false);
         } else {
             setSearchable(true)
-            setIsBusy(true)
+            setOnSearch(true)
             try {
                 const res = await ServiceAdherent.search(value)
-                setAdherents(res.data);                
-                setIsBusy(false)
+                setAdherents(res.data);
+                setOnSearch(false)
             } catch (err: any) {
                 toast.warn("Probleme de telechargement")
-                setIsBusy(false)
+                setOnSearch(false)
             }
-            setIsBusy(false)
+            setOnSearch(false)
         }
     };
 
@@ -156,13 +159,13 @@ export default function Abonnements() {
 
                             <div>
                                 <input onChange={(e) => search(e.target.value)}
-                                    type="text" className="bg-red-50 border border-gray-300 text-gray-900 text-sm rounded-lg border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5 pr-10 " placeholder="Id CIn Nom Prenom Tel" />
+                                    type="text" className={`bg-red-50  border border-gray-300 text-gray-900 text-sm rounded-lg ${serachable ? "border-green-500" : ""}  border-2  focus:outline-none block w-full p-2.5 pr-10 `} placeholder="Id CIn Nom Prenom Tel" />
                             </div>
-                            <div>
+                            {/* <div>
                                 <CheckCircle
                                     className={`text-${serachable ? 'green-500' : 'gray-500'} w-7 h-7`}
                                 />
-                            </div>
+                            </div> */}
                         </div>
                         <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">
 
@@ -180,6 +183,13 @@ export default function Abonnements() {
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
+                                            {onSearch && (
+                                                <tr>
+                                                    <td colSpan={6}>
+                                                        <LineLoader />
+                                                    </td>
+                                                </tr>
+                                            )}
                                             {
                                                 adherents && adherents.length > 0 ? (
                                                     adherents.map((adherent) => (
@@ -240,7 +250,7 @@ export default function Abonnements() {
                                                                     </button>
 
                                                                     <button
-                                                                        onClick={() => {handleDelete(Number(adherent.id));setAdherentId(adherent.id)}}
+                                                                        onClick={() => { handleDelete(Number(adherent.id)); setAdherentId(adherent.id) }}
                                                                         className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                         title="Supprimer"
                                                                     >
@@ -268,10 +278,10 @@ export default function Abonnements() {
                 </div>
             </div>
             {
-                isOpneModalEditAdherent&&adherentToEdit && <EditAdherent onClose={() => { setAdherents([]); setIsOpneModalEditAdherent(false) }} Cancel={() => setIsOpneModalEditAdherent(false)} adherent={adherentToEdit} />
+                isOpneModalEditAdherent && adherentToEdit && <EditAdherent onClose={() => { setAdherents([]); setIsOpneModalEditAdherent(false) }} Cancel={() => setIsOpneModalEditAdherent(false)} adherent={adherentToEdit} />
             }
             {
-                isOpneModalDeleteAdherent && <DeleteAdherent loading={isDeleting} onConfirm={confirmDelete} onClose={() => {setIsOpneModalDeleteAdherent(false) }} />
+                isOpneModalDeleteAdherent && <DeleteAdherent loading={isDeleting} onConfirm={confirmDelete} onClose={() => { setIsOpneModalDeleteAdherent(false) }} />
             }
             {
                 isOpneModalNewSubscription && <NewSubscription Cancel={() => setisOpneModalNewSubscription(false)} adherentId={Number(adherentId)} clubs={clubs} onClose={() => { setisOpneModalNewSubscription(false); router.push(`/adherents/${adherentId}/fiche`) }} />

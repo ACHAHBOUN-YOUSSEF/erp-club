@@ -119,7 +119,7 @@ export default function EditSubscription({ onClose, adherentId, subscription,Can
                             <button
                                 type="submit"
                                 className={`cursor-pointer px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"`}>
-                                Ajouter
+                                Modifier
                             </button>
                         </div>
                     </form>

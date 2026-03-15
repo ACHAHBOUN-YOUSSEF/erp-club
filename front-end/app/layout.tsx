@@ -12,7 +12,6 @@ export default function RootLayout({
       <body className="*:selection:bg-red-600 *:selection:text-white">
         <ReduxProvider>
           {children}
-
           <ToastContainer
             position="top-center"
             autoClose={4000}

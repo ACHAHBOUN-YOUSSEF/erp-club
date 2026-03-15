@@ -27,8 +27,7 @@ class AdherentResource extends JsonResource
             "imagePath" => $this->imagePath,
             "brancheId" => $this->brancheId,
             "resteJoursAssurance" => $this->resteJoursAssurance,
-            "addedBy" => $this->added_by
-                ?: (($this->addedBy?->firstName ?? '') . ' ' . ($this->addedBy?->lastName ?? '')),
+            "addedBy" => $this->addedBy ? (($this->addedBy?->firstName . ' ' . $this->addedBy?->lastName)) : $this->added_by,
             "club" => $this->whenLoaded("branche"),
             "subscriptions" => $this->subscriptions
                 ? $this->subscriptions->map(function ($sub) {

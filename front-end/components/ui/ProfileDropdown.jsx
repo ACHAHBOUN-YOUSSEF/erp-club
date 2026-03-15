@@ -11,14 +11,28 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
-
-export default function ProfileDropdown({expiresAt, user, loading = false }) {
+import { AuthService } from "@/services/authService";
+import { toast } from "react-toastify";
+import Spinner from "./spinner";
+import { useState } from "react";
+export default function ProfileDropdown({ expiresAt, user, loading = false }) {
   const router = useRouter();
+  const [isBusy, setIsBusy] = useState(false)
+  const handleLogout = async () => {
+    setIsBusy(true)
+    try {
+      await AuthService.logout().then((res) => {
+        toast.success(res.message)
+        router.push("/login")
+        if (Cookies.get("token")) Cookies.remove("token")
+        setIsBusy(false)
+      })
+    } catch (err) {
+      toast.warn("Erreur Serveur")
+    };
+    setIsBusy(false)
 
-  // const LogOut = () => {
-  //   router.push("/login");
-  //   Cookies.remove("token")
-  // }
+  }
   if (loading) {
     return (
       <div className="flex items-center space-x-3 animate-pulse">
@@ -35,14 +49,12 @@ export default function ProfileDropdown({expiresAt, user, loading = false }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <div className="cursor-pointer p-0.5 rounded-full bg-white/80 hover:bg-black/20 transition-all duration-200">
+          {isBusy && (<Spinner />)}
           {user?.imagePath ? (
             <img
               className="w-12 h-12 rounded-full object-cover border-2 border-white/50"
               src={user.imagePath}
               alt={`${user.firstName} ${user.lastName}`}
-              onError={(e) => {
-                e.currentTarget.src = "/default-avatar.png";
-              }}
             />
           ) : (
             <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-red-600 rounded-full flex items-center justify-center">
@@ -65,7 +77,7 @@ export default function ProfileDropdown({expiresAt, user, loading = false }) {
           <div className="text-xs text-muted-foreground truncate max-w-[220px]">
             {user?.email || "email@example.com"}
           </div>
-           <div className="text-xs text-muted-foreground truncate max-w-[220px]">
+          <div className="text-xs text-muted-foreground truncate max-w-[220px]">
             Expirée dans : {expiresAt}
           </div>
         </DropdownMenuLabel>
@@ -85,7 +97,7 @@ export default function ProfileDropdown({expiresAt, user, loading = false }) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          // onClick={() => LogOut()}
+          onClick={() => handleLogout()}
           className="text-red-600 font-semibold hover:bg-red-50 flex items-center gap-2 cursor-pointer"
         >
           <LogOut className="w-4 h-4" />

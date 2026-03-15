@@ -141,7 +141,7 @@ export default function GroupeContainer({ groupes, isBusy, reload, clubs }: prop
                         return (
                             <details
                                 key={groupe.id}
-                                className="group bg-white rounded-2xl  p-5 sm:p-6 transition">
+                                className="group bg-white rounded-2xl  p-5 sm:p-6 transition h-auto min-h-[200px] max-h-none">
                                 {/* SUMMARY */}
                                 <summary className="list-none">
                                     <div className="flex flex-wrap justify-between gap-3 items-center">

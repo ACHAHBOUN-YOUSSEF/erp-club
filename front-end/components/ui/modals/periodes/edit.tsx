@@ -146,7 +146,7 @@ export default function EditPeriode({ onClose, adherentId, Cancel ,periode}: pro
                             <button
                                 type="submit"
                                 className={`cursor-pointer px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"`}>
-                                Ajouter
+                                Modifier
                             </button>
                         </div>
                     </form>

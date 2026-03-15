@@ -32,9 +32,7 @@ export default function UserContainer({ users, loading, clubs, isBusy }: Props) 
     const handleEdit = async (userId: number) => {
         try {
             isBusy(true)
-            const res = await userService.getById(userId)
-            console.log(res);
-            
+            const res = await userService.getById(userId)            
             setUserOnEdit(res.data);
             setIsEditing(true)
             isBusy(false)

@@ -1,17 +1,11 @@
-"use client"
-import Sidebar from "./components/Sidebar";
-import Header from "./components/Header"
+import Layout from "@/components/ClinetsSideComponents/Management/Layout/Layout";
+import { Metadata } from "next";
+export const metadata: Metadata = {
+  title: process.env.NEXT_PUBLIC_APP_NAME,
+  icons:{icon:"/logo.stargym.png"},
+  description:""
+};
 export default function ManagementLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="flex h-screen overflow-hidden bg-gradient-to-r from-red-600 to-red-950">
-      <Sidebar />
 
-      <div className="flex flex-col flex-1 overflow-auto">
-        <div className="max-w-7xl mx-auto w-full">
-          <Header/>
-          <main className=" rounded-lg">{children}</main>
-        </div>
-      </div>
-    </div>
-  );
+  return <Layout>{children}</Layout>
 }
