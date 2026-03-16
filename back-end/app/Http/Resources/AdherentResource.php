@@ -9,6 +9,12 @@ class AdherentResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        $addedByUser = null;
+        if ($request->user) {
+            $role = $request->roles->first()?->name ?? 'ROLE INCONNU';
+
+            $addedByUser = trim(strtoupper($role) . ' ' . ($request->user->firstName ?? '') . ' ' . ($request->user->lastName ?? ''));
+        }
         return [
             "id" => $this->id,
             "cin" => $this->cin,
@@ -27,7 +33,7 @@ class AdherentResource extends JsonResource
             "imagePath" => $this->imagePath,
             "brancheId" => $this->brancheId,
             "resteJoursAssurance" => $this->resteJoursAssurance,
-            "addedBy" => $this->addedBy ? (($this->addedBy?->firstName . ' ' . $this->addedBy?->lastName)) : $this->added_by,
+            "addedBy" => $this->addedBy ? (($addedByUser)) : $this->added_by,
             "club" => $this->whenLoaded("branche"),
             "subscriptions" => $this->subscriptions
                 ? $this->subscriptions->map(function ($sub) {
@@ -112,7 +118,7 @@ class AdherentResource extends JsonResource
                     "modePaiement" => $transaction->modePaiement,
                     "transactionDate" => $transaction->transactionDate,
                     "adherent" => $transaction->adherent->firstName . " " . $transaction->adherent->lastName,
-                    "executedByUser" =>$executedByUser,
+                    "executedByUser" => $executedByUser,
                     "created_at" => $transaction->created_at,
                     "updated_at" => $transaction->updated_at,
 

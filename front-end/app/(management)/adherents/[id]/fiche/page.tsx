@@ -295,369 +295,374 @@ export default function AdherentFiche() {
     return (
         <div className="p-2  min-h-screen">
             {isBusy && <Spinner />}
-            <div className="w-full mx-auto bg-white shadow-2xl rounded-2xl p-3 space-y-8" ref={dropdownRef}>
-                <div className="border-b pb-2">
-                    <h1 className="text-3xl font-bold text-red-700">
-                        Fiche Adhérent <span className="text-black underline">{adherent?.firstName + " " + adherent?.lastName}</span>
-                    </h1>
-                </div>
-                <section className="bg-gray-50 rounded-xl p-2 shadow">
-                    <h2 className="text-xl font-bold text-red-600 mb-4">
-                        Informations Personnelles
-                    </h2>
-                    <div className="grid md:grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-center">
-                            <Info label="ID" value={adherent?.id} />
-                            <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.id)).then(() => toast.success("Id copiée", { position: "bottom-center" }))} />
+            {
+                adherent && (
+                    <div className="w-full mx-auto bg-white shadow-2xl rounded-2xl p-3 space-y-8" ref={dropdownRef}>
+                        <div className="border-b pb-2">
+                            <h1 className="text-3xl font-bold text-red-700">
+                                Fiche Adhérent <span className="text-black underline">{adherent?.firstName + " " + adherent?.lastName}</span>
+                            </h1>
                         </div>
-                        <div className="flex items-center" >
-                            <Info label="CIN" value={adherent?.cin?.toLocaleUpperCase()} />
-                            {adherent?.cin && (<Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.cin?.toLocaleUpperCase() ? adherent?.cin?.toLocaleUpperCase() : "")).then(() => toast.success("Cin copiée", { position: "bottom-center" }))} />)}
+                        <section className="bg-gray-50 rounded-xl p-2 shadow">
+                            <h2 className="text-xl font-bold text-red-600 mb-4">
+                                Informations Personnelles
+                            </h2>
+                            <div className="grid md:grid-cols-2 gap-4 text-sm">
+                                <div className="flex items-center">
+                                    <Info label="ID" value={adherent?.id} />
+                                    <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.id)).then(() => toast.success("Id copiée", { position: "bottom-center" }))} />
+                                </div>
+                                <div className="flex items-center" >
+                                    <Info label="CIN" value={adherent?.cin?.toLocaleUpperCase()} />
+                                    {adherent?.cin && (<Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.cin?.toLocaleUpperCase() ? adherent?.cin?.toLocaleUpperCase() : "")).then(() => toast.success("Cin copiée", { position: "bottom-center" }))} />)}
+                                </div>
+                                <div className="flex items-center" >
+                                    <Info label="Nom & Prénom" value={`${adherent?.firstName.toLocaleUpperCase()} ${adherent?.lastName.toLocaleUpperCase()}`} />
+                                    <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase())).then(() => toast.success("Nom Complet copiée", { position: "bottom-center" }))} />
+                                </div>
+                                <Info label="Branche" value={adherent?.club?.name} />
+                                <Info label="Téléphone" value={adherent?.phonePrimary} />
+                                {
+                                    adherent?.phoneSecondary && (<Info label="Téléphone Secondaire" value={adherent?.phoneSecondary} />)
+                                }
+                                <Info label="Genre" value={adherent?.gender} />
+                                <Info label="Date Inscription" value={adherent?.registrationDate} />
+                                <Info label="Date fin assurance" value={adherent?.insuranceEndDate} />
+                                <Info
+                                    label="Status"
+                                    value={
+                                        adherent?.resteJoursAssurance! > 0 ? (
+                                            <span className="text-green-600 font-semibold">Assurée</span>
+                                        ) : (
+                                            <span className="text-red-600 font-semibold">Non Assurée</span>
+                                        )
+                                    }
+                                />
+                                <Info label="Reste jours" value={`${adherent?.resteJoursAssurance} jours`} />
+                                <Info label="Ajoutè par " value={`${adherent?.addedBy?.toLocaleUpperCase()}`} />
+                            </div>
+                        </section>
+                        <div>
+                            <div className="flex justify-start">
+                                <button onClick={() => { setisOpneModalNewSubscription(true); setAdherentId(adherent?.id) }} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
+                                    <FilePlus />
+                                </button>
+                                <button onClick={() => { setisOpneModalNewPeriode(true) }} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
+                                    <File />
+                                </button>
+                                <button onClick={() => handleEdit(id)} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
+                                    <Edit />
+                                </button>
+                                <button onClick={() => handleDelete(Number(adherent?.id))}
+                                    className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                >
+                                    <Trash2 />
+                                </button>
+
+                                <button onClick={() => loadAdherentInfos(id)}
+                                    className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                >
+                                    <RefreshCcw />
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex items-center" >
-                            <Info label="Nom & Prénom" value={`${adherent?.firstName.toLocaleUpperCase()} ${adherent?.lastName.toLocaleUpperCase()}`} />
-                            <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase())).then(() => toast.success("Nom Complet copiée", { position: "bottom-center" }))} />
-                        </div>
-                        <Info label="Branche" value={adherent?.club?.name} />
-                        <Info label="Téléphone" value={adherent?.phonePrimary} />
                         {
-                            adherent?.phoneSecondary && (<Info label="Téléphone Secondaire" value={adherent?.phoneSecondary} />)
-                        }
-                        <Info label="Genre" value={adherent?.gender} />
-                        <Info label="Date Inscription" value={adherent?.registrationDate} />
-                        <Info label="Date fin assurance" value={adherent?.insuranceEndDate} />
-                        <Info
-                            label="Status"
-                            value={
-                                adherent?.resteJoursAssurance! > 0 ? (
-                                    <span className="text-green-600 font-semibold">Assurée</span>
-                                ) : (
-                                    <span className="text-red-600 font-semibold">Non Assurée</span>
-                                )
-                            }
-                        />
-                        <Info label="Reste jours" value={`${adherent?.resteJoursAssurance} jours`} />
-                        <Info label="Ajoutè par " value={`${adherent?.addedBy?.toLocaleUpperCase()}`} />
-                    </div>
-                </section>
-                <div>
-                    <div className="flex justify-start">
-                        <button onClick={() => { setisOpneModalNewSubscription(true); setAdherentId(adherent?.id) }} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
-                            <FilePlus />
-                        </button>
-                        <button onClick={() => { setisOpneModalNewPeriode(true) }} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
-                            <File />
-                        </button>
-                        <button onClick={() => handleEdit(id)} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
-                            <Edit />
-                        </button>
-                        <button onClick={() => handleDelete(Number(adherent?.id))}
-                            className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                        >
-                            <Trash2 />
-                        </button>
-
-                        <button onClick={() => loadAdherentInfos(id)}
-                            className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                        >
-                            <RefreshCcw />
-                        </button>
-                    </div>
-                </div>
-                {
-                    adherent?.subscriptions && adherent.subscriptions.length > 0 ? (
-                        <section className="bg-gray-50 rounded-xl p-4  shadow">
-                            <h2 className="text-xl font-bold text-red-600 mb-4">
-                                Historique des subscriptions
-                            </h2>
-                            <div className="w-full overflow-x-auto">
-                                <table className="min-w-full divide-y rounded-2xl   shadow-2xl rounded-2xl bg-white">
-                                    <thead className="bg-gradient-to-r from-red-700/10 to-red-600 sticky top-0">
-                                        <tr>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Groupe
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Type
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Prix
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Reste de paiement
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Date debut
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Date fin
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Reste des jours
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Status
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody
-                                        className="divide-y divide-gray-200"
-                                    >
-                                        {adherent?.subscriptions && adherent.subscriptions.length > 0 ? (
-                                            adherent.subscriptions.map((subscription) => (
-                                                <tr
-                                                    key={subscription.id}
-                                                    className="hover:bg-red-50  transition-colors duration-200"
-                                                >
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
-                                                        {subscription.groupe?.toUpperCase()}
-                                                    </td>
-
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
-                                                        {subscription.title?.toUpperCase()}
-                                                    </td>
-
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
-                                                        {subscription.price} DH
-                                                    </td>
-
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        <span
-                                                            className={`font-bold ${Number(subscription.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
-                                                                }`}
+                            adherent?.subscriptions && adherent.subscriptions.length > 0 ? (
+                                <section className="bg-gray-50 rounded-xl p-4  shadow">
+                                    <h2 className="text-xl font-bold text-red-600 mb-4">
+                                        Historique des subscriptions
+                                    </h2>
+                                    <div className="w-full overflow-x-auto">
+                                        <table className="min-w-full divide-y rounded-2xl   shadow-2xl rounded-2xl bg-white">
+                                            <thead className="bg-gradient-to-r from-red-700/10 to-red-600 sticky top-0">
+                                                <tr>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Groupe
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Type
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Prix
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Reste de paiement
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Date debut
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Date fin
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Reste des jours
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Status
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Actions
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody
+                                                className="divide-y divide-gray-200"
+                                            >
+                                                {adherent?.subscriptions && adherent.subscriptions.length > 0 ? (
+                                                    adherent.subscriptions.map((subscription) => (
+                                                        <tr
+                                                            key={subscription.id}
+                                                            className="hover:bg-red-50  transition-colors duration-200"
                                                         >
-                                                            {subscription.remainingAmount} DH
-                                                        </span>
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                                {subscription.groupe?.toUpperCase()}
+                                                            </td>
 
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        {subscription.startDate}
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                                {subscription.title?.toUpperCase()}
+                                                            </td>
 
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        {subscription.endDate}
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                                {subscription.price} DH
+                                                            </td>
 
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        <span
-                                                            className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
-                                                                }`}
-                                                        >
-                                                            {subscription.resteJours} Jours
-                                                        </span>
-                                                    </td>
-
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        <span
-                                                            className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
-                                                                }`}
-                                                        >
-                                                            {subscription.resteJours > 0 ? "Non Expirée" : "Expirée"}
-                                                        </span>
-                                                    </td>
-
-                                                    {/* ACTIONS */}
-                                                    <td className="font-bold relative px-6 py-2 text-center whitespace-nowrap text-sm">
-                                                        <div className="flex items-center justify-center gap-3">
-                                                            <button onClick={(e) => handleEditSubscription(subscription.id)} className="text-blue-500 cursor-pointer hover:text-blue-700 transition">
-                                                                <Edit size={18} />
-                                                            </button>
-
-                                                            <button
-                                                                onClick={() => handleDeleteSubscription(subscription.id)}
-                                                                className="text-red-500 cursor-pointer hover:text-red-700 transition"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
-
-                                                            <button
-                                                                onClick={() =>
-                                                                    setOpenDownloadId(
-                                                                        openDownloadId === subscription.id ? null : subscription.id
-                                                                    )
-                                                                }
-                                                                className="text-green-500 cursor-pointer hover:text-green-700 transition"
-                                                            >
-                                                                <Download size={18} />
-                                                            </button>
-                                                        </div>
-
-                                                        {openDownloadId === subscription.id && (
-                                                            <div className="absolute bottom-3 mb-2 pt-3 -left-2 -translate-x-1/2 bg-white shadow-xl border rounded-lg p-2 mt-6 flex gap-3 z-50 animate-fadeIn">
-                                                                <button
-                                                                    onClick={() => setOpenDownloadId(null)}
-                                                                    className="absolute top-1 right-1 text-gray-500 hover:text-red-500 cursor-pointer"
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                <span
+                                                                    className={`font-bold ${Number(subscription.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
+                                                                        }`}
                                                                 >
-                                                                    <X />
-                                                                </button>
-                                                                <button onClick={() => DownloadContrat(subscription)} title="Contart" className="hover:bg-gray-100 cursor-pointer p-2 rounded">
-                                                                    <FileText size={16} /> Contrat
-                                                                </button>
+                                                                    {subscription.remainingAmount} DH
+                                                                </span>
+                                                            </td>
 
-                                                                <button onClick={() => DownloadFacture(subscription)} className="hover:bg-gray-100 cursor-pointer p-2 rounded">
-                                                                    <FileDown size={16} />Facture
-                                                                </button>
-                                                                <button onClick={() => DownloadRecuSubscription(subscription)} className="hover:bg-gray-100 cursor-pointer p-2 mr-5 rounded">
-                                                                    <FileIcon size={16} />Recu
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                {subscription.startDate}
+                                                            </td>
+
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                {subscription.endDate}
+                                                            </td>
+
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                <span
+                                                                    className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
+                                                                        }`}
+                                                                >
+                                                                    {subscription.resteJours} Jours
+                                                                </span>
+                                                            </td>
+
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                <span
+                                                                    className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
+                                                                        }`}
+                                                                >
+                                                                    {subscription.resteJours > 0 ? "Non Expirée" : "Expirée"}
+                                                                </span>
+                                                            </td>
+
+                                                            {/* ACTIONS */}
+                                                            <td className="font-bold relative px-6 py-2 text-center whitespace-nowrap text-sm">
+                                                                <div className="flex items-center justify-center gap-3">
+                                                                    <button onClick={(e) => handleEditSubscription(subscription.id)} className="text-blue-500 cursor-pointer hover:text-blue-700 transition">
+                                                                        <Edit size={18} />
+                                                                    </button>
+
+                                                                    <button
+                                                                        onClick={() => handleDeleteSubscription(subscription.id)}
+                                                                        className="text-red-500 cursor-pointer hover:text-red-700 transition"
+                                                                    >
+                                                                        <Trash2 size={18} />
+                                                                    </button>
+
+                                                                    <button
+                                                                        onClick={() =>
+                                                                            setOpenDownloadId(
+                                                                                openDownloadId === subscription.id ? null : subscription.id
+                                                                            )
+                                                                        }
+                                                                        className="text-green-500 cursor-pointer hover:text-green-700 transition"
+                                                                    >
+                                                                        <Download size={18} />
+                                                                    </button>
+                                                                </div>
+
+                                                                {openDownloadId === subscription.id && (
+                                                                    <div className="absolute bottom-3 mb-2 pt-3 -left-2 -translate-x-1/2 bg-white shadow-xl border rounded-lg p-2 mt-6 flex gap-3 z-50 animate-fadeIn">
+                                                                        <button
+                                                                            onClick={() => setOpenDownloadId(null)}
+                                                                            className="absolute top-1 right-1 text-gray-500 hover:text-red-500 cursor-pointer"
+                                                                        >
+                                                                            <X />
+                                                                        </button>
+                                                                        <button onClick={() => DownloadContrat(subscription)} title="Contart" className="hover:bg-gray-100 cursor-pointer p-2 rounded">
+                                                                            <FileText size={16} /> Contrat
+                                                                        </button>
+
+                                                                        <button onClick={() => DownloadFacture(subscription)} className="hover:bg-gray-100 cursor-pointer p-2 rounded">
+                                                                            <FileDown size={16} />Facture
+                                                                        </button>
+                                                                        <button onClick={() => DownloadRecuSubscription(subscription)} className="hover:bg-gray-100 cursor-pointer p-2 mr-5 rounded">
+                                                                            <FileIcon size={16} />Recu
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan={9} className="px-6 py-4 text-center text-gray-500 font-semibold">
+                                                            Aucune subscription disponible
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+                            ) : ("")
+                        }
+                        {
+                            adherent?.periodes && adherent.periodes.length > 0 ? (
+                                <section className="bg-gray-50 rounded-xl p-4  shadow">
+                                    <h2 className="text-xl font-bold text-red-600 mb-4">
+                                        Historique des periodes
+                                    </h2>
+                                    <div className="w-full overflow-x-auto">
+                                        <table className="min-w-full divide-y rounded-2xl   shadow-2xl rounded-2xl bg-white">
+                                            <thead className="bg-gradient-to-r from-red-700/10 to-red-600 sticky top-0">
+                                                <tr>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Prix
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Reste de paiement
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Durée
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Date debut
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Date fin
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Reste des jours
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Status
+                                                    </th>
+                                                    <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                                        Actions
+                                                    </th>
                                                 </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={9} className="px-6 py-4 text-center text-gray-500 font-semibold">
-                                                    Aucune subscription disponible
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-                    ) : ("")
-                }
-                {
-                    adherent?.periodes && adherent.periodes.length > 0 ? (
-                        <section className="bg-gray-50 rounded-xl p-4  shadow">
-                            <h2 className="text-xl font-bold text-red-600 mb-4">
-                                Historique des periodes
-                            </h2>
-                            <div className="w-full overflow-x-auto">
-                                <table className="min-w-full divide-y rounded-2xl   shadow-2xl rounded-2xl bg-white">
-                                    <thead className="bg-gradient-to-r from-red-700/10 to-red-600 sticky top-0">
-                                        <tr>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Prix
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Reste de paiement
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Durée
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Date debut
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Date fin
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Reste des jours
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Status
-                                            </th>
-                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
-                                                Actions
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody
-                                        className="divide-y divide-gray-200"
-                                    >
-                                        {adherent?.periodes && adherent.periodes.length > 0 ? (
-                                            adherent.periodes.map((periode) => (
-                                                <tr
-                                                    key={periode.id}
-                                                    className="hover:bg-red-50  transition-colors duration-200"
-                                                >
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
-                                                        {periode.price}
-                                                    </td>
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        <span
-                                                            className={`font-bold ${Number(periode.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
-                                                                }`}
+                                            </thead>
+                                            <tbody
+                                                className="divide-y divide-gray-200"
+                                            >
+                                                {adherent?.periodes && adherent.periodes.length > 0 ? (
+                                                    adherent.periodes.map((periode) => (
+                                                        <tr
+                                                            key={periode.id}
+                                                            className="hover:bg-red-50  transition-colors duration-200"
                                                         >
-                                                            {periode.remainingAmount} DH
-                                                        </span>
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                                {periode.price}
+                                                            </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                <span
+                                                                    className={`font-bold ${Number(periode.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
+                                                                        }`}
+                                                                >
+                                                                    {periode.remainingAmount} DH
+                                                                </span>
+                                                            </td>
 
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
-                                                        {periode.durationDays}
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                                {periode.durationDays}
+                                                            </td>
 
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
-                                                        {periode.startDate}
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                                {periode.startDate}
+                                                            </td>
 
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        {periode.endDate}
-                                                    </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                {periode.endDate}
+                                                            </td>
 
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        <span
-                                                            className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
-                                                                }`}
-                                                        >
-                                                            {periode.resteJours} Jours
-                                                        </span>
-                                                    </td>
-                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
-                                                        <span
-                                                            className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
-                                                                }`}
-                                                        >
-                                                            {periode.resteJours! > 0 ? "Non Expirée" : "Expirée"}
-                                                        </span>
-                                                    </td>
-                                                    <td className="font-bold relative px-6 py-2 text-center whitespace-nowrap text-sm">
-                                                        <div className="flex items-center justify-center gap-3">
-                                                            <button
-                                                                onClick={() => handleEditPeriode(Number(periode.id))}
-                                                                className="text-blue-500 cursor-pointer hover:text-blue-700 transition">
-                                                                <Edit size={18} />
-                                                            </button>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                <span
+                                                                    className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
+                                                                        }`}
+                                                                >
+                                                                    {periode.resteJours} Jours
+                                                                </span>
+                                                            </td>
+                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                                <span
+                                                                    className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
+                                                                        }`}
+                                                                >
+                                                                    {periode.resteJours! > 0 ? "Non Expirée" : "Expirée"}
+                                                                </span>
+                                                            </td>
+                                                            <td className="font-bold relative px-6 py-2 text-center whitespace-nowrap text-sm">
+                                                                <div className="flex items-center justify-center gap-3">
+                                                                    <button
+                                                                        onClick={() => handleEditPeriode(Number(periode.id))}
+                                                                        className="text-blue-500 cursor-pointer hover:text-blue-700 transition">
+                                                                        <Edit size={18} />
+                                                                    </button>
 
-                                                            <button
-                                                                onClick={() => handleDeletePeriode(Number(periode.id))}
-                                                                className="text-red-500 cursor-pointer hover:text-red-700 transition"
-                                                            >
-                                                                <Trash2 size={18} />
-                                                            </button>
+                                                                    <button
+                                                                        onClick={() => handleDeletePeriode(Number(periode.id))}
+                                                                        className="text-red-500 cursor-pointer hover:text-red-700 transition"
+                                                                    >
+                                                                        <Trash2 size={18} />
+                                                                    </button>
 
-                                                            <button
-                                                                onClick={() => DownloadRecuPeriode(Number(periode.id))}
-                                                                className="text-green-500 cursor-pointer hover:text-green-700 transition">
-                                                                <Download size={18} />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={9} className="px-6 py-4 text-center text-gray-500 font-semibold">
-                                                    Aucune periode disponible
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-                    ) : ("")
-                }
-                {
-                    adherent?.logs && adherent.logs.length > 0 ? (
-                        <section className="bg-gray-50 rounded-xl p-4 shadow">
-                            <LogsHistory logs={adherent?.logs ?? []} />
-                        </section>
-                    ) : ("")
-                }
-                {
-                    adherent?.transactions && adherent.transactions.length > 0 ? (
-                        <section className="bg-gray-50 rounded-xl p-4 shadow">
-                            <TransactionsHistory reload={() => loadAdherentInfos(Number(adherent.id))} transactions={adherent?.transactions ?? []} />
-                        </section>
-                    ) : ("")
-                }
-            </div>
+                                                                    <button
+                                                                        onClick={() => DownloadRecuPeriode(Number(periode.id))}
+                                                                        className="text-green-500 cursor-pointer hover:text-green-700 transition">
+                                                                        <Download size={18} />
+                                                                    </button>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan={9} className="px-6 py-4 text-center text-gray-500 font-semibold">
+                                                            Aucune periode disponible
+                                                        </td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </section>
+                            ) : ("")
+                        }
+                        {
+                            adherent?.logs && adherent.logs.length > 0 ? (
+                                <section className="bg-gray-50 rounded-xl p-4 shadow">
+                                    <LogsHistory logs={adherent?.logs ?? []} />
+                                </section>
+                            ) : ("")
+                        }
+                        {
+                            adherent?.transactions && adherent.transactions.length > 0 ? (
+                                <section className="bg-gray-50 rounded-xl p-4 shadow">
+                                    <TransactionsHistory reload={() => loadAdherentInfos(Number(adherent.id))} transactions={adherent?.transactions ?? []} />
+                                </section>
+                            ) : ("")
+                        }
+                    </div>
+                )
+            }
+
             {
                 isOpneModalDeleteAdherent && <DeleteAdherent loading={isDeleting} onConfirm={confirmDelete} onClose={() => setIsOpneModalDeleteAdherent(false)} />
             }

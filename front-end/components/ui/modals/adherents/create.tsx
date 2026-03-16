@@ -40,8 +40,8 @@ export default function Create({ onClose, Cancel }: props) {
 
     }
     return (
-        <>
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+        <div className="m-4">
+            <div className="fixed inset-0 z-50 p-2 flex items-center justify-center bg-black/70">
                 <div className="bg-white rounded-lg w-96 shadow-lg relative max-h-[97vh] flex flex-col">
                     {isSubmitting && (<Loader />)}
                     <h2 className="text-lg font-bold mb-4 px-4 pt-4 flex justify-between items-center">
@@ -146,6 +146,6 @@ export default function Create({ onClose, Cancel }: props) {
                 </div>
             </div>
 
-        </>
+        </div>
     )
 }
