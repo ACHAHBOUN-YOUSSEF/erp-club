@@ -57,6 +57,12 @@ class AdherentResource extends JsonResource
                 })
                 : [],
             "logs" => $this->logs ? $this->logs->map(function ($log) {
+                $executedByUser = null;
+                if ($log->user) {
+                    $role = $log->user->roles->first()?->name ?? 'ROLE INCONNU';
+
+                    $executedByUser = trim(strtoupper($role) . ' ' . ($log->user->firstName ?? '') . ' ' . ($log->user->lastName ?? ''));
+                }
                 return [
                     "id" => $log->id,
                     "action" => $log->action,
@@ -64,11 +70,7 @@ class AdherentResource extends JsonResource
                     "oldValue" => $log->oldValue,
                     "newValue" => $log->newValue,
                     "description" => $log->description,
-                    "executedByUser" => ($log->user->roles->first()?->name ? strtoupper($log->user->roles->first()->name) : 'ROLE INCONNU')
-                        . " "
-                        . ($log->user->firstName ?? '')
-                        . " "
-                        . ($log->user->lastName ?? ''),
+                    "executedByUser" => $executedByUser,
                     "created_at" => $log->created_at,
                     "updated_at" => $log->updated_at
                 ];
@@ -97,6 +99,11 @@ class AdherentResource extends JsonResource
                 ];
             }) : [],
             "transactions" => $this->transactions ? $this->transactions->map(function ($transaction) {
+                $executedByUser = null;
+                if ($transaction->user) {
+                    $role = $transaction->user->roles->first()?->name ?? 'ROLE INCONNU';
+                    $executedByUser = trim(strtoupper($role) . ' ' . ($transaction->user->firstName ?? '') . ' ' . ($transaction->user->lastName ?? ''));
+                }
                 return [
                     "id" => $transaction->id,
                     "type" => $transaction->type,
@@ -105,7 +112,7 @@ class AdherentResource extends JsonResource
                     "modePaiement" => $transaction->modePaiement,
                     "transactionDate" => $transaction->transactionDate,
                     "adherent" => $transaction->adherent->firstName . " " . $transaction->adherent->lastName,
-                    "executedByUser" => strtoupper($transaction->user->roles->first()->name) . " " . $transaction->user->firstName . " " . $transaction->user->lastName,
+                    "executedByUser" =>$executedByUser,
                     "created_at" => $transaction->created_at,
                     "updated_at" => $transaction->updated_at,
 
