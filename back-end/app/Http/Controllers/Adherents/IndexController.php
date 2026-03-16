@@ -144,7 +144,7 @@ class IndexController extends Controller
                 $adherent->setAttribute('resteJoursAssurance', 0);
             }
             $subscriptions = Subscription::with(['abonnement.groupe'])->where('adherentId', $adherent->id)->orderBy('StartDate', 'desc')->get();
-            $transactions = Transaction::with(["adherent", "user"])->where("targetAdherentId", "=", $adherent->id)->get();
+            $transactions = Transaction::with(["adherent", "user"])->where("targetAdherentId", "=", $adherent->id)->orderBy('created_at', 'desc')->get();
             $logs = AdherentLog::with("user")->where("targetAdherentId", $adherent->id)->orderBy("created_at", "desc")->get();
             $periodes = Periode::where("adherentId", $id)->get();
             $adherent->setAttribute('subscriptions', $subscriptions);
