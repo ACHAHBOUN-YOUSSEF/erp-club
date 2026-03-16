@@ -374,31 +374,31 @@ export default function AdherentFiche() {
                                 <table className="min-w-full divide-y rounded-2xl   shadow-2xl rounded-2xl bg-white">
                                     <thead className="bg-gradient-to-r from-red-700/10 to-red-600 sticky top-0">
                                         <tr>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Groupe
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Type
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Prix
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Reste de paiement
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Date debut
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Date fin
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Reste des jours
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Status
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Actions
                                             </th>
                                         </tr>
@@ -412,19 +412,19 @@ export default function AdherentFiche() {
                                                     key={subscription.id}
                                                     className="hover:bg-red-50  transition-colors duration-200"
                                                 >
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
                                                         {subscription.groupe?.toUpperCase()}
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
                                                         {subscription.title?.toUpperCase()}
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
                                                         {subscription.price} DH
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         <span
                                                             className={`font-bold ${Number(subscription.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
                                                                 }`}
@@ -433,15 +433,15 @@ export default function AdherentFiche() {
                                                         </span>
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         {subscription.startDate}
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         {subscription.endDate}
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         <span
                                                             className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
                                                                 }`}
@@ -450,7 +450,7 @@ export default function AdherentFiche() {
                                                         </span>
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         <span
                                                             className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
                                                                 }`}
@@ -531,28 +531,28 @@ export default function AdherentFiche() {
                                 <table className="min-w-full divide-y rounded-2xl   shadow-2xl rounded-2xl bg-white">
                                     <thead className="bg-gradient-to-r from-red-700/10 to-red-600 sticky top-0">
                                         <tr>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Prix
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Reste de paiement
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Durée
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Date debut
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Date fin
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Reste des jours
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Status
                                             </th>
-                                            <th className="py-2 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
+                                            <th className="py-1 text-center text-xs font-bold text-gray-900 uppercase tracking-wider">
                                                 Actions
                                             </th>
                                         </tr>
@@ -566,10 +566,10 @@ export default function AdherentFiche() {
                                                     key={periode.id}
                                                     className="hover:bg-red-50  transition-colors duration-200"
                                                 >
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
                                                         {periode.price}
                                                     </td>
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         <span
                                                             className={`font-bold ${Number(periode.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
                                                                 }`}
@@ -578,19 +578,19 @@ export default function AdherentFiche() {
                                                         </span>
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
                                                         {periode.durationDays}
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm text-gray-900">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
                                                         {periode.startDate}
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         {periode.endDate}
                                                     </td>
 
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         <span
                                                             className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
                                                                 }`}
@@ -598,7 +598,7 @@ export default function AdherentFiche() {
                                                             {periode.resteJours} Jours
                                                         </span>
                                                     </td>
-                                                    <td className="font-bold px-6 py-4 text-center whitespace-nowrap text-sm">
+                                                    <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
                                                         <span
                                                             className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
                                                                 }`}

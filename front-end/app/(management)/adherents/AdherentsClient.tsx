@@ -19,7 +19,7 @@ import Pagination from "@/components/ui/components/Pagination";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import EditAdherent from "@/components/ui/modals/adherents/edit";
 
-export default function AdherentsClient () {
+export default function AdherentsClient() {
     const [clubs, setClubs] = useState([])
     const [adherents, setAdherents] = useState<adherentType[]>()
     const [isBusy, setIsBusy] = useState(false)
@@ -137,7 +137,7 @@ export default function AdherentsClient () {
                 {isBusy && <Spinner />}
                 <div className="mt-3">
                     <div className="relative overflow-x-auto shadow rounded-lg border">
-                        <div className="p-2 flex flex-col sm:flex-row items-start sm:items-center justify-start gap-4">
+                        <div className="p-2 flex items-center justify-start gap-4">
                             {/* --- Dropdown --- */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -192,12 +192,12 @@ export default function AdherentsClient () {
                                     <table className="w-full">
                                         <thead className=" bg-gradient-to-r from-red-600 via-red-700 to-red-900 text-white">
                                             <tr>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
@@ -207,37 +207,42 @@ export default function AdherentsClient () {
                                                         key={adherent.id}
                                                         className="hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 transition-all duration-200 border-b border-gray-100"
                                                     >
-                                                        <td className="px-1 py-2 text-center whitespace-nowrap">
-                                                            <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                        <td className="px-1  text-center whitespace-nowrap">
+                                                            <span className="font-mono bg-gray-100 px-1 py-1 rounded-full text-sm font-semibold">
                                                                 {adherent.id}
                                                             </span>
                                                         </td>
-                                                        <td className="px-1 py-2 text-center whitespace-nowrap">
-                                                            <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                        <td className="px-1  text-center whitespace-nowrap">
+                                                            <span className="font-mono bg-gray-100 px-1 py-1 rounded-full text-sm font-semibold">
                                                                 {adherent.cin}
                                                             </span>
                                                         </td>
-                                                        <td className="px-1 py-2 text-center font-bold text-lg text-gray-900">
-                                                            {adherent.firstName} {adherent.lastName}
+                                                        <td className="px-1  text-center hover:underline hover:cursor-pointer text-sm text-gray-900">
+                                                            <Link
+                                                                href={`/adherents/${adherent.id}/fiche`}
+                                                                title="Fiche adhérent">
+                                                                {adherent.firstName} {adherent.lastName}
+
+                                                            </Link>
                                                         </td>
 
-                                                        <td className="px-1 py-2 text-center whitespace-nowrap">
-                                                            <span className="text-sm font-mono bg-blue-50 text-blue-800 px-3 py-1 rounded-full">
+                                                        <td className="px-1  text-center whitespace-nowrap">
+                                                            <span className="text-sm font-mono bg-blue-50 text-blue-800 px-1 py-1 rounded-full">
                                                                 {adherent.phonePrimary}
                                                             </span>
                                                         </td>
 
-                                                        <td className="px-1 py-2 text-center whitespace-nowrap">
+                                                        <td className="px-1  text-center whitespace-nowrap">
                                                             <span className="text-sm text-gray-600 font-medium">
                                                                 {adherent.registrationDate}
                                                             </span>
                                                         </td>
 
-                                                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                        <td className="px-6 py-2 whitespace-nowrap text-sm">
                                                             <div className="flex space-x-2 justify-center">
                                                                 <button
                                                                     onClick={() => { setisOpneModalNewSubscription(true); setAdherentId(adherent.id) }}
-                                                                    className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                    className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                     title="Nouvelle souscription"
                                                                 >
                                                                     <FilePlus size={20} />
@@ -245,14 +250,14 @@ export default function AdherentsClient () {
 
                                                                 <Link
                                                                     href={`/adherents/${adherent.id}/fiche`}
-                                                                    className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                    className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                     title="Fiche adhérent"
                                                                 >
                                                                     <UserCircle size={20} />
                                                                 </Link>
 
                                                                 <button
-                                                                    className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                    className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                     title="Modifier"
                                                                     onClick={() => handleEdit(Number(adherent.id))}
                                                                 >
@@ -261,7 +266,7 @@ export default function AdherentsClient () {
 
                                                                 <button
                                                                     onClick={() => handleDelete(Number(adherent.id))}
-                                                                    className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                    className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                     title="Supprimer"
                                                                 >
                                                                     <Trash2 size={20} />
@@ -272,7 +277,7 @@ export default function AdherentsClient () {
                                                 ))
                                             ) : (
                                                 <tr>
-                                                    <td colSpan={5} className="text-center py-6 text-gray-500 font-semibold">
+                                                    <td colSpan={6} className="text-center py-2 text-gray-500 font-semibold">
                                                         Aucun adhérent trouvé
                                                     </td>
                                                 </tr>
@@ -284,7 +289,7 @@ export default function AdherentsClient () {
                                 {/* ✅ PAGINATION DEHORS table */}
                                 {!isBusy && pagination.last_page > 1 && (
                                     <Suspense fallback={<div>Chargement pagination...</div>}>
-                                        <div className="mt-8 flex justify-center px-4">
+                                        <div className="mt-8 w-full flex justify-center px-4 overflow-x-auto">
                                             <Pagination
                                                 totalPages={pagination.last_page}
                                                 currentPage={pagination.current_page}

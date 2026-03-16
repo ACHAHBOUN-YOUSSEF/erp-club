@@ -306,7 +306,7 @@ class IndexController extends Controller
                         ->orWhere('firstName', 'like', "%$value%")
                         ->orWhere('lastName', 'like', "%$value%")
                         ->orWhere('phonePrimary', 'like', "%$value%");
-                })
+                })->orderBy('id', 'desc')
                 ->get();
             return ApiResponse::success($adherents, "Liste des aherents avec " . $value . " ", 200);
         } catch (Exception $e) {

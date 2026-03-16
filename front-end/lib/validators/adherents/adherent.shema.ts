@@ -85,7 +85,7 @@ export const adherentSchema = z.object({
     brancheId: z.coerce.number({ message: "Veuillez choisir un club" }).int().positive().optional(),
     id: z.number().optional(),
     club: z.object({ name: z.string().optional() }).optional(),
-    addedBy: z.string().optional(),
+    addedBy: z.string().optional().nullable(),
     subscriptions: z.array(subscriptionSchema).optional(),
     logs: z.array(SchemaLogs).optional().nullable(),
     transactions:z.array(SchemaTransaction).optional(),

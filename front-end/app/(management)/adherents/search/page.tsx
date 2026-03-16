@@ -25,7 +25,7 @@ export default function Abonnements() {
     const [adherentId, setAdherentId] = useState<number>()
     const [adherentToEdit, setAdherentToEdit] = useState<adherentType | null>(null)
     const [serachable, setSearchable] = useState<boolean>(false);
-    const [onSearch, setOnSearch] = useState(true)
+    const [onSearch, setOnSearch] = useState(false)
 
     const router = useRouter()
     const handleEdit = async (id: number) => {
@@ -174,12 +174,12 @@ export default function Abonnements() {
                                     <table className="w-full">
                                         <thead className=" bg-gradient-to-r from-red-600 via-red-700 to-red-900 text-white">
                                             <tr>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
-                                                <th className="px-2 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
+                                                <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody className="divide-y divide-gray-200">
@@ -197,37 +197,42 @@ export default function Abonnements() {
                                                             key={adherent.id}
                                                             className="hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 transition-all duration-200 border-b border-gray-100"
                                                         >
-                                                            <td className="px-1 py-2 text-center whitespace-nowrap">
+                                                            <td className="px-1 text-center whitespace-nowrap">
                                                                 <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
                                                                     {adherent.id}
                                                                 </span>
                                                             </td>
-                                                            <td className="px-1 py-2 text-center whitespace-nowrap">
+                                                            <td className="px-1 text-center whitespace-nowrap">
                                                                 <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
                                                                     {adherent.cin}
                                                                 </span>
                                                             </td>
-                                                            <td className="px-1 py-2 text-center font-bold text-lg text-gray-900">
-                                                                {adherent.firstName} {adherent.lastName}
+                                                            <td className="px-1 hover:underline hover:cursor-pointe text-center text-lg text-gray-900">
+                                                                <Link
+                                                                    href={`/adherents/${adherent.id}/fiche`}
+                                                                    title="Fiche adhérent">
+                                                                    {adherent.firstName} {adherent.lastName}
+
+                                                                </Link>
                                                             </td>
 
-                                                            <td className="px-1 py-2 text-center whitespace-nowrap">
+                                                            <td className="px-1 text-center whitespace-nowrap">
                                                                 <span className="text-sm font-mono bg-blue-50 text-blue-800 px-3 py-1 rounded-full">
                                                                     {adherent.phonePrimary}
                                                                 </span>
                                                             </td>
 
-                                                            <td className="px-1 py-2 text-center whitespace-nowrap">
+                                                            <td className="px-1 text-center whitespace-nowrap">
                                                                 <span className="text-sm text-gray-600 font-medium">
                                                                     {adherent.registrationDate}
                                                                 </span>
                                                             </td>
 
-                                                            <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                                            <td className="px-2 py-2 whitespace-nowrap text-sm">
                                                                 <div className="flex space-x-2 justify-center">
                                                                     <button
                                                                         onClick={() => { setisOpneModalNewSubscription(true); setAdherentId(adherent.id) }}
-                                                                        className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                        className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                         title="Nouvelle souscription"
                                                                     >
                                                                         <FilePlus size={20} />
@@ -235,14 +240,14 @@ export default function Abonnements() {
 
                                                                     <Link
                                                                         href={`/adherents/${adherent.id}/fiche`}
-                                                                        className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                        className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                         title="Fiche adhérent"
                                                                     >
                                                                         <UserCircle size={20} />
                                                                     </Link>
 
                                                                     <button
-                                                                        className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                        className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                         title="Modifier"
                                                                         onClick={() => handleEdit(Number(adherent.id))}
                                                                     >
@@ -251,7 +256,7 @@ export default function Abonnements() {
 
                                                                     <button
                                                                         onClick={() => { handleDelete(Number(adherent.id)); setAdherentId(adherent.id) }}
-                                                                        className="p-2.5 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                        className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                                                                         title="Supprimer"
                                                                     >
                                                                         <Trash2 size={20} />
@@ -262,7 +267,7 @@ export default function Abonnements() {
                                                     ))
                                                 ) : (
                                                     <tr>
-                                                        <td colSpan={5} className="text-center py-6 text-gray-500 font-semibold">
+                                                        <td colSpan={6} className="text-center py-2 text-gray-500 font-semibold">
                                                             Aucun adhérent trouvé
                                                         </td>
                                                     </tr>

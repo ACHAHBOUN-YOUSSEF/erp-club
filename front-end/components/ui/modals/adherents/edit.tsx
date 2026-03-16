@@ -12,7 +12,7 @@ type props = {
     adherent: adherentType;
 }
 export default function EditAdherent({ onClose, Cancel, adherent }: props) {
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset, } = useForm<adherentType>({ resolver: zodResolver(adherentSchema)as any, defaultValues: adherent })    
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset, } = useForm<adherentType>({ resolver: zodResolver(adherentSchema)as any, defaultValues: adherent })       
     const onSubmit = async (adherent: adherentType) => {
         try {
             const res = await ServiceAdherent.update(adherent.id!, adherent)

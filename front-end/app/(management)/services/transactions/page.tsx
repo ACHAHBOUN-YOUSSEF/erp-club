@@ -48,7 +48,6 @@ export default function Transactions() {
         setIsBusy(true)
         try {
             const res = await transactionService.getPeriodTransactionTotal(dateDebut, dateFin)
-            console.log(res);
             setTransactionsByPeriode(res.data.transactions)
             setInfosByPeriode(res.data.info)
         } catch (err: any) {
