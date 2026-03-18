@@ -23,6 +23,7 @@ class UserResource extends JsonResource
             "image_url"=>$this->imagePath,
             "created_at" => $this->created_at,
             "updated_at" => $this->updated_at,
+            'lastSeen' => $this->tokens()->latest('last_used_at')->first()?->last_used_at,
             "brancheId"=>$this->brancheId,
             "club" => $this->branche ? [
                 "id" => $this->branche->id,

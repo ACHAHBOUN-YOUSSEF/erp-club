@@ -1,5 +1,5 @@
 "use client";
-import { Plus, Trash2, Filter, FilePlus, Edit, UserCircle } from "lucide-react"
+import { Plus, Trash2, Filter, FilePlus, Edit, UserCircle, Download } from "lucide-react"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { clubsService } from "@/services/clubs.Service"
@@ -18,6 +18,8 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Pagination from "@/components/ui/components/Pagination";
 import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import EditAdherent from "@/components/ui/modals/adherents/edit";
+import { downloadBlob } from "@/helpers/helpers";
+import { FilesService } from "@/services/filesServices";
 
 export default function AdherentsClient() {
     const [clubs, setClubs] = useState([])
@@ -129,7 +131,19 @@ export default function AdherentsClient() {
         if (isBusy) return;
         loadAllAdherents()
     }, [currentPage, selectedClubId])
-
+    const DownloadAllUsersAsExcelFile = async () => {
+        setIsBusy(true);
+        try {
+            const response = await FilesService.DownloadAllUsersAsExcelFile();
+            let filename = `All_Adherents.xlsx`
+            downloadBlob(response.data, filename);
+            toast.success('Ficher téléchargé !');
+        } catch (err) {
+            toast.error('Probléme téléchargement');
+        } finally {
+            setIsBusy(false);
+        }
+    }
 
     return (
         <>
@@ -182,6 +196,13 @@ export default function AdherentsClient() {
                                     onClick={() => setIsOpneModalAddAdherent(true)}
                                 >
                                     <Plus />
+                                </button>
+                            </div>
+                            <div>
+                                <button className="cursor-pointer flex items-centery"
+                                    onClick={() => DownloadAllUsersAsExcelFile()}
+                                >
+                                    <Download />
                                 </button>
                             </div>
                         </div>

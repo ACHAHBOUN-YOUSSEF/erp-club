@@ -7,6 +7,8 @@ import { userService } from "@/services/usersService"
 import { toast } from "react-toastify"
 import { userType } from "@/lib/validators/users"
 import { Mail, Phone, MapPin, Calendar, User, Building2, Key } from "lucide-react"
+import { formatLastSeen } from "@/helpers/helpers"
+import { usePermission } from "@/hooks/usePermission"
 
 export default function Profile() {
     const params = useParams()
@@ -15,7 +17,7 @@ export default function Profile() {
     const [user, setUser] = useState<userType>()
     const [isBusy, setIsBusy] = useState(true)
     const [showPermissions, setShowPermissions] = useState(false)
-
+    const view_last_seen = usePermission('view_last_seen')
     const loadUserInfos = async (id: number) => {
         setIsBusy(true)
         try {
@@ -50,6 +52,7 @@ export default function Profile() {
                         {user.firstName} {user.lastName}
                     </h2>
                     <span className="text-sm text-gray-500">{user.role}</span>
+                    {view_last_seen && (<span className="text-sm text-gray-500">{<span className={user.lastSeen ? "text-green-500" : "text-gray-400"}>{formatLastSeen(user.lastSeen ?? null)}</span>}</span>)}
                 </div>
 
                 {/* INFOS */}

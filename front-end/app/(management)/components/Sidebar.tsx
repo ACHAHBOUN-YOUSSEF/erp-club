@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { Home, Users, Settings, Box, Search, Ticket, Receipt, Layers, Menu, ChevronsLeftRightIcon, Wrench, Cctv, Terminal, UserCheck } from "lucide-react";
+import { Home, Users, Settings, Box, Search, Ticket, Receipt, Layers, Menu, ChevronsLeftRightIcon, Wrench, Cctv, Terminal, UserCheck, Download } from "lucide-react";
 import { useState } from "react";
 import { usePermission } from "@/hooks/usePermission";
 type props = {
@@ -88,10 +88,10 @@ export default function Sidebar({ isOpen }: props) {
                                     Recherche
                                 </Link>
                                 {/* <Link
-                                    href="/#"
+                                    href="/adherents/export"
                                     className="px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold rounded-md transition"
                                 >
-                                    <Upload className="w-4 h-4 mr-2 text-black" />
+                                    <Download className="w-4 h-4 mr-2 text-black" />
                                     Export
                                 </Link> */}
                             </>

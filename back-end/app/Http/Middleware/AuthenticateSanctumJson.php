@@ -42,6 +42,7 @@ class AuthenticateSanctumJson
                 ['token' => ['Token invalide']]
             );
         }
+        $accessToken->forceFill(['last_used_at' => now()])->save();
         $request->setUserResolver(function () use ($accessToken) {
             return $accessToken->tokenable;
         });

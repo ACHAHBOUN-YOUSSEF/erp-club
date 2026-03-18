@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Adherents\Files;
 
+use App\Exports\Adherents\ExportAll;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Adherent;
@@ -12,6 +13,7 @@ use App\Models\Subscription;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpWord\TemplateProcessor;
 
 class FileController extends Controller
@@ -289,6 +291,14 @@ class FileController extends Controller
             return response()->download($outputPath)->deleteFileAfterSend(true);
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
             return ApiResponse::error('Erreur génération Word: ' . $e->getMessage(), 500);
+        } catch (\Exception $e) {
+            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
+        }
+    }
+    public function DownloadAllUsersAsExcelFile(Request $request)
+    {
+        try {
+            return Excel::download(new ExportAll(), 'All_Adherents.xlsx');
         } catch (\Exception $e) {
             return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
         }

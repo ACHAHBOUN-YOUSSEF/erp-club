@@ -14,6 +14,7 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VilleController;
 use App\Http\Middleware\AuthenticateSanctumJson;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
@@ -39,6 +40,7 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get("adherents/subscriptions/{subscriptionId}/factures", [FileController::class, "DownloadFacture"]);
     Route::get("adherents/subscriptions/{subscriptionId}/recus", [FileController::class, "DownloadRecuSubscription"]);
     Route::get("adherents/periodes/{periodeId}/recus", [FileController::class, "DownloadRecuPeriode"]);
+    Route::get("adherents/download/allAsExcel",[FileController::class,"DownloadAllUsersAsExcelFile"]);
     Route::post("adherents/search", [IndexController::class, "search"]);
     Route::get("transactions/days/{day}", [TransactionController::class, "getDailyTransactionTotal"]);
     Route::get("transactions/periode/{startDate}/{endDate}", [TransactionController::class, "getPeriodTransactionTotal"]);

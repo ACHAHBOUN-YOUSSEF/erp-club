@@ -18,3 +18,26 @@ export  function downloadBlob(blob: Blob, filename: string) {
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
 }
+
+export function formatLastSeen(lastSeen: string | null | undefined) {
+  if (!lastSeen) return ""; // ou ""
+  
+  const lastDate = new Date(lastSeen);
+  const now = new Date();
+
+  const diffMs = now.getTime() - lastDate.getTime();
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffH = Math.floor(diffMin / 60);
+  const diffD = Math.floor(diffH / 24);
+
+  if (diffSec < 60) {
+    return "Online";
+  } else if (diffMin < 60) {
+    return `${diffMin} min ago`;
+  } else if (diffH < 24) {
+    return `${diffH} h ago`;
+  } else {
+    return `${diffD} d ago`;
+  }
+}

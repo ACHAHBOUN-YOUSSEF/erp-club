@@ -20,5 +20,9 @@ export const FilesService = {
     async DownloadRecuSubscription(subscriptionId:number){
         const response = await http.get(`/api/adherents/subscriptions/${subscriptionId}/recus`, { responseType: "blob" })
         return response
+    },
+    async DownloadAllUsersAsExcelFile(){
+        const response=await http.get("/api/adherents/download/allAsExcel",{responseType:"blob"})
+        return response
     }
 };

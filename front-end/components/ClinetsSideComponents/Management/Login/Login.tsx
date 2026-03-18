@@ -159,7 +159,7 @@ export default function LoginPage() {
                     </form>
 
                     <div className="mt-6 text-center text-red-200 text-sm border-t border-red-400/30 pt-4">
-                        © {new Date().getFullYear()} <span className="font-semibold">ERP-STARGYM</span> — v2.0.2
+                        © {new Date().getFullYear()} <span className="font-semibold">ERP-STARGYM</span> — v2.1.3
                     </div>
                 </div>
 

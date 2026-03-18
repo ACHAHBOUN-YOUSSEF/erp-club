@@ -6,6 +6,7 @@ export const userSchema = z.object({
     cin: z.string().min(1, "Le cin est obligatoire"),
     firstName: z.string().min(1, "Le nom est obligatoire"),
     lastName: z.string().min(1, "Le prenom est obligatoire"),
+    lastSeen:z.string().optional().nullable(),
     imagePath: z.instanceof(File)
         .refine((file) => file.size <= MAX_FILE_SIZE, {
             message: "L'image ne doit pas dépasser 5MB",
