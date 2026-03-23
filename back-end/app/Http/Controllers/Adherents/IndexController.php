@@ -124,7 +124,7 @@ class IndexController extends Controller
     public function show(string $id)
     {
         try {
-            $adherent = Adherent::with(['branche.ville', 'addedBy'])->find($id);
+            $adherent = Adherent::with(['branche.ville', 'addedBy.roles'])->find($id);
             if (!$adherent) {
                 return ApiResponse::error("Adherent non trouvé", 404);
             }
@@ -151,7 +151,6 @@ class IndexController extends Controller
             $adherent->setAttribute('logs', $logs);
             $adherent->setAttribute('transactions', $transactions);
             $adherent->setAttribute('periodes', $periodes);
-
             return ApiResponse::success(new AdherentResource($adherent), "Détails des informations sur l'adherent");
         } catch (\Exception $e) {
             return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);

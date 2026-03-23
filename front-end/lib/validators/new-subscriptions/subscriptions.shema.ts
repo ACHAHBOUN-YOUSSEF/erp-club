@@ -7,9 +7,9 @@ export const newSubscriptionShema = z.object({
     montant: z.coerce.number().positive("Le montant doit être supérieur à 0").optional().or(z.literal("")),
     startDate: z.string().min(1, "La date de début est obligatoire").transform(val => new Date(val)),
     modePaiement: z.enum(["ESPECES", "VIREMENT", "CHEQUE"] as const).optional().or(z.literal("")),
+    noRemainingAmount :z.coerce.boolean().optional().nullable(),
 })
     .superRefine((data, ctx) => {
-        // ✅ Si montant > 0, modePaiement obligatoire
         if (data.montant && data.montant > 0 && !data.modePaiement) {
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,

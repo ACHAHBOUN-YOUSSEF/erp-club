@@ -6,19 +6,21 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubscriptionService } from "@/services/subscrptionService";
 import { SubscriptionSchema, SubscriptionType } from "@/lib/validators/subscriptions";
+import { useState } from "react";
 type props = {
     onClose: () => void;
-    Cancel:()=>void
+    Cancel: () => void
     adherentId: number;
     subscription: SubscriptionType
 }
-export default function EditSubscription({ onClose, adherentId, subscription,Cancel}: props) {
+export default function EditSubscription({ onClose, adherentId, subscription, Cancel }: props) {
     const { register, handleSubmit, watch, formState: { errors, isSubmitting }, reset } = useForm<SubscriptionType>({ resolver: zodResolver(SubscriptionSchema) as any, defaultValues: subscription })
     const remainingAmountValue = watch("remainingAmount");
+    const [noRemainingAmount, setNoRemainingAmount] = useState<boolean>(true)
     const onSubmit: SubmitHandler<SubscriptionType> = async (subscription: SubscriptionType) => {
-        try {            
-            const res = await SubscriptionService.update(subscription,Number(subscription.id))
-            toast.success(res.message)                        
+        try {
+            const res = await SubscriptionService.update(subscription, Number(subscription.id))
+            toast.success(res.message)
             reset()
             onClose()
         } catch (err: any) {
@@ -82,12 +84,33 @@ export default function EditSubscription({ onClose, adherentId, subscription,Can
 
                                 </div>
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-black">Nouveau Reste de paiement (<span className="text-red-600 text-sm mt-2">R.A : {remainingAmountValue || 0} DH</span>)</label>
-                                    <input type="number" {...register('NewRemainingAmount')}
-                                        placeholder="Reste de paiement..."
-                                        className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5" />
-                                    {errors.NewRemainingAmount && (<p className="text-red-500 text-sm mt-1">{errors.NewRemainingAmount.message}</p>)}
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            {...register("noRemainingAmount")}
+                                            onChange={(e) => {
+                                                const checked = e.target.checked;
+                                                setNoRemainingAmount(!checked);
+                                            }}
+                                            className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                                        />
+                                        <span className="text-sm text-gray-700">
+                                            Aucun montant restant
+                                        </span>
+                                    </div>
                                 </div>
+                                {
+                                    noRemainingAmount && (
+                                        <div>
+                                            <label className="block mb-2 text-sm font-medium text-black">Nouveau Reste de paiement (<span className="text-red-600 text-sm mt-2">R.A : {remainingAmountValue || 0} DH</span>)</label>
+                                            <input type="number" {...register('NewRemainingAmount')}
+                                                placeholder="Reste de paiement..."
+                                                className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5" />
+                                            {errors.NewRemainingAmount && (<p className="text-red-500 text-sm mt-1">{errors.NewRemainingAmount.message}</p>)}
+                                        </div>
+                                    )
+                                }
+
                                 <div className="containers-assurance">
                                     <label className="block mb-2 text-sm font-medium text-black">Mode de paiement</label>
                                     <select {...register('modePaiement')} className="focus:bg-red-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5 pr-10">

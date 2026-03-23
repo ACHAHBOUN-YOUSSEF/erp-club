@@ -10,10 +10,10 @@ class AdherentResource extends JsonResource
     public function toArray(Request $request): array
     {
         $addedByUser = null;
-        if ($request->user) {
-            $role = $request->roles->first()?->name ?? 'ROLE INCONNU';
+        if ($this->addedBy) {
+            $role = $this->addedBy->roles->first()?->name ?? 'ROLE INCONNU';
 
-            $addedByUser = trim(strtoupper($role) . ' ' . ($request->user->firstName ?? '') . ' ' . ($request->user->lastName ?? ''));
+            $addedByUser = trim(strtoupper($role) . ' ' . ($this->addedBy->firstName ?? '') . ' ' . ($this->addedBy->lastName ?? ''));
         }
         return [
             "id" => $this->id,

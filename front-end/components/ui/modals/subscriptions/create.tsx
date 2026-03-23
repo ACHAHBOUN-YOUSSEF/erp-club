@@ -1,7 +1,7 @@
 "use client"
 import { X } from "lucide-react";
 import { clubType } from "@/lib/validators/clubs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { GroupeAbonnementType } from "@/lib/validators/groupeAbonnements";
 import { groupeAbonnementsService } from "@/services/groupeAbonnementsService";
 import { toast } from "react-toastify";
@@ -14,11 +14,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubscriptionService } from "@/services/subscrptionService";
 type props = {
     onClose: () => void;
-    Cancel:()=>void;
+    Cancel: () => void;
     clubs: clubType[];
-    adherentId: number  
+    adherentId: number
 }
-export default function NewSubscription({ onClose, clubs, adherentId ,Cancel}: props) {
+export default function NewSubscription({ onClose, clubs, adherentId, Cancel }: props) {
     const [isBusy, setIsBusy] = useState(false)
     const [groupes, setGroupes] = useState<GroupeAbonnementType[] | null>(null)
     const [abonnements, setAbonnements] = useState<AbonnementType[] | null>(null)
@@ -26,16 +26,16 @@ export default function NewSubscription({ onClose, clubs, adherentId ,Cancel}: p
     const [selectedGroupe, setSelectedGroupe] = useState<number | null>(null);
     const [selectedAbonnement, setSelectedAbonnement] = useState<number | null>(null);
     const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
-
-    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<newSubscriptionType>({ resolver: zodResolver(newSubscriptionShema)as any})
+    const [noRemainingAmount, setNoRemainingAmount] = useState<boolean>(true)
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<newSubscriptionType>({ resolver: zodResolver(newSubscriptionShema) as any })
 
     const onSubmit: SubmitHandler<newSubscriptionType> = async (subscription: newSubscriptionType) => {
-        try {            
-            const res = await SubscriptionService.create(subscription)            
-            toast.success(res.message)                        
+        try {
+            const res = await SubscriptionService.create(subscription)
+            toast.success(res.message)
             reset()
             onClose()
-        } catch (err: any) {            
+        } catch (err: any) {
             if (err.response?.status === 422) {
                 const backendErrors = err.response.data.errors;
                 if (backendErrors) {
@@ -209,12 +209,32 @@ export default function NewSubscription({ onClose, clubs, adherentId ,Cancel}: p
 
                                 </div>
                                 <div>
-                                    <label className="block mb-2 text-sm font-medium text-black">Reste de paiement</label>
-                                    <input type="text" {...register('remainingAmount')}
-                                        placeholder="Reste de paiement..."
-                                        className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5" />
-                                    {errors.remainingAmount && (<p className="text-red-500 text-sm mt-1">{errors.remainingAmount.message}</p>)}
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            {...register("noRemainingAmount")}
+                                            onChange={(e) => {
+                                                const checked = e.target.checked;
+                                                setNoRemainingAmount(!checked);
+                                            }}
+                                            className="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500"
+                                        />
+                                        <span className="text-sm text-gray-700">
+                                            Aucun montant restant
+                                        </span>
+                                    </div>
                                 </div>
+                                {
+                                    noRemainingAmount && (
+                                        <div>
+                                            <label className="block mb-2 text-sm font-medium text-black">Reste de paiement</label>
+                                            <input type="number" {...register('remainingAmount')}
+                                                placeholder="Reste de paiement..."
+                                                className=" border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5" />
+                                            {errors.remainingAmount && (<p className="text-red-500 text-sm mt-1">{errors.remainingAmount.message}</p>)}
+                                        </div>
+                                    )
+                                }
                                 <div className="containers-assurance">
                                     <label className="block mb-2 text-sm font-medium text-black">Mode de paiement</label>
                                     <select {...register('modePaiement')} className="focus:bg-red-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5 pr-10">
@@ -234,7 +254,7 @@ export default function NewSubscription({ onClose, clubs, adherentId ,Cancel}: p
                                         tabIndex={-1}
                                     />
                                 </div>
-                                    {errors.adherentId && (<p className="text-red-500 text-sm mt-1">{errors.adherentId.message}</p>)}
+                                {errors.adherentId && (<p className="text-red-500 text-sm mt-1">{errors.adherentId.message}</p>)}
 
                             </div>
                         </div>

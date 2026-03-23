@@ -19,7 +19,7 @@ export const SubscriptionSchema = z.object({
     },
         z.number("Le montant restant ne peut pas être négatif ou des lettre").min(0, "Le montant restant ne peut pas être négatif").optional()
     ),
-
+    noRemainingAmount :z.coerce.boolean().optional().nullable(),
     montant: z.coerce
         .number()
         .positive("Le montant doit être supérieur à 0")

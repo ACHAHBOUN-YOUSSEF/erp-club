@@ -11,7 +11,6 @@ use App\Models\AdherentLog;
 use App\Models\Subscription;
 use App\Models\Transaction;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -82,16 +81,12 @@ class SubscriptionsController extends Controller
                 DB::beginTransaction();
                 $abonnement = Abonnement::findOrFail($validated['abonnementId']);
                 $adherent = Adherent::findOrFail($validated['adherentId']);
-
-                $startDate = $validated['startDate']
-                    ? \Carbon\Carbon::parse($validated['startDate'])
-                    : now();
-
+                $startDate = $validated['startDate'] ? \Carbon\Carbon::parse($validated['startDate']) : now();
                 $subscriptionData = [
                     "startDate" => $startDate->format('Y-m-d'),
                     "endDate" => $startDate->copy()->addMonths($abonnement->durationMonths)->format('Y-m-d'),
-                    "remainingAmount" => $validated['remainingAmount'] ?? 0,
                     "paymentDate" => $validated['paymentDate'] ?? now()->format('Y-m-d'),
+                    "remainingAmount" => $request->noRemainingAmount ? 0 : ($validated['remainingAmount'] ?? 0),
                 ];
                 $adherent->abonnements()->attach($abonnement->id, $subscriptionData);
                 $subscription = Subscription::where('adherentId', $adherent->id)
@@ -123,7 +118,6 @@ class SubscriptionsController extends Controller
                     }
                 }
                 DB::commit();
-
                 return ApiResponse::success(
                     new SubscriptionResource($subscription),
                     "Abonnement ajouté avec succès"
@@ -205,11 +199,14 @@ class SubscriptionsController extends Controller
             /* 1️⃣ On remplit les champs */
             $subscription->startDate = $request->startDate;
             $subscription->endDate = $request->endDate;
-
-            if ($request->filled('NewRemainingAmount')) {
-                $newReste = (float) $request->NewRemainingAmount;
-                if ($newReste >= 0) {
-                    $subscription->remainingAmount = $newReste;
+            if ($request->noRemainingAmount) {
+                $subscription->remainingAmount = 0;
+            } else {
+                if ($request->filled('NewRemainingAmount')) {
+                    $newReste = (float) $request->NewRemainingAmount;
+                    if ($newReste >= 0) {
+                        $subscription->remainingAmount = $newReste;
+                    }
                 }
             }
 
