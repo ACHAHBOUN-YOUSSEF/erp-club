@@ -88,7 +88,7 @@ export default function Transactions() {
                                                 }`}
                                         >
                                             <Calendar className="w-4 h-4 flex-shrink-0" />
-                                            <span className="whitespace-nowrap">Date Unique</span>
+                                            <span className="whitespace-nowrap cursor-pointer">Date Unique</span>
                                         </button>
                                         <button
                                             onClick={() => setActiveForm(activeForm === 'periode' ? null : 'periode')}
@@ -98,7 +98,7 @@ export default function Transactions() {
                                                 }`}
                                         >
                                             <Calendar className="w-4 h-4 flex-shrink-0" />
-                                            <span className="whitespace-nowrap">Période</span>
+                                            <span className="whitespace-nowrap cursor-pointer">Période</span>
                                         </button>
                                     </div>
 
@@ -139,9 +139,11 @@ export default function Transactions() {
                                                     Calculer
                                                 </button>
                                                 <button
+
                                                     onClick={() => {
                                                         setDateDebut('');
                                                         setDateFin('');
+                                                        setTransactionsByPeriode([]);
                                                     }}
                                                     className="px-6 sm:px-8 py-3 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
                                                 >

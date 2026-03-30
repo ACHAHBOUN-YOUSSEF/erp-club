@@ -19,6 +19,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware(AuthenticateSanctumJson::class)->group(function () {
+    Route::fallback(function () {
+        return response()->json([
+            "success" => false,
+            "message" => "API Route not found"
+        ], 404);
+    });
     Route::apiResource('villes', VilleController::class);
     Route::apiResource('clubs', BrancheController::class);
     Route::get("clubs/villes/{villeId}", [BrancheController::class, "getClubsByVilleId"]);
@@ -40,11 +46,11 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get("adherents/subscriptions/{subscriptionId}/factures", [FileController::class, "DownloadFacture"]);
     Route::get("adherents/subscriptions/{subscriptionId}/recus", [FileController::class, "DownloadRecuSubscription"]);
     Route::get("adherents/periodes/{periodeId}/recus", [FileController::class, "DownloadRecuPeriode"]);
-    Route::get("adherents/download/allAsExcel",[FileController::class,"DownloadAllUsersAsExcelFile"]);
+    Route::get("adherents/download/allAsExcel", [FileController::class, "DownloadAllUsersAsExcelFile"]);
     Route::post("adherents/search", [IndexController::class, "search"]);
     Route::get("transactions/days/{day}", [TransactionController::class, "getDailyTransactionTotal"]);
     Route::get("transactions/periode/{startDate}/{endDate}", [TransactionController::class, "getPeriodTransactionTotal"]);
     Route::get("dashboard", [DashBoardController::class, "getStatistique"]);
     Route::apiResource("periodes", PeriodeController::class);
+    Route::get('roles-permissions', [RolePermissionController::class, 'index']);
 });
-Route::get('roles-permissions', [RolePermissionController::class, 'index']);

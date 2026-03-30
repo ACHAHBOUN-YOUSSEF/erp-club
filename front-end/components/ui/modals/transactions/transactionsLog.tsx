@@ -127,7 +127,7 @@ export default function TransactionsHistory({ transactions, reload }: props) {
                         {/* Bouton fermeture */}
                         <button
                             onClick={() => setOpen(false)}
-                            className="absolute top-3 right-4 text-gray-500 hover:text-red-700"
+                            className="absolute top-3 right-4 cursor-pointer text-gray-500 hover:text-red-700"
                         >
                             <X size={24} />
                         </button>

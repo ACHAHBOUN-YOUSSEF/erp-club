@@ -11,7 +11,6 @@ import EditSubscription from "@/components/ui/modals/subscriptions/edit";
 import TransactionsHistory from "@/components/ui/modals/transactions/transactionsLog";
 import Spinner from "@/components/ui/spinner";
 import { downloadBlob } from "@/helpers/helpers";
-import { usePermission } from "@/hooks/usePermission";
 import { adherentType } from "@/lib/validators/adherents";
 import { PeriodeType } from "@/lib/validators/periodes";
 import { SubscriptionType } from "@/lib/validators/subscriptions";
@@ -57,6 +56,9 @@ export default function AdherentFiche() {
     const handleDeleteSubscription = (id: number) => {
         setSubscriptionId(id)
         setIsOpneModalDeletesubscription(true)
+    }
+    const copy = (value: any, message: any) => {
+        navigator.clipboard.writeText(String(value)).then(() => toast.success(message, { position: "bottom-center" }))
     }
     const handleDeletePeriode = (id: number) => {
         setPeriodeId(id)
@@ -310,15 +312,15 @@ export default function AdherentFiche() {
                             <div className="grid md:grid-cols-2 gap-4 text-sm">
                                 <div className="flex items-center">
                                     <Info label="ID" value={adherent?.id} />
-                                    <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.id)).then(() => toast.success("Id copiée", { position: "bottom-center" }))} />
+                                    <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => copy(String(adherent.id), "Id copiée")} />
                                 </div>
                                 <div className="flex items-center" >
                                     <Info label="CIN" value={adherent?.cin?.toLocaleUpperCase()} />
-                                    {adherent?.cin && (<Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.cin?.toLocaleUpperCase() ? adherent?.cin?.toLocaleUpperCase() : "")).then(() => toast.success("Cin copiée", { position: "bottom-center" }))} />)}
+                                    {adherent?.cin && (<Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => copy(String(adherent.cin), "Cin copiée")} />)}
                                 </div>
                                 <div className="flex items-center" >
                                     <Info label="Nom & Prénom" value={`${adherent?.firstName.toLocaleUpperCase()} ${adherent?.lastName.toLocaleUpperCase()}`} />
-                                    <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => navigator.clipboard.writeText(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase())).then(() => toast.success("Nom Complet copiée", { position: "bottom-center" }))} />
+                                    <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => copy(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase()), "Nom Complet copiée")} />
                                 </div>
                                 <Info label="Branche" value={adherent?.club?.name} />
                                 <Info label="Téléphone" value={adherent?.phonePrimary} />
@@ -339,7 +341,9 @@ export default function AdherentFiche() {
                                     }
                                 />
                                 <Info label="Reste jours" value={`${adherent?.resteJoursAssurance} jours`} />
-                                <Info label="Ajoutè par " value={`${adherent?.addedBy?.toLocaleUpperCase()}`} />
+                                {
+                                    adherent.addedBy && (<Info label="Ajoutè par " value={`${adherent?.addedBy?.toLocaleUpperCase()}`} />)
+                                }
                             </div>
                         </section>
                         <div>
@@ -462,7 +466,8 @@ export default function AdherentFiche() {
                                                             </td>
 
                                                             {/* ACTIONS */}
-                                                            <td className="font-bold relative px-6 py-2 text-center whitespace-nowrap text-sm">
+                                                            {/* <td className="font-bold relative px-6 py-4 pt-10  text-center whitespace-nowrap text-sm"> */}
+                                                            <td className="font-bold relative px-6 py-4 text-center whitespace-nowrap text-sm">
                                                                 <div className="flex items-center justify-center gap-3">
                                                                     <button onClick={(e) => handleEditSubscription(subscription.id)} className="text-blue-500 cursor-pointer hover:text-blue-700 transition">
                                                                         <Edit size={18} />
