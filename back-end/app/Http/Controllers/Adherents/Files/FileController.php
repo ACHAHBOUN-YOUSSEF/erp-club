@@ -308,7 +308,7 @@ class FileController extends Controller
     public function DownloadUsersByFilters(Request $request)
     {
         try {
-            $query = DB::table("adherents")->select("id", "cin", "firstName", "lastName", "phonePrimary", "registrationDate", "gender");
+            $query = DB::table("adherents")->select("id", "cin", "firstName", "lastName", "phonePrimary", "registrationDate", "gender")->orderBy("created_at","desc");
             if ($request->gender != "all") {
                 $query->where("gender", "=", $request->gender);
             }
