@@ -87,13 +87,13 @@ export default function Sidebar({ isOpen }: props) {
                                     <Search className="w-4 h-4 mr-2 text-black" />
                                     Recherche
                                 </Link>
-                                {/* <Link
+                                <Link
                                     href="/adherents/export"
                                     className="px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold rounded-md transition"
                                 >
                                     <Download className="w-4 h-4 mr-2 text-black" />
                                     Export
-                                </Link> */}
+                                </Link>
                             </>
                         )
                     }

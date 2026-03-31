@@ -24,5 +24,9 @@ export const FilesService = {
     async DownloadAllUsersAsExcelFile(){
         const response=await http.get("/api/adherents/download/allAsExcel",{responseType:"blob"})
         return response
+    },
+    async DownloadUsersByFilters(filters:any){
+        const res=await http.post("/api/adherents/download/filters",filters,{responseType:"blob"})
+        return res
     }
 };

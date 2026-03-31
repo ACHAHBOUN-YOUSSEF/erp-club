@@ -53,4 +53,5 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get("dashboard", [DashBoardController::class, "getStatistique"]);
     Route::apiResource("periodes", PeriodeController::class);
     Route::get('roles-permissions', [RolePermissionController::class, 'index']);
+    Route::post("adherents/download/filters",[FileController::class,"DownloadUsersByFilters"]);
 });

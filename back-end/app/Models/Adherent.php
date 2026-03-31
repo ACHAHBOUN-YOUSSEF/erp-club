@@ -18,10 +18,10 @@ class Adherent extends Model
     {
         return $this->belongsTo(User::class, "addedByUserId");
     }
-    public function abonnements() {
-        return $this->belongsToMany(Abonnement::class,"subscriptions","adherentId","abonnementId")
+    public function abonnements()
+    {
+        return $this->belongsToMany(Abonnement::class, "subscriptions", "adherentId", "abonnementId")
             ->withPivot("startDate", "endDate", "remainingAmount", "paymentDate")
-        ->withTimestamps();
+            ->withTimestamps();
     }
-    
 }

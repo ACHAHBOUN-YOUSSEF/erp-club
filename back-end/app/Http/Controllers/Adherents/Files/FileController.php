@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Adherents\Files;
 
 use App\Exports\Adherents\ExportAll;
+use App\Exports\Adherents\ExportByFilters;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Adherent;
@@ -11,6 +12,7 @@ use App\Models\Facture;
 use App\Models\Periode;
 use App\Models\Subscription;
 use App\Models\Transaction;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -302,5 +304,30 @@ class FileController extends Controller
         } catch (\Exception $e) {
             return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
         }
+    }
+    public function DownloadUsersByFilters(Request $request)
+    {
+        try {
+            $query = DB::table("adherents")->select("id", "cin", "firstName", "lastName", "phonePrimary", "registrationDate", "gender");
+            if ($request->gender != "all") {
+                $query->where("gender", "=", $request->gender);
+            }
+            if ($request->dateType != "none") {
+
+                if ($request->dateType == "specific") {
+                    $query->whereDate("registrationDate", $request->specificDate);
+                } else if ($request->dateType == "period") {
+                    $query->whereBetween("registrationDate", [
+                        $request->dateFrom,
+                        $request->dateTo
+                    ]);
+                }
+            }
+            $adherents = $query->get();
+            return Excel::download(new ExportByFilters($adherents), "adherents.xlsx");
+        } catch (Exception $e) {
+            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
+        }
+        // return response()->json($request->dateType);
     }
 }

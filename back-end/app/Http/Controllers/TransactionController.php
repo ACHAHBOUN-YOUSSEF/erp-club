@@ -173,7 +173,7 @@ class TransactionController extends Controller
                 ->leftJoin("users", "transactions.executedByUserId", "=", "users.id")
                 ->where('transactions.brancheId', $request->user()->brancheId)
                 ->where('transactions.type', 'income')
-                ->whereDate('transactions.transactionDate', $parsedDate); // ✅ table.point
+                ->whereDate('transactions.transactionDate', $parsedDate);
 
             $transactions = $query->get();
 
