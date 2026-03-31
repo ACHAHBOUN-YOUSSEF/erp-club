@@ -302,7 +302,7 @@ export default function AdherentFiche() {
                     <div className="w-full mx-auto bg-white shadow-2xl rounded-2xl p-3 space-y-8" ref={dropdownRef}>
                         <div className="border-b pb-2">
                             <h1 className="text-3xl font-bold text-red-700">
-                                Fiche Adhérent <span className="text-black underline">{adherent?.firstName + " " + adherent?.lastName}</span>
+                                Fiche Adhérent <span className="text-black underline">{adherent?.firstName.toUpperCase() + " " + adherent?.lastName.toLowerCase()}</span>
                             </h1>
                         </div>
                         <section className="bg-gray-50 rounded-xl p-2 shadow">

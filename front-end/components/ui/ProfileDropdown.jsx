@@ -48,7 +48,7 @@ export default function ProfileDropdown({ expiresAt, user, loading = false }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <div className="cursor-pointer p-0.5 rounded-full bg-green-500 hover:bg-green-700 transition-all duration-200">
+        <div className="cursor-pointer p-0.5 rounded-full bg-red-500 hover:bg-red-700 transition-all duration-200">
           {isBusy && (<Spinner />)}
           {user?.imagePath ? (
             <img

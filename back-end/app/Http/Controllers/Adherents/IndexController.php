@@ -205,7 +205,9 @@ class IndexController extends Controller
 
             // Récupérer l'état original avant modification
             $original = $adherent->getOriginal();
-
+            $validated['cin'] = isset($validated['cin']) ? strtoupper($validated['cin']) : null;
+            $validated['firstName'] = strtoupper($validated['firstName']);
+            $validated['lastName'] = strtoupper($validated['lastName']);
             // Appliquer les changements
             $adherent->fill($validated);
 

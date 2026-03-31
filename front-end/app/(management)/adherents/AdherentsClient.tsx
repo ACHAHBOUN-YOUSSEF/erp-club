@@ -235,14 +235,14 @@ export default function AdherentsClient() {
                                                         </td>
                                                         <td className="px-1  text-center whitespace-nowrap">
                                                             <span className="font-mono bg-gray-100 px-1 py-1 rounded-full text-sm font-semibold">
-                                                                {adherent.cin?adherent.cin:'--'}
+                                                                {adherent.cin?adherent.cin.toUpperCase():'--'}
                                                             </span>
                                                         </td>
                                                         <td className="px-1  text-center hover:underline hover:cursor-pointer text-sm text-gray-900">
                                                             <Link
                                                                 href={`/adherents/${adherent.id}/fiche`}
                                                                 title="Fiche adhérent">
-                                                                {adherent.firstName} {adherent.lastName}
+                                                                {adherent.firstName.toUpperCase()} {adherent.lastName.toUpperCase()}
 
                                                             </Link>
                                                         </td>

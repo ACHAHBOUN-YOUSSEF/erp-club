@@ -4,7 +4,7 @@ import ProfileDropdown from "../../../components/ui/ProfileDropdown";
 import { AuthService } from "@/services/authService";
 import { useDispatch } from "react-redux";
 import { setPermissions } from "@/store/permissionsSlice";
-import { Menu, X } from "lucide-react";
+import { Menu, PowerOff, X } from "lucide-react";
 type props = {
   openSideBar: (value: boolean) => void
 }
@@ -59,7 +59,6 @@ export default function Header({ openSideBar }: props) {
             />
           )}
         </h1>
-
         <div className="flex items-center">
           <ProfileDropdown expiresAt={expiresAt} user={user} loading={loading} />
         </div>

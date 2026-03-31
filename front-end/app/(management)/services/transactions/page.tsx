@@ -82,23 +82,23 @@ export default function Transactions() {
                                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 justify-center">
                                         <button
                                             onClick={() => setActiveForm(activeForm === 'date' ? null : 'date')}
-                                            className={`px-4 sm:px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 w-full sm:w-auto ${activeForm === 'date'
+                                            className={`cursor-pointer px-4 sm:px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 w-full sm:w-auto ${activeForm === 'date'
                                                 ? 'bg-red-600 text-white shadow-lg text-sm sm:text-base'
                                                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-sm'
                                                 }`}
                                         >
                                             <Calendar className="w-4 h-4 flex-shrink-0" />
-                                            <span className="whitespace-nowrap cursor-pointer">Date Unique</span>
+                                            <span className="whitespace-nowrap">Date Unique</span>
                                         </button>
                                         <button
                                             onClick={() => setActiveForm(activeForm === 'periode' ? null : 'periode')}
-                                            className={`px-4 sm:px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 w-full sm:w-auto ${activeForm === 'periode'
+                                            className={`cursor-pointer px-4 sm:px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 w-full sm:w-auto ${activeForm === 'periode'
                                                 ? 'bg-red-600 text-white shadow-lg text-sm sm:text-base'
                                                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-sm'
                                                 }`}
                                         >
                                             <Calendar className="w-4 h-4 flex-shrink-0" />
-                                            <span className="whitespace-nowrap cursor-pointer">Période</span>
+                                            <span className="whitespace-nowrap">Période</span>
                                         </button>
                                     </div>
 
@@ -212,7 +212,7 @@ export default function Transactions() {
                 </div>
             </div>
 
-            {isOpneModalCreateTransaction && <Create onClose={()=>setIsOpneModalCreateTransaction(false)} Cancel={() => setIsOpneModalCreateTransaction(false)} />}
+            {isOpneModalCreateTransaction && <Create onClose={() => setIsOpneModalCreateTransaction(false)} Cancel={() => setIsOpneModalCreateTransaction(false)} />}
         </>
     )
 }
