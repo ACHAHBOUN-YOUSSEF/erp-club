@@ -1,4 +1,5 @@
 import { TransactionType } from "@/lib/validators/transactions";
+import Link from "next/link";
 
 type Props = {
     transactions: TransactionType[];
@@ -65,12 +66,12 @@ export const TransactionCards = ({ transactions, info }: Props) => {
                             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-3 sm:mb-2 gap-2 sm:gap-0">
                                 <div className="w-full sm:w-auto">
                                     <p className="text-xs sm:text-sm text-gray-600 mb-1">{formattedDate}</p>
-                                    <a
+                                    <Link
                                         href={`/adherents/${(transaction as any).targetAdherentId}/fiche`}
                                         className="font-semibold text-black hover:text-red-700 hover:underline transition-colors text-sm sm:text-base block truncate"
                                     >
                                         {(transaction as any).firstName || 'N/A'} {(transaction as any).lastName || ''}
-                                    </a>
+                                    </Link>
                                 </div>
                                 <span className="text-base sm:text-lg font-bold text-red-700 text-center sm:text-right">
                                     {parseFloat(transaction.montant || '0').toLocaleString()} DH
@@ -79,9 +80,9 @@ export const TransactionCards = ({ transactions, info }: Props) => {
 
                             <div className="text-gray-700 text-xs sm:text-sm space-y-1.5">
                                 <p className="truncate" title={transaction.description}><strong>Description :</strong> {transaction.description || 'N/A'}</p>
-                                <p><strong>Date :</strong> {formattedDate}</p>
-                                <p><strong>Paiement :</strong> {transaction.modePaiement || 'N/A'}</p>
-                                <p><strong>Par :</strong> {(transaction as any).userFirstName ?? 'Système'} {(transaction as any).userLastName ?? ''}</p>
+                                <p><strong>Date :</strong> {transaction.transactionDate}</p>
+                                <p><strong>Mdde de paiement :</strong> {transaction.modePaiement || 'N/A'}</p>
+                                <p><strong>Via :</strong> {(transaction as any).userFirstName ?? 'Système'} {(transaction as any).userLastName ?? ''}</p>
 
                                 {isEdited && (
                                     <span className="inline-block mt-2 text-xs text-yellow-800 bg-yellow-100 rounded-full px-2 py-1 font-medium">

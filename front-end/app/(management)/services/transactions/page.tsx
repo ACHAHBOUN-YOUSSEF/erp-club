@@ -133,7 +133,7 @@ export default function Transactions() {
                                                         getPeriodTransactionTotal()
                                                     }}
                                                     disabled={!dateDebut || !dateFin}
-                                                    className="px-6 sm:px-8 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
+                                                    className="cursor-pointer px-6 sm:px-8 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
                                                 >
                                                     <Check className="w-4 h-4 flex-shrink-0" />
                                                     Calculer
@@ -145,7 +145,7 @@ export default function Transactions() {
                                                         setDateFin('');
                                                         setTransactionsByPeriode([]);
                                                     }}
-                                                    className="px-6 sm:px-8 py-3 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
+                                                    className="cursor-pointer px-6 sm:px-8 py-3 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
                                                 >
                                                     <X className="w-4 h-4 flex-shrink-0" />
                                                     Reset
@@ -180,14 +180,14 @@ export default function Transactions() {
                                                 <button
                                                     onClick={() => getDailyTransactionTotal()}
                                                     disabled={!dateUnique}
-                                                    className="px-6 sm:px-8 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
+                                                    className="cursor-pointer px-6 sm:px-8 py-3 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:bg-gray-400  flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
                                                 >
                                                     <Check className="w-4 h-4 flex-shrink-0" />
                                                     Calculer
                                                 </button>
                                                 <button
                                                     onClick={() => { setTransactionsByDay([]); setDateUnique('') }}
-                                                    className="px-6 sm:px-8 py-3 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
+                                                    className="cursor-pointer px-6 sm:px-8 py-3 bg-gray-500 text-white rounded-lg font-medium hover:bg-gray-600 flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
                                                 >
                                                     <X className="w-4 h-4 flex-shrink-0" />
                                                     Reset

@@ -129,6 +129,15 @@ export default function Page() {
                             <input
                                 type="radio"
                                 name="gender"
+                                value="all"
+                                checked={filters.gender === "all"}
+                                onChange={handleChange}
+                            /> Tous
+                        </label>
+                        <label>
+                            <input
+                                type="radio"
+                                name="gender"
                                 value="HOMME"
                                 checked={filters.gender === "HOMME"}
                                 onChange={handleChange}
@@ -145,25 +154,25 @@ export default function Page() {
                             /> Femme
                         </label>
 
-                        <label>
-                            <input
-                                type="radio"
-                                name="gender"
-                                value="all"
-                                checked={filters.gender === "all"}
-                                onChange={handleChange}
-                            /> Tous
-                        </label>
                     </div>
                 </fieldset>
 
                 {/* STATUS */}
-                {/* <fieldset className="border border-red-300 rounded-xl p-4">
+                <fieldset className="border border-red-300 rounded-xl p-4">
                     <legend className="px-2 text-red-600 font-semibold">
                         Status
                     </legend>
 
                     <div className="flex flex-col gap-3 mt-2">
+                        <label>
+                            <input
+                                type="radio"
+                                name="status"
+                                value="all"
+                                checked={filters.status === "all"}
+                                onChange={handleChange}
+                            /> Tous
+                        </label>
                         <label>
                             <input
                                 type="radio"
@@ -183,19 +192,8 @@ export default function Page() {
                                 onChange={handleChange}
                             /> Inactifs
                         </label>
-
-                        <label>
-                            <input
-                                type="radio"
-                                name="status"
-                                value="all"
-                                checked={filters.status === "all"}
-                                onChange={handleChange}
-                            /> Tous
-                        </label>
                     </div>
-                </fieldset> */}
-
+                </fieldset>
                 {/* BUTTON */}
                 <div className="md:col-span-3">
                     <button

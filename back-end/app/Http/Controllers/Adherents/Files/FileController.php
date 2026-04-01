@@ -308,26 +308,42 @@ class FileController extends Controller
     public function DownloadUsersByFilters(Request $request)
     {
         try {
-            $query = DB::table("adherents")->select("id", "cin", "firstName", "lastName", "phonePrimary", "registrationDate", "gender")->orderBy("created_at","desc");
-            if ($request->gender != "all") {
-                $query->where("gender", "=", $request->gender);
-            }
-            if ($request->dateType != "none") {
+            $query = Adherent::query()
+                ->select("id", "cin", "firstName", "lastName", "phonePrimary", "registrationDate", "gender")
+                ->orderBy("id", "desc");
 
+            if ($request->gender != "all") {
+                $query->where("gender", $request->gender);
+            }
+
+            if ($request->dateType != "none") {
                 if ($request->dateType == "specific") {
                     $query->whereDate("registrationDate", $request->specificDate);
-                } else if ($request->dateType == "period") {
+                } elseif ($request->dateType == "period") {
                     $query->whereBetween("registrationDate", [
                         $request->dateFrom,
                         $request->dateTo
                     ]);
                 }
             }
-            $adherents = $query->get();
+
+            if ($request->status != "all") {
+                if ($request->status == "active") {
+                    $query->whereHas('abonnements', function ($q) {
+                        $q->where('endDate', '>', now());
+                    });
+                } elseif ($request->status == "inactive") {
+                    $query->whereDoesntHave('abonnements', function ($q) {
+                        $q->where('endDate', '>', now());
+                    });
+                }
+            }
+            $adherents = $query->with(['abonnements' => function ($q) {
+                $q->select('abonnements.id', 'abonnements.title');
+            }])->get();
             return Excel::download(new ExportByFilters($adherents), "adherents.xlsx");
         } catch (Exception $e) {
-            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
+            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 200);
         }
-        // return response()->json($request->dateType);
     }
 }
