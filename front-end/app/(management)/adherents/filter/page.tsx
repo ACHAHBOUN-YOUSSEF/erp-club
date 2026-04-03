@@ -12,10 +12,12 @@ import Link from "next/link";
 import { UserCircle } from "lucide-react";
 import { adherentType } from "@/lib/validators/adherents";
 import { ServiceAdherent } from "@/services/adherentsService";
+import LineLoader from "@/components/ui/LineLoader";
 
 export default function Transactions() {
     const [clubs, setClubs] = useState<clubType[]>([])
     const [isBusy, setIsBusy] = useState(false)
+    const [onLoad,setOnLoad]=useState(false)
     const [activeTab, setActiveTab] = useState("abonnements")
     const [groupes, setGroupes] = useState<GroupeAbonnementType[] | null>(null)
     const [abonnements, setAbonnements] = useState<AbonnementType[] | null>(null)
@@ -68,13 +70,13 @@ export default function Transactions() {
     };
     const loadAdherentsByAbonnements = async (abonnementId: number) => {
         try {
-            setIsBusy(true)
+            setOnLoad(true)
             const res = await ServiceAdherent.getAdherentsByAbonnements(abonnementId)
             setAdherents(res.data)
         } catch (err: any) {
             toast.error("Erreur lors de telechargement des clubs")
         } finally {
-            setIsBusy(false)
+            setOnLoad(false)
         }
     }
     useEffect(() => {
@@ -231,86 +233,104 @@ export default function Transactions() {
                                                 ))}
                                         </select>
                                     </div>
-                                     <div>
-                                        <button 
-                                        className="cursor-pointer px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                                        onClick={(()=>setAdherents([]))}
+                                    <div>
+                                        <button
+                                            className="cursor-pointer px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                            onClick={(() => setAdherents([]))}
                                         >
 
-                                         reinitialiser</button>
+                                            reinitialiser</button>
                                     </div>
                                 </div>
-                                <table className="w-full">
-                                    <thead className=" bg-gradient-to-r from-red-600 via-red-700 to-red-900 text-white">
-                                        <tr>
-                                            <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
-                                            <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
-                                            <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
-                                            <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
-                                            <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
-                                            <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-gray-200">
-                                        {adherents && adherents.length > 0 ? (
-                                            adherents.map((adherent) => (
-                                                <tr
-                                                    key={adherent.id}
-                                                    className="hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 transition-all duration-200 border-b border-gray-100"
-                                                >
-                                                    <td className="px-1  text-center whitespace-nowrap">
-                                                        <span className="font-mono bg-gray-100 px-1 py-1 rounded-full text-sm font-semibold">
-                                                            {adherent.id}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-1  text-center whitespace-nowrap">
-                                                        <span className="font-mono bg-gray-100 px-1 py-1 rounded-full text-sm font-semibold">
-                                                            {adherent.cin ? adherent.cin.toUpperCase() : '--'}
-                                                        </span>
-                                                    </td>
-                                                    <td className="px-1  text-center hover:underline hover:cursor-pointer text-sm text-gray-900">
-                                                        <Link
-                                                            href={`/adherents/${adherent.id}/fiche`}
-                                                            title="Fiche adhérent">
-                                                            {adherent.firstName.toUpperCase()} {adherent.lastName.toUpperCase()}
+                                <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">
 
-                                                        </Link>
-                                                    </td>
+                                    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full">
+                                                <thead className=" bg-gradient-to-r from-red-600 via-red-700 to-red-900 text-white">
+                                                    <tr>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {onLoad && (
+                                                        <tr>
+                                                            <td colSpan={6}>
+                                                                <LineLoader />
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                    {
+                                                        adherents && adherents.length > 0 ? (
+                                                            adherents.map((adherent) => (
+                                                                <tr
+                                                                    key={adherent.id}
+                                                                    className="hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 transition-all duration-200 border-b border-gray-100"
+                                                                >
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.id}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.cin}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 hover:underline hover:cursor-pointe text-center text-lg text-gray-900">
+                                                                        <Link
+                                                                            href={`/adherents/${adherent.id}/fiche`}
+                                                                            title="Fiche adhérent">
+                                                                            {adherent.firstName} {adherent.lastName}
 
-                                                    <td className="px-1  text-center whitespace-nowrap">
-                                                        <span className="text-sm font-mono bg-blue-50 text-blue-800 px-1 py-1 rounded-full">
-                                                            {adherent.phonePrimary}
-                                                        </span>
-                                                    </td>
+                                                                        </Link>
+                                                                    </td>
 
-                                                    <td className="px-1  text-center whitespace-nowrap">
-                                                        <span className="text-sm text-gray-600 font-medium">
-                                                            {adherent.registrationDate}
-                                                        </span>
-                                                    </td>
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm font-mono bg-blue-50 text-blue-800 px-3 py-1 rounded-full">
+                                                                            {adherent.phonePrimary}
+                                                                        </span>
+                                                                    </td>
 
-                                                    <td className="px-6 py-2 whitespace-nowrap text-sm">
-                                                        <div className="flex space-x-2 justify-center">
-                                                            <Link
-                                                                href={`/adherents/${adherent.id}/fiche`}
-                                                                className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                                                                title="Fiche adhérent"
-                                                            >
-                                                                <UserCircle size={20} />
-                                                            </Link>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={6} className="text-center py-2 text-gray-500 font-semibold">
-                                                    Aucun adhérent trouvé
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm text-gray-600 font-medium">
+                                                                            {adherent.registrationDate}
+                                                                        </span>
+                                                                    </td>
+
+                                                                    <td className="px-2 py-2 whitespace-nowrap text-sm">
+                                                                        <div className="flex space-x-2 justify-center">
+                                                                            <Link
+                                                                                href={`/adherents/${adherent.id}/fiche`}
+                                                                                className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                                title="Fiche adhérent"
+                                                                            >
+                                                                                <UserCircle size={20} />
+                                                                            </Link>
+
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        ) : (
+                                                            <tr>
+                                                                <td colSpan={6} className="text-center py-2 text-gray-500 font-semibold">
+                                                                    Aucun adhérent trouvé
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         )}
 
