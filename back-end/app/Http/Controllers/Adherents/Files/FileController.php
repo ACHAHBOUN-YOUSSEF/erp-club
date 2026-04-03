@@ -64,9 +64,10 @@ class FileController extends Controller
             $templateProcessor->setValue('date_t', \Carbon\Carbon::parse($transaction->created_at)->format('d/m/Y H:i'));
             $templateProcessor->setValue('id', $transaction->id);
             $templateProcessor->setValue('adherent_id', $adherent->id);
+            $templateProcessor->setValue('Description', $transaction->description);
             $templateProcessor->setValue('nom_complet', $adherent->firstName . ' ' . $adherent->lastName);
             $templateProcessor->setValue('ville', $adherent->ville_nom ?? 'N/A');
-            $templateProcessor->setValue('tel', $adherent->phonePrimary ?? 'N/A');
+            $templateProcessor->setValue('phone', $adherent->phonePrimary ?? 'N/A');
             $templateProcessor->setValue('montant', number_format($transaction->montant, 2) . ' DH');
             $templateProcessor->setValue('description', $transaction->description ?? 'Paiement');
             $templateProcessor->setValue('mode', strtoupper($transaction->modePaiement ?? ''));
@@ -105,9 +106,6 @@ class FileController extends Controller
             if (empty($subscription)) {
                 return ApiResponse::error("Subscription non trouvé", 404);
             }
-            // if ($subscription->remainingAmount > 0) {
-            //     return ApiResponse::error("Impossible de télécharger le contrat : la souscription n'est pas totalement payée.", 404);
-            // }
             $contrat = Contrat::create([
                 "targetAdherentId" => $subscription->adherentId,
                 "executedByUserId" => $request->user()->id,
@@ -128,6 +126,8 @@ class FileController extends Controller
             $templateProcessor->setValue('cin', $adherent->cin ?? "------");
             $templateProcessor->setValue('duree', $subscription->abonnement->durationMonths ?? "------");
             $templateProcessor->setValue('titre', strtolower($subscription->abonnement->title));
+            $templateProcessor->setValue('type', strtolower($subscription->abonnement->groupe->type));
+            $templateProcessor->setValue('groupename', strtolower($subscription->abonnement->groupe->name));
             $templateProcessor->setValue('tel', $adherent->phonePrimary);
             $templateProcessor->setValue('date_debut', $subscription->startDate);
             $templateProcessor->setValue('date_fin', $subscription->endDate);

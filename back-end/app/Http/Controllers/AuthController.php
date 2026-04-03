@@ -35,15 +35,13 @@ class AuthController extends Controller
             $token = $user->createToken(
                 'api-token',
                 ['*'],
-                now()->addMinutes(120)
+                now()->addMinutes((int)env("SESSION_LIFETIME",180))
             )->plainTextToken;
-            // $response=ApiResponse::success([
             return ApiResponse::success([
                 'token' => $token,
                 'expiresAt' => now()->addMinutes(60),
                 'user' => new UserResource($user)
             ], 'Connexion réussie');
-            // return $response->cookie('auth_token', $token, 60,'/', null,true,true);
         } catch (ValidationException $e) {
 
             return ApiResponse::error(

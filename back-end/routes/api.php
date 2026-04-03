@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbonnementsController;
 use App\Http\Controllers\Adherents\Files\FileController;
+use App\Http\Controllers\Adherents\Filters\FilterController;
 use App\Http\Controllers\Adherents\IndexController;
 use App\Http\Controllers\Adherents\Periodes\PeriodeController;
 use App\Http\Controllers\Adherents\Subscriptions\SubscriptionsController;
@@ -53,5 +54,6 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get("dashboard", [DashBoardController::class, "getStatistique"]);
     Route::apiResource("periodes", PeriodeController::class);
     Route::get('roles-permissions', [RolePermissionController::class, 'index']);
-    Route::post("adherents/download/filters",[FileController::class,"DownloadUsersByFilters"]);
+    Route::post("adherents/download/filters", [FileController::class, "DownloadUsersByFilters"]);
 });
+Route::get("adherents/abonnements/{abonnementId}",[FilterController::class,"getByAbonnementId"]);

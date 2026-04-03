@@ -57,7 +57,7 @@ class TransactionController extends Controller
             $transaction->montant = $validated["montant"];
             $transaction->modePaiement = $validated["modePaiement"];
             $transaction->transactionDate = $validated["transactionDate"];
-            $transaction->type ='income';
+            $transaction->type = 'income';
             $transaction->description = $validated["description"];
             $transaction->executedByUserId = $request->user()->id;
             $transaction->targetAdherentId = $validated['adherentId'];
@@ -137,13 +137,13 @@ class TransactionController extends Controller
             if (!$transaction) {
                 return ApiResponse::error("Impossible de supprimer cette transaction : elle n’existe pas", 404);
             }
-            $transaction->delete();
             AdherentLog::create([
                 "action" => "Suppression subscription",
                 "executedByUserId" => $request->user()->id,
                 "targetAdherentId" => $transaction->adherentId,
                 'description' => "Suppression de la transaction avec le montant  « " . $transaction->montant . " »",
             ]);
+            $transaction->delete();
             return ApiResponse::success(null, 'Transaction supprimé avec succès');
         } catch (\Exception $e) {
             return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);

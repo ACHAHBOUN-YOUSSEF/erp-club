@@ -13,7 +13,6 @@ return [
         ],
         'api' => [
             'driver' => 'sanctum',
-            'pro'
         ]
     ],
     'providers' => [

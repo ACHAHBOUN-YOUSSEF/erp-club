@@ -220,6 +220,13 @@ export default function AdherentFiche() {
             setIsBusy(false)
         }
     }
+    const verify = (remainingAmount: number) => {
+        if (remainingAmount > 0) {
+            toast.warn("Vous ne pouvez pas télécharger ce document car il reste un solde non payé")
+            return false
+        }
+        return true
+    }
     useEffect(() => {
         loadClubs()
         loadAdherentInfos(id)
@@ -239,6 +246,9 @@ export default function AdherentFiche() {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
     const DownloadContrat = async (subscription: SubscriptionType) => {
+        if (!verify(Number(subscription.remainingAmount))) {
+            return
+        }
         setOpenDownloadId(null)
         setIsBusy(true);
         try {
@@ -253,6 +263,9 @@ export default function AdherentFiche() {
         }
     }
     const DownloadFacture = async (subscription: SubscriptionType) => {
+        if (!verify(Number(subscription.remainingAmount))) {
+            return
+        }
         setOpenDownloadId(null)
         setIsBusy(true);
         try {
@@ -266,7 +279,10 @@ export default function AdherentFiche() {
             setIsBusy(false);
         }
     }
-    const DownloadRecuPeriode = async (id: number) => {
+    const DownloadRecuPeriode = async (id: number, remainingAmount: number) => {
+        if (!verify(Number(remainingAmount))) {
+            return
+        }
         setIsBusy(true);
         try {
             const response = await FilesService.DownloadRecuPeriode(Number(id));
@@ -274,12 +290,15 @@ export default function AdherentFiche() {
             downloadBlob(response.data, filename);
             toast.success('Recus téléchargé !');
         } catch (err) {
-            toast.error('Probléme téléchargement');
+            toast.error('Probléme de téléchargement');
         } finally {
             setIsBusy(false);
         }
     }
     const DownloadRecuSubscription = async (subscription: SubscriptionType) => {
+        if (!verify(Number(subscription.remainingAmount))) {
+            return
+        }
         setOpenDownloadId(null)
         setIsBusy(true);
         try {
@@ -418,19 +437,19 @@ export default function AdherentFiche() {
                                                             key={subscription.id}
                                                             className="hover:bg-red-50  transition-colors duration-200"
                                                         >
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm text-gray-900">
                                                                 {subscription.groupe?.toUpperCase()}
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm text-gray-900">
                                                                 {subscription.title?.toUpperCase()}
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm text-gray-900">
                                                                 {subscription.price} DH
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 <span
                                                                     className={`font-bold ${Number(subscription.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
                                                                         }`}
@@ -439,15 +458,15 @@ export default function AdherentFiche() {
                                                                 </span>
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 {subscription.startDate}
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 {subscription.endDate}
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 <span
                                                                     className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
                                                                         }`}
@@ -456,7 +475,7 @@ export default function AdherentFiche() {
                                                                 </span>
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 <span
                                                                     className={`font-bold ${subscription.resteJours > 0 ? "text-green-500" : "text-red-500"
                                                                         }`}
@@ -573,10 +592,10 @@ export default function AdherentFiche() {
                                                             key={periode.id}
                                                             className="hover:bg-red-50  transition-colors duration-200"
                                                         >
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm text-gray-900">
                                                                 {periode.price}
                                                             </td>
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 <span
                                                                     className={`font-bold ${Number(periode.remainingAmount) > 0 ? "text-red-500" : "text-green-500"
                                                                         }`}
@@ -585,19 +604,19 @@ export default function AdherentFiche() {
                                                                 </span>
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm text-gray-900">
                                                                 {periode.durationDays}
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm text-gray-900">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm text-gray-900">
                                                                 {periode.startDate}
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 {periode.endDate}
                                                             </td>
 
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 <span
                                                                     className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
                                                                         }`}
@@ -605,7 +624,7 @@ export default function AdherentFiche() {
                                                                     {periode.resteJours} Jours
                                                                 </span>
                                                             </td>
-                                                            <td className="font-bold px-6 py-3.5 text-center whitespace-nowrap text-sm">
+                                                            <td className="font-bold px-6 py-5 text-center whitespace-nowrap text-sm">
                                                                 <span
                                                                     className={`font-bold ${periode.resteJours! > 0 ? "text-green-500" : "text-red-500"
                                                                         }`}
@@ -629,7 +648,7 @@ export default function AdherentFiche() {
                                                                     </button>
 
                                                                     <button
-                                                                        onClick={() => DownloadRecuPeriode(Number(periode.id))}
+                                                                        onClick={() => DownloadRecuPeriode(Number(periode.id), Number(periode.remainingAmount))}
                                                                         className="text-green-500 cursor-pointer hover:text-green-700 transition">
                                                                         <Download size={18} />
                                                                     </button>

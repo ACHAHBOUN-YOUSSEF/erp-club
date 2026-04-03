@@ -9,8 +9,8 @@ export const ServiceAdherent = {
         const res = await http.post("/api/adherents", adherent)
         return res.data
     },
-    async update(id:number,adherent:adherentType){
-        const res=await http.put(`/api/adherents/${id}`,adherent)
+    async update(id: number, adherent: adherentType) {
+        const res = await http.put(`/api/adherents/${id}`, adherent)
         return res.data
     },
     async getAll(params?: string) {
@@ -25,10 +25,14 @@ export const ServiceAdherent = {
     async getAllByClub(clubId: number, params?: string) {
         const url = params ? `/api/adherents/clubs/${clubId}${params}` : `/api/adherents/clubs/${clubId}`;
         const res = await http.get(url);
-        return res; 
+        return res;
     },
-    async search(value:string){
-        const res=await http.post(`/api/adherents/search`,{value:value})
+    async search(value: string) {
+        const res = await http.post(`/api/adherents/search`, { value: value })
+        return res.data
+    },
+    async getAdherentsByAbonnements(abonnementId: number) {
+        const res = await http.get(`/api/adherents/abonnements/${abonnementId}`)
         return res.data
     }
 
