@@ -125,7 +125,7 @@ export default function Transactions() {
         <>
             <div className="bg-red-100 dark:bg-black m-2 p-2 rounded-lg">
                 {isBusy && <Spinner />}
-                <div className="flex bg-white/50 dark:bg-black/50 backdrop-blur-sm border-b border-red-200/50 rounded-t-lg mb-4">
+                <div className="flex bg-white/50 dark:bg-black/50 backdrop-blur-sm border-b border-red-200/50 rounded-t-lg mb-4 overflow-x-auto">
                     <button
                         onClick={() => { setAdherents([]); setActiveTab("abonnements") }}
                         className={`px-6 py-3 font-semibold text-sm flex-1 text-center cursor-pointer transition-all duration-200 border-b-2 ${activeTab === "clubs"
