@@ -56,4 +56,7 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get('roles-permissions', [RolePermissionController::class, 'index']);
     Route::post("adherents/download/filters", [FileController::class, "DownloadUsersByFilters"]);
     Route::get("adherents/abonnements/{abonnementId}", [FilterController::class, "getByAbonnementId"]);
+    Route::get("adherents/status/actifs", [FilterController::class, "getActifsAdherents"]);
+    Route::get("adherents/status/inactifs", [FilterController::class, "getInActifsAdherents"]);
+    Route::get("adherents/status/HasRemainingAmount", [FilterController::class, "getAdherentsThatHasRemainingAmount"]);
 });

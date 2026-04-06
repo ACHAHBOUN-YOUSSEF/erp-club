@@ -17,7 +17,7 @@ import LineLoader from "@/components/ui/LineLoader";
 export default function Transactions() {
     const [clubs, setClubs] = useState<clubType[]>([])
     const [isBusy, setIsBusy] = useState(false)
-    const [onLoad,setOnLoad]=useState(false)
+    const [onLoad, setOnLoad] = useState(false)
     const [activeTab, setActiveTab] = useState("abonnements")
     const [groupes, setGroupes] = useState<GroupeAbonnementType[] | null>(null)
     const [abonnements, setAbonnements] = useState<AbonnementType[] | null>(null)
@@ -72,13 +72,51 @@ export default function Transactions() {
         try {
             setOnLoad(true)
             const res = await ServiceAdherent.getAdherentsByAbonnements(abonnementId)
+            setAdherents([])
             setAdherents(res.data)
         } catch (err: any) {
-            toast.error("Erreur lors de telechargement des clubs")
+            toast.error("Erreur lors de telechargement des adherents")
         } finally {
             setOnLoad(false)
         }
     }
+    const loadAdhrentsActifs = async () => {
+        try {
+            setOnLoad(true)
+            const res = await ServiceAdherent.getAdherentsActifs()
+            setAdherents([])
+            setAdherents(res.data)
+        } catch (err: any) {
+            toast.error("Erreur lors de telechargement des adherents")
+        } finally {
+            setOnLoad(false)
+        }
+    }
+    const loadAdhrentsInActifs = async () => {
+        try {
+            setOnLoad(true)
+            const res = await ServiceAdherent.getAdherentsInActifs()
+            setAdherents([])
+            setAdherents(res.data)
+        } catch (err: any) {
+            toast.error("Erreur lors de telechargement des adherents")
+        } finally {
+            setOnLoad(false)
+        }
+    }
+    const getAdherentsThatHasRemainingAmount = async () => {
+        try {
+            setOnLoad(true)
+            const res = await ServiceAdherent.getAdherentsThatHasRemainingAmount()
+            setAdherents([])
+            setAdherents(res.data)
+        } catch (err: any) {
+            toast.error("Erreur lors de telechargement des adherents")
+        } finally {
+            setOnLoad(false)
+        }
+    }
+
     useEffect(() => {
         loadClubs()
     }, [])
@@ -87,11 +125,9 @@ export default function Transactions() {
         <>
             <div className="bg-red-100 dark:bg-black m-2 p-2 rounded-lg">
                 {isBusy && <Spinner />}
-
-                {/* Tabs Navigation */}
                 <div className="flex bg-white/50 dark:bg-black/50 backdrop-blur-sm border-b border-red-200/50 rounded-t-lg mb-4">
                     <button
-                        onClick={() => setActiveTab("abonnements")}
+                        onClick={() => { setAdherents([]); setActiveTab("abonnements") }}
                         className={`px-6 py-3 font-semibold text-sm flex-1 text-center cursor-pointer transition-all duration-200 border-b-2 ${activeTab === "clubs"
                             ? "border-red-500 text-red-700 bg-red-50 shadow-sm"
                             : "border-transparent text-gray-600 hover:text-red-600 hover:bg-red-50/50"
@@ -100,8 +136,8 @@ export default function Transactions() {
                         Abonnements
                     </button>
                     <button
-                        onClick={() => setActiveTab("transactions")} disabled
-                        className={`disabled:cursor-not-allowed px-6 py-3 font-semibold text-sm flex-1 text-center cursor-pointer transition-all duration-200 border-b-2 ${activeTab === "transactions"
+                        onClick={() => { setActiveTab("actifs"); setAdherents([]); loadAdhrentsActifs() }}
+                        className={`px-6 py-3 font-semibold text-sm flex-1 text-center cursor-pointer transition-all duration-200 border-b-2 ${activeTab === "actifs"
                             ? "border-red-500 text-red-700 bg-red-50 shadow-sm"
                             : "border-transparent text-gray-600 hover:text-red-600 hover:bg-red-50/50"
                             }`}
@@ -109,13 +145,22 @@ export default function Transactions() {
                         Actifs
                     </button>
                     <button
-                        onClick={() => setActiveTab("stats")} disabled
-                        className={`disabled:cursor-not-allowed px-6 py-3 font-semibold text-sm flex-1 text-center cursor-pointer transition-all duration-200 border-b-2 ${activeTab === "stats"
+                        onClick={() => { setAdherents([]); setActiveTab("inactifs"); loadAdhrentsInActifs() }}
+                        className={` px-6 py-3 font-semibold text-sm flex-1 text-center cursor-pointer transition-all duration-200 border-b-2 ${activeTab === "inactifs"
                             ? "border-red-500 text-red-700 bg-red-50 shadow-sm"
                             : "border-transparent text-gray-600 hover:text-red-600 hover:bg-red-50/50"
                             }`}
                     >
                         Inactifs
+                    </button>
+                    <button
+                        onClick={() => { setAdherents([]); setActiveTab("remaininAmount"); getAdherentsThatHasRemainingAmount() }}
+                        className={` px-6 py-3 font-semibold text-sm flex-1 text-center cursor-pointer transition-all duration-200 border-b-2 ${activeTab === "remaininAmount"
+                            ? "border-red-500 text-red-700 bg-red-50 shadow-sm"
+                            : "border-transparent text-gray-600 hover:text-red-600 hover:bg-red-50/50"
+                            }`}
+                    >
+                        Reste de paiement
                     </button>
                 </div>
 
@@ -334,33 +379,280 @@ export default function Transactions() {
                             </div>
                         )}
 
-                        {activeTab === "transactions" && (
-                            <div className="p-6">
-                                <h2 className="text-2xl font-bold text-red-800 mb-6">Transactions</h2>
-                                <div className="text-center py-12 text-gray-500 bg-red-50/50 rounded-xl p-8 border-2 border-dashed border-red-200">
-                                    <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                                        <span className="text-2xl">📊</span>
+                        {activeTab === "actifs" && (
+                            <div className="p-2">
+                                <h2 className="text-2xl font-bold text-red-800 mb-2">Adherents Actifs</h2>
+                                <div className="text-start py-4 text-gray-500 bg-red-50/50 rounded-3xl p-2 border-2 border-dashed border-red-200">
+                                    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full">
+                                                <thead className=" bg-gradient-to-r from-red-600 via-red-700 to-red-900 text-white">
+                                                    <tr>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {onLoad && (
+                                                        <tr>
+                                                            <td colSpan={6}>
+                                                                <LineLoader />
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                    {
+                                                        adherents && adherents.length > 0 ? (
+                                                            adherents.map((adherent) => (
+                                                                <tr
+                                                                    key={adherent.id}
+                                                                    className="hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 transition-all duration-200 border-b border-gray-100"
+                                                                >
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.id}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.cin}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 hover:underline hover:cursor-pointe text-center text-lg text-gray-900">
+                                                                        <Link
+                                                                            href={`/adherents/${adherent.id}/fiche`}
+                                                                            title="Fiche adhérent">
+                                                                            {adherent.firstName} {adherent.lastName}
+
+                                                                        </Link>
+                                                                    </td>
+
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm font-mono bg-blue-50 text-blue-800 px-3 py-1 rounded-full">
+                                                                            {adherent.phonePrimary}
+                                                                        </span>
+                                                                    </td>
+
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm text-gray-600 font-medium">
+                                                                            {adherent.registrationDate}
+                                                                        </span>
+                                                                    </td>
+
+                                                                    <td className="px-2 py-2 whitespace-nowrap text-sm">
+                                                                        <div className="flex space-x-2 justify-center">
+                                                                            <Link
+                                                                                href={`/adherents/${adherent.id}/fiche`}
+                                                                                className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                                title="Fiche adhérent"
+                                                                            >
+                                                                                <UserCircle size={20} />
+                                                                            </Link>
+
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        ) : (
+                                                            <tr>
+                                                                <td colSpan={6} className="text-center py-2 text-gray-500 font-semibold">
+                                                                    Aucun adhérent trouvé
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <p>Transactions à venir</p>
                                 </div>
                             </div>
                         )}
 
-                        {activeTab === "stats" && (
-                            <div className="p-6">
-                                <h2 className="text-2xl font-bold text-red-800 mb-6">Statistiques</h2>
-                                <div className="grid md:grid-cols-3 gap-6">
-                                    <div className="bg-gradient-to-br from-red-500 to-red-600 text-white p-8 rounded-2xl shadow-xl">
-                                        <p className="text-red-100 text-sm opacity-90">Total Clubs</p>
-                                        <p className="text-3xl font-bold mt-2">{clubs.length}</p>
+                        {activeTab === "inactifs" && (
+                            <div className="p-2">
+                                <h2 className="text-2xl font-bold text-red-800 mb-2">Adherents Actifs</h2>
+                                <div className="text-start py-4 text-gray-500 bg-red-50/50 rounded-3xl p-2 border-2 border-dashed border-red-200">
+                                    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full">
+                                                <thead className=" bg-gradient-to-r from-red-600 via-red-700 to-red-900 text-white">
+                                                    <tr>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {onLoad && (
+                                                        <tr>
+                                                            <td colSpan={6}>
+                                                                <LineLoader />
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                    {
+                                                        adherents && adherents.length > 0 ? (
+                                                            adherents.map((adherent) => (
+                                                                <tr
+                                                                    key={adherent.id}
+                                                                    className="hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 transition-all duration-200 border-b border-gray-100"
+                                                                >
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.id}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.cin}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 hover:underline hover:cursor-pointe text-center text-lg text-gray-900">
+                                                                        <Link
+                                                                            href={`/adherents/${adherent.id}/fiche`}
+                                                                            title="Fiche adhérent">
+                                                                            {adherent.firstName} {adherent.lastName}
+
+                                                                        </Link>
+                                                                    </td>
+
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm font-mono bg-blue-50 text-blue-800 px-3 py-1 rounded-full">
+                                                                            {adherent.phonePrimary}
+                                                                        </span>
+                                                                    </td>
+
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm text-gray-600 font-medium">
+                                                                            {adherent.registrationDate}
+                                                                        </span>
+                                                                    </td>
+
+                                                                    <td className="px-2 py-2 whitespace-nowrap text-sm">
+                                                                        <div className="flex space-x-2 justify-center">
+                                                                            <Link
+                                                                                href={`/adherents/${adherent.id}/fiche`}
+                                                                                className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                                title="Fiche adhérent"
+                                                                            >
+                                                                                <UserCircle size={20} />
+                                                                            </Link>
+
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        ) : (
+                                                            <tr>
+                                                                <td colSpan={6} className="text-center py-2 text-gray-500 font-semibold">
+                                                                    Aucun adhérent trouvé
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 text-white p-8 rounded-2xl shadow-xl">
-                                        <p className="text-blue-100 text-sm opacity-90">Actifs</p>
-                                        <p className="text-3xl font-bold mt-2">12</p>
-                                    </div>
-                                    <div className="bg-gradient-to-br from-green-500 to-green-600 text-white p-8 rounded-2xl shadow-xl">
-                                        <p className="text-green-100 text-sm opacity-90">Nouveaux</p>
-                                        <p className="text-3xl font-bold mt-2">3</p>
+                                </div>
+                            </div>
+                        )}
+                        {activeTab === "remaininAmount" && (
+                            <div className="p-2">
+                                <h2 className="text-2xl font-bold text-red-800 mb-2">
+                                    Adhérents ayant un reste de paiement
+                                </h2>                                <div className="text-start py-4 text-gray-500 bg-red-50/50 rounded-3xl p-2 border-2 border-dashed border-red-200">
+                                    <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
+                                        <div className="overflow-x-auto">
+                                            <table className="w-full">
+                                                <thead className=" bg-gradient-to-r from-red-600 via-red-700 to-red-900 text-white">
+                                                    <tr>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">ID</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">CIN</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Nom Complet</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Téléphone</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Date d'inscription</th>
+                                                        <th className="px-1.5 py-2 text-center font-bold uppercase text-xs tracking-wider">Actions</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-200">
+                                                    {onLoad && (
+                                                        <tr>
+                                                            <td colSpan={6}>
+                                                                <LineLoader />
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                    {
+                                                        adherents && adherents.length > 0 ? (
+                                                            adherents.map((adherent) => (
+                                                                <tr
+                                                                    key={adherent.id}
+                                                                    className="hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 transition-all duration-200 border-b border-gray-100"
+                                                                >
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.id}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="font-mono bg-gray-100 px-3 py-1 rounded-full text-sm font-semibold">
+                                                                            {adherent.cin}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td className="px-1 hover:underline hover:cursor-pointe text-center text-lg text-gray-900">
+                                                                        <Link
+                                                                            href={`/adherents/${adherent.id}/fiche`}
+                                                                            title="Fiche adhérent">
+                                                                            {adherent.firstName} {adherent.lastName}
+
+                                                                        </Link>
+                                                                    </td>
+
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm font-mono bg-blue-50 text-blue-800 px-3 py-1 rounded-full">
+                                                                            {adherent.phonePrimary}
+                                                                        </span>
+                                                                    </td>
+
+                                                                    <td className="px-1 text-center whitespace-nowrap">
+                                                                        <span className="text-sm text-gray-600 font-medium">
+                                                                            {adherent.registrationDate}
+                                                                        </span>
+                                                                    </td>
+
+                                                                    <td className="px-2 py-2 whitespace-nowrap text-sm">
+                                                                        <div className="flex space-x-2 justify-center">
+                                                                            <Link
+                                                                                href={`/adherents/${adherent.id}/fiche`}
+                                                                                className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                                title="Fiche adhérent"
+                                                                            >
+                                                                                <UserCircle size={20} />
+                                                                            </Link>
+
+                                                                        </div>
+                                                                    </td>
+                                                                </tr>
+                                                            ))
+                                                        ) : (
+                                                            <tr>
+                                                                <td colSpan={6} className="text-center py-2 text-gray-500 font-semibold">
+                                                                    Aucun adhérent trouvé
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

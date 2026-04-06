@@ -34,6 +34,18 @@ export const ServiceAdherent = {
     async getAdherentsByAbonnements(abonnementId: number) {
         const res = await http.get(`/api/adherents/abonnements/${abonnementId}`)
         return res.data
+    },
+    async getAdherentsActifs() {
+        const res = await http.get("/api/adherents/status/actifs")
+        return res.data
+    },
+    async getAdherentsInActifs() {
+        const res = await http.get("/api/adherents/status/inactifs")
+        return res.data
+    },
+    async getAdherentsThatHasRemainingAmount() {
+        const res = await http.get("/api/adherents/status/HasRemainingAmount")
+        return res.data
     }
 
 

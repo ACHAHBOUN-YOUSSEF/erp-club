@@ -53,7 +53,7 @@ export default function Profile() {
                     <Info label="CIN" value={user.cin} icon={<User />} />
                     <Info label="Email" value={user.email} icon={<Mail />} />
                     <Info label="Téléphone" value={user.phone} icon={<Phone />} />
-                    <Info label="Naissance" value={user.birthDate} icon={<Calendar />} />
+                    <Info label="Naissance" value={user.birthDate.split("T")[0]} icon={<Calendar />} />
                     <Info label="Genre" value={user.gender} icon={<User />} />
                     <Info label="Adresse" value={user.adresse} icon={<MapPin />} />
                     <Info label="Ville" value={user.club?.ville?.name ?? "—"} icon={<Building2 />} />
