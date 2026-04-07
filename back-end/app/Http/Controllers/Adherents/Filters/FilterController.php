@@ -98,8 +98,8 @@ class FilterController extends Controller
                 ->orderBy('id', 'desc')
                 ->get();
 
-            $adherentsInactifs = $expirés->merge($sans);
-            return ApiResponse::success(AdherentResource::collection($sans), 'Liste des adherents');
+            $adherents = $expirés->merge($sans);
+            return ApiResponse::success(AdherentResource::collection($adherents), 'Liste des adherents');
         } catch (\Exception $e) {
             return ApiResponse::error(
                 'Erreur serveur: ' . $e->getMessage(),

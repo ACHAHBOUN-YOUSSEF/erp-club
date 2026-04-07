@@ -346,4 +346,99 @@ class FileController extends Controller
             return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 200);
         }
     }
+    public function downloadActiveAdherents(Request $request)
+    {
+        try {
+            $adherents = Adherent::where("brancheId", $request->user()->brancheId)
+                ->whereHas('abonnements', function ($query) {
+                    $query->where('endDate', '>', now());
+                })
+                ->with(['abonnements' => function ($query) {
+                    $query->select("abonnements.id", "abonnements.title");
+                }])
+                ->select("id", "cin", "firstName", "gender", "lastName", "phonePrimary", "registrationDate")
+                ->orderBy("id", "desc")
+                ->get();
+            return Excel::download(new ExportByFilters($adherents), 'AdherentsActifs.xlsx');
+        } catch (\Exception $e) {
+            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
+        }
+    }
+    public function downloadInActiveAdherents(Request $request)
+    {
+        try {
+            $expirés = Adherent::where('brancheId', $request->user()->brancheId)
+                ->whereHas('abonnements', function ($query) {
+                    $query->where('endDate', '<', now());
+                })
+                ->whereDoesntHave('abonnements', function ($query) {
+                    $query->where('endDate', '>=', now());
+                })
+                ->with(['abonnements' => function ($query) {
+                    $query->select('abonnements.id', 'abonnements.title', 'subscriptions.startDate', 'subscriptions.endDate');
+                }])
+                ->select(
+                    'id',
+                    'cin',
+                    'firstName',
+                    'lastName',
+                    'phonePrimary',
+                    'registrationDate'
+                )
+                ->orderBy('id', 'desc')
+                ->get();
+
+            $sans = Adherent::where('brancheId', $request->user()->brancheId)
+                ->whereDoesntHave('abonnements')
+                ->select(
+                    'id',
+                    'cin',
+                    'firstName',
+                    'gender',
+                    'lastName',
+                    'phonePrimary',
+                    'registrationDate'
+                )
+                ->orderBy('id', 'desc')
+                ->get();
+
+            $adherents = $expirés->merge($sans);
+            return Excel::download(new ExportByFilters($adherents), 'AdherentsInActifs.xlsx');
+        } catch (\Exception $e) {
+            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
+        }
+    }
+    public function downloadAdherentsHasRemainingAmount(Request $request)
+    {
+        try {
+            $allAdherents = Adherent::with(['abonnements' => function ($query) {
+                $query->select("abonnements.id", "abonnements.title");
+            }])
+                ->where("brancheId", $request->user()->brancheId)
+                ->select(
+                    'id',
+                    'cin',
+                    'firstName',
+                    'lastName',
+                    'gender',
+                    'phonePrimary',
+                    'registrationDate'
+                )->orderBy("id", "desc")
+                ->get();
+            $adherents = $allAdherents->filter(function ($adherent) {
+                foreach ($adherent->abonnements as $abonnement) {
+                    if ($abonnement->pivot->remainingAmount > 0) {
+                        return true;
+                    }
+                }
+                return false;
+            })->values();
+            return Excel::download(new ExportByFilters($adherents), 'Adhérents-ayant-reste-paiement.xlsx');
+        } catch (\Exception $e) {
+            return ApiResponse::error(
+                'Erreur serveur: ' . $e->getMessage(),
+                500
+            );
+        }
+    }
 }

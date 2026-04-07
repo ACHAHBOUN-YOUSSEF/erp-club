@@ -9,10 +9,12 @@ import { AbonnementType } from "@/lib/validators/abonnements";
 import { groupeAbonnementsService } from "@/services/groupeAbonnementsService";
 import { AbonnementsService } from "@/services/abonnementService";
 import Link from "next/link";
-import { UserCircle } from "lucide-react";
+import { Download, UserCircle } from "lucide-react";
 import { adherentType } from "@/lib/validators/adherents";
 import { ServiceAdherent } from "@/services/adherentsService";
 import LineLoader from "@/components/ui/LineLoader";
+import { FilesService } from "@/services/filesServices";
+import { downloadBlob } from "@/helpers/helpers";
 
 export default function Transactions() {
     const [clubs, setClubs] = useState<clubType[]>([])
@@ -116,7 +118,46 @@ export default function Transactions() {
             setOnLoad(false)
         }
     }
+    const downloadActiveAdherents = async () => {
+        setIsBusy(true);
 
+        try {
+            const response = await FilesService.downloadActiveAdherents()
+            let filename = `adherentsActifs.xlsx`
+            downloadBlob(response.data, filename);
+            toast.success('File téléchargé !');
+        } catch (err) {
+            toast.error('Probléme téléchargement');
+        } finally {
+            setIsBusy(false);
+        }
+    }
+    const downloadInActiveAdherents = async () => {
+        setIsBusy(true);
+        try {
+            const response = await FilesService.downloadInActiveAdherents()
+            let filename = `adherentsInActifs.xlsx`
+            downloadBlob(response.data, filename);
+            toast.success('File téléchargé !');
+        } catch (err) {
+            toast.error('Probléme téléchargement');
+        } finally {
+            setIsBusy(false);
+        }
+    }
+    const downloadAdherentsHasRemainingAmount = async () => {
+        setIsBusy(true);
+        try {
+            const response = await FilesService.downloadAdherentsHasRemainingAmount()
+            let filename = `Adhérents-ayant-reste-paiement.xlsx`
+            downloadBlob(response.data, filename);
+            toast.success('File téléchargé !');
+        } catch (err) {
+            toast.error('Probléme téléchargement');
+        } finally {
+            setIsBusy(false);
+        }
+    }
     useEffect(() => {
         loadClubs()
     }, [])
@@ -381,7 +422,7 @@ export default function Transactions() {
 
                         {activeTab === "actifs" && (
                             <div className="p-2">
-                                <h2 className="text-2xl font-bold text-red-800 mb-2">Adherents Actifs</h2>
+                                <h2 className="text-2xl font-bold text-red-800 mb-2 flex items-center">Adherents Actifs <Download className="ml-2 mt-0.5 cursor-pointer text-red-500" onClick={() => downloadActiveAdherents()} /></h2>
                                 <div className="text-start py-4 text-gray-500 bg-red-50/50 rounded-3xl p-2 border-2 border-dashed border-red-200">
                                     <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
                                         <div className="overflow-x-auto">
@@ -474,7 +515,7 @@ export default function Transactions() {
 
                         {activeTab === "inactifs" && (
                             <div className="p-2">
-                                <h2 className="text-2xl font-bold text-red-800 mb-2">Adherents Actifs</h2>
+                                <h2 className="text-2xl font-bold text-red-800 mb-2 flex items-center">Adherents Inactifs <Download className="ml-2 mt-0.5 cursor-pointer text-red-500" onClick={() => downloadInActiveAdherents()} /></h2>
                                 <div className="text-start py-4 text-gray-500 bg-red-50/50 rounded-3xl p-2 border-2 border-dashed border-red-200">
                                     <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
                                         <div className="overflow-x-auto">
@@ -566,9 +607,9 @@ export default function Transactions() {
                         )}
                         {activeTab === "remaininAmount" && (
                             <div className="p-2">
-                                <h2 className="text-2xl font-bold text-red-800 mb-2">
-                                    Adhérents ayant un reste de paiement
-                                </h2>                                <div className="text-start py-4 text-gray-500 bg-red-50/50 rounded-3xl p-2 border-2 border-dashed border-red-200">
+                                <h2 className="text-2xl font-bold text-red-800 mb-2 flex items-center">Adhérents ayant un reste de paiement <Download className="ml-2 mt-0.5 cursor-pointer text-red-500" onClick={() => downloadAdherentsHasRemainingAmount()} /></h2>
+
+                                <div className="text-start py-4 text-gray-500 bg-red-50/50 rounded-3xl p-2 border-2 border-dashed border-red-200">
                                     <div className="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 overflow-hidden">
                                         <div className="overflow-x-auto">
                                             <table className="w-full">

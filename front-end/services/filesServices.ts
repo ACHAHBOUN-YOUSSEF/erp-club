@@ -17,16 +17,28 @@ export const FilesService = {
         const response = await http.get(`/api/adherents/periodes/${periodeId}/recus`, { responseType: "blob" })
         return response
     },
-    async DownloadRecuSubscription(subscriptionId:number){
+    async DownloadRecuSubscription(subscriptionId: number) {
         const response = await http.get(`/api/adherents/subscriptions/${subscriptionId}/recus`, { responseType: "blob" })
         return response
     },
-    async DownloadAllUsersAsExcelFile(){
-        const response=await http.get("/api/adherents/download/allAsExcel",{responseType:"blob"})
+    async DownloadAllUsersAsExcelFile() {
+        const response = await http.get("/api/adherents/download/allAsExcel", { responseType: "blob" })
         return response
     },
-    async DownloadUsersByFilters(filters:any){
-        const res=await http.post("/api/adherents/download/filters",filters,{responseType:"blob"})
+    async DownloadUsersByFilters(filters: any) {
+        const res = await http.post("/api/adherents/download/filters", filters, { responseType: "blob" })
+        return res
+    },
+    async downloadActiveAdherents() {
+        const res = await http.get("/api/adherents/status/actifs/download", { responseType: "blob" })
+        return res
+    },
+    async downloadInActiveAdherents() {
+        const res = await http.get("/api/adherents/status/inactifs/download", { responseType: "blob" })
+        return res
+    },
+    async downloadAdherentsHasRemainingAmount() {
+        const res = await http.get("/api/adherents/status/HasRemainingAmount/download", { responseType: "blob" })
         return res
     }
 };
