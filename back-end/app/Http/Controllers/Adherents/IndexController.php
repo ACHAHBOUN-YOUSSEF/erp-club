@@ -259,9 +259,7 @@ class IndexController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Request $request, string $id)
     {
         try {
@@ -312,6 +310,22 @@ class IndexController extends Controller
             return ApiResponse::success($adherents, "Liste des aherents avec " . $value . " ", 200);
         } catch (Exception $e) {
             return ApiResponse::error("Erreur De Serveur", 500, $e->getMessage());
+        }
+    }
+    public function exist($Id)
+    {
+        try {
+            $adherent = Adherent::find($Id);
+            if (!$adherent) {
+                return ApiResponse::error(
+                    "Adherent non trouvé",
+                    404,
+                    ["Id" => ["Adherent non trouvé"]]
+                );
+            }
+            return ApiResponse::success(new AdherentResource($adherent), "Détails des informations sur l'adherent");
+        } catch (\Exception $e) {
+            return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
         }
     }
 }

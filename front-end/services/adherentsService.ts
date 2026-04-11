@@ -46,6 +46,10 @@ export const ServiceAdherent = {
     async getAdherentsThatHasRemainingAmount() {
         const res = await http.get("/api/adherents/status/HasRemainingAmount")
         return res.data
+    },
+    async exist(id:number){
+        const res=await http.get(`/api/adherents/exist/${id}`)
+        return res.data
     }
 
 

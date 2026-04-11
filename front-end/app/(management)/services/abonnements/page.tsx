@@ -99,7 +99,7 @@ export default function Abonnements() {
                             </div>
                         </div>
                         <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">
-                            <div className=" p-4 sm:p-8">
+                            <div className="p-4 sm:p-8">
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto items-start">
                                     <GroupeContainer reload={() => loadAllGroupes()} clubs={clubs} isBusy={(value) => setIsBusy(value)} groupes={groupes} />
                                 </div>

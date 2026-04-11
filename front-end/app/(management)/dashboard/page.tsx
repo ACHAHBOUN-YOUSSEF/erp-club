@@ -150,7 +150,7 @@ export default function Page() {
 
                 <div className="bg-gradient-to-r from-red-600/90 to-red-950/90 backdrop-blur-sm p-6 rounded-2xl shadow-2xl border border-red-500/30">
                     <div className="flex justify-between items-center mb-6">
-                        <h2 className="text-2xl font-bold text-white">Dernières (5 transactions) transactions</h2>
+                        <h2 className="text-2xl font-bold text-white">Dernières (5) transactions</h2>
                     </div>
 
                     <div className="overflow-x-auto">

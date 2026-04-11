@@ -135,111 +135,119 @@ export default function GroupeContainer({ groupes, isBusy, reload, clubs }: prop
     }
     return (
         <>
-            {
-                groupes.map((groupe: GroupeAbonnementType) => {
-                    if (Number(groupe.isArchived) == 0) {
-                        return (
-                            <details
-                                key={groupe.id}
-                                className="group bg-white rounded-2xl  p-5 sm:p-6 transition h-auto min-h-[200px] max-h-none">
-                                {/* SUMMARY */}
-                                <summary className="list-none">
-                                    <div className="flex flex-wrap justify-between gap-3 items-center">
-                                        <h2 className="text-xl sm:text-2xl font-bold text-red-600">
-                                            {groupe.name}
-                                        </h2>
+            {groupes.map((groupe: GroupeAbonnementType) => {
+                if (Number(groupe.isArchived) == 0) {
+                    return (
+                        <details
+                            key={groupe.id}
+                            className={`group bg-white rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 h-[${3+(groupe.abonnements?.filter(a => Number(a.isArchived) == 0).length || 0)}00px] overflow-hidden`}
+                        >
+                            {/* SUMMARY */}
+                            <summary className="list-none cursor-pointer outline-none">
+                                <div className="flex flex-wrap justify-between gap-3 items-center pb-4 mb-4 border-b border-gray-200">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-red-600">
+                                        {groupe.name}
+                                    </h2>
 
-                                        <div className="flex gap-2">
-                                            <button onClick={() => handleEdit(Number(groupe.id))} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition">
-                                                <Edit size={16} />
-                                            </button>
+                                    <div className="flex gap-2">
+                                        <button onClick={(e) => { e.preventDefault(); handleEdit(Number(groupe.id)) }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
+                                            <Edit size={16} />
+                                        </button>
 
-                                            <button onClick={() => handleDelete(Number(groupe.id))} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition">
-                                                <Trash2 size={16} />
-                                            </button>
+                                        <button onClick={(e) => { e.preventDefault(); handleDelete(Number(groupe.id)) }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
+                                            <Trash2 size={16} />
+                                        </button>
 
-                                            <button onClick={() => {
-                                                setModelCreateAbonnement(true)
-                                                setGroupeId(Number(groupe.id))
-                                            }
-                                            } className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition">
-                                                <Plus size={16} />
-                                            </button>
-                                        </div>
+                                        <button onClick={(e) => {
+                                            e.preventDefault();
+                                            setModelCreateAbonnement(true)
+                                            setGroupeId(Number(groupe.id))
+                                        }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
+                                            <Plus size={16} />
+                                        </button>
                                     </div>
+                                </div>
 
-                                    <p className="text-sm text-gray-600 mt-2">
-                                        Type : {groupe.type}
-                                    </p>
+                                <p className="text-sm text-gray-600 mb-2">
+                                    Type : <span className="font-semibold">{groupe.type}</span>
+                                </p>
 
-                                    <p className="text-sm text-gray-800 mt-2 leading-relaxed">
-                                        {groupe.description}
-                                    </p>
+                                <p className="text-sm text-gray-800 leading-relaxed mb-4">
+                                    {groupe.description}
+                                </p>
 
-                                    <div className="flex cursor-pointer items-center gap-2 mt-3 text-red-600 text-sm font-semibold">
-                                        Voir les abonnements
-                                        <ChevronDown
-                                            size={16}
-                                            className="transition-transform group-open:rotate-180"
-                                        />
-                                    </div>
-                                </summary>
+                                <div className="flex cursor-pointer items-center gap-2 text-red-600 text-sm font-semibold hover:text-red-700 transition-colors">
+                                    Voir les abonnements ({groupe.abonnements?.filter(a => Number(a.isArchived) == 0).length || 0})
+                                    <ChevronDown size={16} className="transition-transform duration-200 group-open:rotate-180" />
+                                </div>
+                            </summary>
 
-                                <div className="mt-4 space-y-3 overflow-x-auto">
+                            {/* CONTENT SCROLLABLE */}
+                            <div className="mt-4 max-h-[260px] overflow-y-auto scrollbar-thin scrollbar-thumb-red-300 scrollbar-track-gray-100 pb-2">
+                                <div className="space-y-3 min-h-[200px]">
                                     {groupe.abonnements?.map((abonnement) => {
                                         if (Number(abonnement.isArchived) == 0) {
                                             return (
                                                 <div
                                                     key={abonnement.id}
-                                                    className="
-                                            flex justify-between items-center
-                                            bg-red-50
-                                            border border-red-200
-                                            p-4 rounded-xl
-                                            shadow-sm
-                                            hover:shadow-md
-                                            transition
-                                        "
+                                                    className="flex justify-between items-center bg-gradient-to-r from-red-50/80 to-red-100/50 backdrop-blur-sm border border-red-200/50 p-4 rounded-xl shadow-sm hover:shadow-md hover:border-red-300 transition-all duration-200 group/abon"
                                                 >
                                                     {/* LEFT */}
-                                                    <div className="flex flex-col">
-                                                        <span className="font-semibold text-gray-800 text-sm">
+                                                    <div className="flex flex-col flex-1 min-w-0">
+                                                        <span className="font-semibold text-gray-800 text-sm truncate">
                                                             {abonnement.title}
                                                         </span>
-
-                                                        <span className="text-xs text-gray-500">
+                                                        <span className="text-xs text-gray-500 mt-1">
                                                             {abonnement.durationMonths} mois
                                                         </span>
                                                     </div>
 
                                                     {/* PRICE */}
-                                                    <div className="text-sm font-bold text-red-600">
+                                                    <div className="text-sm font-bold text-red-600 px-3 py-1 bg-red-100 rounded-full">
                                                         {abonnement.price} DH
                                                     </div>
 
                                                     {/* ACTIONS */}
-                                                    <div className="flex gap-2">
-                                                        <button onClick={() => {
-                                                            handleEditAbonnement(abonnement.id)
-                                                            setGroupeId(Number(groupe.id))
-                                                        }} className="bg-red-500 cursor-pointer text-white px-2 py-1 rounded text-xs hover:bg-red-600 transition">
+                                                    <div className="flex gap-1.5 ml-3 flex-shrink-0">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault(); e.stopPropagation();
+                                                                handleEditAbonnement(abonnement.id)
+                                                                setGroupeId(Number(groupe.id))
+                                                            }}
+                                                            className="bg-red-500 text-white px-2.5 py-1.5 rounded-lg text-xs hover:bg-red-600 transition-all shadow-sm hover:shadow-md flex items-center gap-1"
+                                                        >
                                                             <Edit size={14} />
                                                         </button>
 
-                                                        <button onClick={() => handleDeleteAbonnement(abonnement.id)} className="border cursor-pointer border-red-500 text-red-500 px-2 py-1 rounded text-xs hover:bg-red-500 hover:text-white transition">
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.preventDefault(); e.stopPropagation();
+                                                                handleDeleteAbonnement(abonnement.id)
+                                                            }}
+                                                            className="border border-red-500 text-red-500 px-2.5 py-1.5 rounded-lg text-xs hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center gap-1"
+                                                        >
                                                             <Trash2 size={14} />
                                                         </button>
                                                     </div>
                                                 </div>
                                             )
                                         }
+                                        return null;
                                     })}
+                                    {(!groupe.abonnements || groupe.abonnements.filter(a => Number(a.isArchived) == 0).length === 0) && (
+                                        <div className="text-center py-8 text-gray-400">
+                                            <Plus className="mx-auto h-12 w-12 mb-2 opacity-50" />
+                                            <p className="text-sm">Aucun abonnement actif</p>
+                                        </div>
+                                    )}
                                 </div>
-                            </details>
-                        )
-                    }
-                })
-            }
+                            </div>
+                        </details>
+                    )
+                }
+                return null;
+            })}
             {
                 modelOpenDelete && <DeleteGroupe onClose={() => setModelOpenDelete(false)} loading={isDeleting} onConfirm={confirmDelete} />
             }

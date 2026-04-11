@@ -41,6 +41,7 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get('me', [AuthController::class, "me"]);
     Route::apiResource("adherents", IndexController::class);
     Route::get("adherents/clubs/{ClubId}", [IndexController::class, "getAdherentsByClubId"]);
+    Route::get("adherents/exist/{Id}", [IndexController::class, "exist"]);
     Route::apiResource("transactions", TransactionController::class);
     Route::get('adherents/transactions/{transactionId}/recus', [FileController::class, "DownloadRecuPaiment"]);
     Route::get("adherents/subscriptions/{subscriptionId}/contrats", [FileController::class, "DownloadContrat"]);
@@ -59,7 +60,7 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get("adherents/status/actifs", [FilterController::class, "getActifsAdherents"]);
     Route::get("adherents/status/inactifs", [FilterController::class, "getInActifsAdherents"]);
     Route::get("adherents/status/HasRemainingAmount", [FilterController::class, "getAdherentsThatHasRemainingAmount"]);
-    Route::get("adherents/status/actifs/download",[FileController::class,"downloadActiveAdherents"]);
-    Route::get("adherents/status/inactifs/download",[FileController::class,"downloadInActiveAdherents"]);
-    Route::get("adherents/status/HasRemainingAmount/download",[FileController::class,"downloadAdherentsHasRemainingAmount"]);
+    Route::get("adherents/status/actifs/download", [FileController::class, "downloadActiveAdherents"]);
+    Route::get("adherents/status/inactifs/download", [FileController::class, "downloadInActiveAdherents"]);
+    Route::get("adherents/status/HasRemainingAmount/download", [FileController::class, "downloadAdherentsHasRemainingAmount"]);
 });

@@ -5,20 +5,28 @@ import { useForm } from "react-hook-form";
 import Loader from "../../loader";
 import { toast } from "react-toastify";
 import { transactionService } from "@/services/transactionService";
+import { ServiceAdherent } from "@/services/adherentsService";
+import { useState } from "react";
 type props = {
     onClose?: () => void;
     Cancel: () => void;
 }
 export default function Create({ onClose, Cancel }: props) {
-    const { register, handleSubmit, control, formState: { errors, isSubmitting }, reset } = useForm<TransactionType>({ resolver: zodResolver(TransactionSchema) as any})
+    const { register, handleSubmit, formState: { errors, isSubmitting }, reset } = useForm<TransactionType>({ resolver: zodResolver(TransactionSchema) as any })
+    const [text, setText] = useState<string>("")
     const onSubmit = async (transaction: TransactionType) => {
         try {
+            const adherent = await ServiceAdherent.exist(transaction.adherentId)
+
+            setText(adherent.data.firstName + " " + adherent.data.lastName);
+
             const res = await transactionService.create(transaction)
             toast.success(res.message)
             reset()
             onClose?.()
+
         } catch (err: any) {
-            if (err.response?.status === 422) {
+            if (err.response?.status === 422||err.response?.status === 404) {
                 const backendErrors = err.response.data.errors;
                 if (backendErrors) {
                     const firstFieldErrors = Object.values(backendErrors)[0] as string[];
@@ -32,7 +40,6 @@ export default function Create({ onClose, Cancel }: props) {
                 toast.error(err.message || "Erreur serveur");
             }
         }
-
     }
     return (
         <>
@@ -81,6 +88,7 @@ export default function Create({ onClose, Cancel }: props) {
                             <label className="block font-semibold mb-1">ID Adhérent</label>
                             <input type="number" {...register("adherentId")} className="focus:bg-red-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 focus:outline-none block w-full p-2.5 pr-10 " placeholder="Id Adherent..." />
                             {errors.adherentId && <p className="text-red-500 text-sm">{errors.adherentId.message}</p>}
+                            {text && <p className="text-red-500 text-sm">{text}</p>}
                         </div>
                         <div className="flex justify-center gap-2 mt-4">
                             <button type="button" onClick={() => Cancel()} className="px-4 py-2 cursor-pointer bg-gray-300 rounded disabled:opacity-50">
