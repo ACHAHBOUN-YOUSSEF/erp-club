@@ -25,9 +25,9 @@ class ExportByFilters implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
             'ID',
+            'Number',
+            'FullName',
             'CIN',
-            'Nom Complet',
-            'Tel',
             'Date inscription',
             'genre'
         ];
@@ -47,9 +47,9 @@ class ExportByFilters implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
             $adherent->id,
-            $adherent->cin ?? "----",
-            $adherent->firstName . " " . $adherent->lastName,
             $adherent->phonePrimary,
+            $adherent->firstName . " " . $adherent->lastName,
+            $adherent->cin ?? "----",
             $adherent->registrationDate,
             $adherent->gender ?? "----",
         ];
