@@ -423,7 +423,7 @@ class FileController extends Controller
                     'gender',
                     'phonePrimary',
                     'registrationDate'
-                )->orderBy("id", "desc")
+                )->orderBy("id", "asc")
                 ->get();
             $adherents = $allAdherents->filter(function ($adherent) {
                 foreach ($adherent->abonnements as $abonnement) {
