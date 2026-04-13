@@ -47,7 +47,7 @@ class ExportByFilters implements FromCollection, WithHeadings, WithMapping, With
     {
         return [
             $adherent->id,
-            $adherent->phonePrimary,
+            ltrim($adherent->phonePrimary, '0'),
             $adherent->firstName . " " . $adherent->lastName,
             $adherent->cin ?? "----",
             $adherent->registrationDate,
