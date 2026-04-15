@@ -13,17 +13,20 @@ class Permissions2Seeder extends Seeder
      */
     public function run(): void
     {
+        // $permissions=[
+        //     "export_adherents",
+        //     "filter_adherents",
+        //     "view_logs",
+        //     "download_adherents",
+        //     "view_transactions",
+        // ];
         $permissions=[
-            "export_adherents",
-            "filter_adherents",
-            "view_logs",
-            "download_adherents",
-            "view_transactions",
+            "view_outils"
         ];
         foreach ($permissions as $perm) {
             Permission::firstOrCreate(['name' => $perm, 'guard_name' => 'web']);
         }
-            Role::firstOrCreate(['name' => 'Commerciale', 'guard_name' => 'web']);
+            // Role::firstOrCreate(['name' => 'Commerciale', 'guard_name' => 'web']);
 
     }
 }
