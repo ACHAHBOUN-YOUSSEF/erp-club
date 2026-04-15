@@ -145,7 +145,7 @@ export default function Create({ onClose, clubs }: props) {
                                             <label className="flex items-center gap-2 cursor-pointer">
                                                 <input
                                                     type="radio"
-                                                    value="homme"
+                                                    value="HOMME"
                                                     {...register("gender")}
                                                     className="accent-red-600"
                                                 />
@@ -155,7 +155,7 @@ export default function Create({ onClose, clubs }: props) {
                                             <label className="flex items-center gap-2 cursor-pointer">
                                                 <input
                                                     type="radio"
-                                                    value="femme"
+                                                    value="FEMME"
                                                     {...register("gender")}
                                                     className="accent-red-600"
                                                 />
