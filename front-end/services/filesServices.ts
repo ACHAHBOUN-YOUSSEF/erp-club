@@ -40,5 +40,9 @@ export const FilesService = {
     async downloadAdherentsHasRemainingAmount() {
         const res = await http.get("/api/adherents/status/HasRemainingAmount/download", { responseType: "blob" })
         return res
+    },
+    async downLoadAdherentsByAbonnements(abonnementId: number) {
+        const res = await http.get(`/api/adherents/abonnements/${abonnementId}/download`, { responseType: "blob" })
+        return res
     }
 };

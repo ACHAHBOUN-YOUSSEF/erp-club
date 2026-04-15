@@ -9,7 +9,7 @@ import { AbonnementType } from "@/lib/validators/abonnements";
 import { groupeAbonnementsService } from "@/services/groupeAbonnementsService";
 import { AbonnementsService } from "@/services/abonnementService";
 import Link from "next/link";
-import { Download, UserCircle } from "lucide-react";
+import { Download, RefreshCcw, UserCircle } from "lucide-react";
 import { adherentType } from "@/lib/validators/adherents";
 import { ServiceAdherent } from "@/services/adherentsService";
 import LineLoader from "@/components/ui/LineLoader";
@@ -150,6 +150,19 @@ export default function Transactions() {
         try {
             const response = await FilesService.downloadAdherentsHasRemainingAmount()
             let filename = `Adhérents-ayant-reste-paiement.xlsx`
+            downloadBlob(response.data, filename);
+            toast.success('File téléchargé !');
+        } catch (err) {
+            toast.error('Probléme téléchargement');
+        } finally {
+            setIsBusy(false);
+        }
+    }
+    const downLoadAdherentsByAbonnements = async (abonnementId: number) => {
+        setIsBusy(true);
+        try {
+            const response = await FilesService.downLoadAdherentsByAbonnements(abonnementId)
+            let filename = `Adhérents-by-abonnements.xlsx`
             downloadBlob(response.data, filename);
             toast.success('File téléchargé !');
         } catch (err) {
@@ -319,13 +332,21 @@ export default function Transactions() {
                                                 ))}
                                         </select>
                                     </div>
-                                    <div>
+                                    <div className="flex ">
                                         <button
-                                            className="cursor-pointer px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                                            onClick={(() => setAdherents([]))}
-                                        >
-
-                                            reinitialiser</button>
+                                            className="cursor-pointer mr-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                                            onClick={(() => setAdherents([]))}>
+                                            <RefreshCcw/>
+                                        </button>
+                                        {
+                                            selectedAbonnement && (
+                                                <button
+                                                    className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                                                    onClick={(() => downLoadAdherentsByAbonnements(Number(selectedAbonnement)))}>
+                                                    <Download />
+                                                </button>
+                                            )
+                                        }
                                     </div>
                                 </div>
                                 <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">

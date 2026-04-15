@@ -15,17 +15,11 @@ use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VilleController;
 use App\Http\Middleware\AuthenticateSanctumJson;
-use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::middleware(AuthenticateSanctumJson::class)->group(function () {
-    Route::fallback(function () {
-        return response()->json([
-            "success" => false,
-            "message" => "API Route not found"
-        ], 404);
-    });
+    Route::fallback(function () {return response()->json(["success" => false,"message" => "API Route not found"], 404);});
     Route::apiResource('villes', VilleController::class);
     Route::apiResource('clubs', BrancheController::class);
     Route::get("clubs/villes/{villeId}", [BrancheController::class, "getClubsByVilleId"]);
@@ -63,4 +57,5 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get("adherents/status/actifs/download", [FileController::class, "downloadActiveAdherents"]);
     Route::get("adherents/status/inactifs/download", [FileController::class, "downloadInActiveAdherents"]);
     Route::get("adherents/status/HasRemainingAmount/download", [FileController::class, "downloadAdherentsHasRemainingAmount"]);
+    Route::get("adherents/abonnements/{abonnementId}/download", [FileController::class, "downLoadAdherentsByAbonnements"]);
 });

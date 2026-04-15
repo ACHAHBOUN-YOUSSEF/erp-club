@@ -6,6 +6,7 @@ use App\Exports\Adherents\ExportAll;
 use App\Exports\Adherents\ExportByFilters;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
+use App\Models\Abonnement;
 use App\Models\Adherent;
 use App\Models\Contrat;
 use App\Models\Facture;
@@ -434,6 +435,25 @@ class FileController extends Controller
                 return false;
             })->values();
             return Excel::download(new ExportByFilters($adherents), 'Adhérents-ayant-reste-paiement.xlsx');
+        } catch (\Exception $e) {
+            return ApiResponse::error(
+                'Erreur serveur: ' . $e->getMessage(),
+                500
+            );
+        }
+    }
+    public function downLoadAdherentsByAbonnements($abonnementId) {
+         try {
+           $allAdherents = Adherent::with("abonnements")->orderby("id", "desc")->get();
+           $abonnement=Abonnement::find($abonnementId);
+            $adherents = $allAdherents->filter(function ($adherent) use ($abonnementId) {
+                if ($adherent->abonnements->isEmpty()) {
+                    return false;
+                }
+                $abonnement = $adherent->abonnements->last();
+                return $abonnement->id == $abonnementId;
+            })->values();
+            return Excel::download(new ExportByFilters($adherents), 'Adhérents'.$abonnement->title.'.xlsx');
         } catch (\Exception $e) {
             return ApiResponse::error(
                 'Erreur serveur: ' . $e->getMessage(),
