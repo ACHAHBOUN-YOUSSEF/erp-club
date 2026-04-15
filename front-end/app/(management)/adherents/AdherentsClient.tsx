@@ -20,6 +20,7 @@ import { DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu";
 import EditAdherent from "@/components/ui/modals/adherents/edit";
 import { downloadBlob } from "@/helpers/helpers";
 import { FilesService } from "@/services/filesServices";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function AdherentsClient() {
     const [clubs, setClubs] = useState([])
@@ -34,6 +35,9 @@ export default function AdherentsClient() {
     const [adherentId, setAdherentId] = useState<number>()
     const [adherentToEdit, setAdherentToEdit] = useState<adherentType | null>(null)
     const [selectedClubId, setSelectedClubId] = useState<number | null>(null);
+    // Permissions
+    const canDownloadAdherents = usePermission("download_adherents")
+    const canDeleteAdherents = usePermission("delete_adherents")
     useEffect(() => {
         const clubParam = searchParams.get('club');
         if (clubParam) {
@@ -198,13 +202,17 @@ export default function AdherentsClient() {
                                     <Plus />
                                 </button>
                             </div>
-                            <div>
-                                <button className="cursor-pointer flex items-centery"
-                                    onClick={() => DownloadAllUsersAsExcelFile()}
-                                >
-                                    <Download />
-                                </button>
-                            </div>
+                            {
+                                canDownloadAdherents && (
+                                    <div>
+                                        <button className="cursor-pointer flex items-centery"
+                                            onClick={() => DownloadAllUsersAsExcelFile()}
+                                        >
+                                            <Download />
+                                        </button>
+                                    </div>
+                                )
+                            }
                         </div>
                         <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">
 
@@ -235,7 +243,7 @@ export default function AdherentsClient() {
                                                         </td>
                                                         <td className="px-1  text-center whitespace-nowrap">
                                                             <span className="font-mono bg-gray-100 px-1 py-1 rounded-full text-sm font-semibold">
-                                                                {adherent.cin?adherent.cin.toUpperCase():'--'}
+                                                                {adherent.cin ? adherent.cin.toUpperCase() : '--'}
                                                             </span>
                                                         </td>
                                                         <td className="px-1  text-center hover:underline hover:cursor-pointer text-sm text-gray-900">
@@ -284,14 +292,15 @@ export default function AdherentsClient() {
                                                                 >
                                                                     <Edit size={20} />
                                                                 </button>
-
-                                                                <button
-                                                                    onClick={() => handleDelete(Number(adherent.id))}
-                                                                    className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                                                                    title="Supprimer"
-                                                                >
-                                                                    <Trash2 size={20} />
-                                                                </button>
+                                                                {canDeleteAdherents && (
+                                                                    <button
+                                                                        onClick={() => handleDelete(Number(adherent.id))}
+                                                                        className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                        title="Supprimer"
+                                                                    >
+                                                                        <Trash2 size={20} />
+                                                                    </button>
+                                                                )}
                                                             </div>
                                                         </td>
                                                     </tr>

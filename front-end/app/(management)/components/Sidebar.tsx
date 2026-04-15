@@ -12,7 +12,13 @@ export default function Sidebar({ isOpen }: props) {
     const [opensettings, setOpenSettings] = useState(false)
     const [openOutils, setOpenOutils] = useState(false)
     const [isSideBarOpen, setIsSideBarOpen] = useState(true)
-    const canViewSettings=usePermission("view_settings")
+    const canViewSettings = usePermission("view_settings")
+    const canViewdashboard = usePermission("view_dashboard")
+    const canViewOutils = usePermission("view_outils")
+    const canViewusers = usePermission("view_users")
+    const canViewTransactions = usePermission("view_transactions")
+    const canFilterAdherents = usePermission("filter_adherents")
+    const canExportAdherents = usePermission("export_adherents")
     return (
 
         <aside className={`h-screen bg-black/30 ${isOpen ? 'hidden' : ''} text-gray-100 flex flex-col p-2 gap-2 overflow-y-auto overflow-x-hidden ${isSideBarOpen ? "w-50" : "w-15"} transition-all duration-500 ease-in-out`}>
@@ -29,16 +35,11 @@ export default function Sidebar({ isOpen }: props) {
                 }
             </div>
             <Link href={"/dashboard"}>
-                <button
-                    className="flex items-center justify-between cursor-pointer px-3 py-2 w-full font-bold  hover:bg-red-600 rounded-md transition"
-                >
+                <button disabled={!canViewdashboard} className={`flex items-center justify-between ${!canViewdashboard ? "cursor-not-allowed opacity-50" : newFunction()} px-3 py-2 w-full font-bold hover:bg-red-600 rounded-md transition`}                >
                     <div className="flex items-center gap-3">
                         <Home className="w-5 text-black" />
                         {
-                            isSideBarOpen && (
-
-                                <span>Dashboard</span>
-
+                            isSideBarOpen && (<span>Dashboard</span>
                             )
                         }
                     </div>
@@ -74,8 +75,8 @@ export default function Sidebar({ isOpen }: props) {
                                     adhérents
                                 </Link>
                                 <Link
-                                    href="/adherents/filter"
-                                    className="px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold rounded-md transition"
+                                    href={canFilterAdherents ? "/adherents/filter" : "#"}
+                                    className={`${!canFilterAdherents ? "cursor-not-allowed opacity-50" : newFunction()} px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold rounded-md transition`}
                                 >
                                     <Filter className="w-4 h-4 mr-2 text-black" />
                                     Filter
@@ -88,8 +89,8 @@ export default function Sidebar({ isOpen }: props) {
                                     Recherche
                                 </Link>
                                 <Link
-                                    href="/adherents/export"
-                                    className="px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold rounded-md transition"
+                                    href={canExportAdherents ? "/adherents/export" : "#"}
+                                    className={`${!canExportAdherents ? "cursor-not-allowed opacity-50" : newFunction()} px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold rounded-md transition`}
                                 >
                                     <Download className="w-4 h-4 mr-2 text-black" />
                                     Export
@@ -117,13 +118,18 @@ export default function Sidebar({ isOpen }: props) {
             </button>
             {
                 openServices && (
-                    <div className="flex flex-col ml-6 mt-1 gap-1">
+                    <div className="flex flex-col ml-6 mt-1 gap-1 ">
                         {isSideBarOpen && (
                             <>
                                 <Link
-                                    href="/services/personnel"
-                                    className="px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold rounded-md transition"
-                                >
+                                    href={canViewusers ? "/services/personnel" : "#"}
+                                    onClick={(e) => {
+                                        if (!canViewusers) e.preventDefault();
+                                    }}
+                                    className={`${!canViewusers ? "cursor-not-allowed opacity-50" : "cursor-pointer"} 
+        px-3 py-1 flex items-center 
+        ${canViewusers ? "hover:bg-red-100 hover:text-black" : ""} 
+        font-bold rounded-md transition`}                                >
                                     <Users className="w-4 h-4 mr-2 text-black" />
                                     Personnel
                                 </Link>
@@ -135,9 +141,8 @@ export default function Sidebar({ isOpen }: props) {
                                     Abonnements
                                 </Link>
                                 <Link
-                                    href="/services/transactions"
-                                    className="px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold  rounded-md transition"
-                                >
+                                    href={canViewTransactions ? "/services/transactions" : "#"}
+                                    className={`${!canViewTransactions ? "cursor-not-allowed opacity-50" : "cursor-pointer"} px-3 py-1 flex items-center hover:bg-red-100 hover:text-black font-bold  rounded-md transition`}>
                                     <Receipt className="w-4 h-4 mr-2 text-black" />
                                     Transactions
                                 </Link>
@@ -146,9 +151,9 @@ export default function Sidebar({ isOpen }: props) {
                     </div>
                 )
             }
-            <button
+            <button disabled={!canViewSettings}
                 onClick={() => setOpenSettings(!opensettings)}
-                className={`flex items-center justify-between cursor-pointer px-3 py-2 w-full font-bold  hover:bg-red-600 rounded-md transition`}>
+                className={`flex items-center justify-between ${!canViewSettings ? "cursor-not-allowed opacity-50" : newFunction()}  px-3 py-2 w-full font-bold  hover:bg-red-600 rounded-md transition`}>
                 <div className="flex items-center gap-3">
                     <Settings className="w-5 h-5 text-black" />
                     {isSideBarOpen && (
@@ -178,7 +183,8 @@ export default function Sidebar({ isOpen }: props) {
             }
             <button
                 onClick={() => setOpenOutils(!openOutils)}
-                className="flex items-center justify-between cursor-pointer px-3 py-2 w-full font-bold  hover:bg-red-600 rounded-md transition"
+                disabled={!canViewOutils}
+                className={`flex items-center justify-between ${!canViewOutils ? "cursor-not-allowed opacity-50" : newFunction()} px-3 py-2 w-full font-bold  hover:bg-red-600 rounded-md transition`}
             >
                 <div className="flex items-center gap-3">
                     <Wrench className="w-5 h-5 text-black" />
@@ -225,4 +231,8 @@ export default function Sidebar({ isOpen }: props) {
             </button> */}
         </aside>
     );
+
+    function newFunction() {
+        return "cursor-pointer";
+    }
 }

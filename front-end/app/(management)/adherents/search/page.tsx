@@ -12,6 +12,7 @@ import NewSubscription from "@/components/ui/modals/subscriptions/create";
 import { useRouter } from "next/navigation";
 import EditAdherent from "@/components/ui/modals/adherents/edit";
 import LineLoader from "@/components/ui/LineLoader";
+import { usePermission } from "@/hooks/usePermission";
 
 export default function Abonnements() {
     const [clubs, setClubs] = useState([])
@@ -26,6 +27,7 @@ export default function Abonnements() {
     const [adherentToEdit, setAdherentToEdit] = useState<adherentType | null>(null)
     const [serachable, setSearchable] = useState<boolean>(false);
     const [onSearch, setOnSearch] = useState(false)
+    const canDeleteAdherents = usePermission("delete_adherents")
 
     const router = useRouter()
     const handleEdit = async (id: number) => {
@@ -253,14 +255,17 @@ export default function Abonnements() {
                                                                     >
                                                                         <Edit size={20} />
                                                                     </button>
-
-                                                                    <button
-                                                                        onClick={() => { handleDelete(Number(adherent.id)); setAdherentId(adherent.id) }}
-                                                                        className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                                                                        title="Supprimer"
-                                                                    >
-                                                                        <Trash2 size={20} />
-                                                                    </button>
+                                                                    {
+                                                                        canDeleteAdherents && (
+                                                                            <button
+                                                                                onClick={() => { handleDelete(Number(adherent.id)); setAdherentId(adherent.id) }}
+                                                                                className="p-1 cursor-pointer text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                                                                title="Supprimer"
+                                                                            >
+                                                                                <Trash2 size={20} />
+                                                                            </button>
+                                                                        )
+                                                                    }
                                                                 </div>
                                                             </td>
                                                         </tr>

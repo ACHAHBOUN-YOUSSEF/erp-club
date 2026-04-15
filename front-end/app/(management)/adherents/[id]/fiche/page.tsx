@@ -11,6 +11,7 @@ import EditSubscription from "@/components/ui/modals/subscriptions/edit";
 import TransactionsHistory from "@/components/ui/modals/transactions/transactionsLog";
 import Spinner from "@/components/ui/spinner";
 import { downloadBlob } from "@/helpers/helpers";
+import { usePermission } from "@/hooks/usePermission";
 import { adherentType } from "@/lib/validators/adherents";
 import { PeriodeType } from "@/lib/validators/periodes";
 import { SubscriptionType } from "@/lib/validators/subscriptions";
@@ -49,6 +50,10 @@ export default function AdherentFiche() {
     const [subscriptionOnEdit, setSubscriptionOnEdit] = useState<SubscriptionType | null>(null)
     const [adherentToEdit, setAdherentToEdit] = useState<adherentType | null>(null)
     const [isOpneModalEditAdherent, setIsOpneModalEditAdherent] = useState(false)
+    // Permissions
+    const canDeleteAdherents = usePermission("delete_adherents")
+    const canViewLogs = usePermission("view_logs")
+
     const handleDelete = (id: number) => {
         setAherentIdToDelete(id)
         setIsOpneModalDeleteAdherent(true)
@@ -376,11 +381,13 @@ export default function AdherentFiche() {
                                 <button onClick={() => handleEdit(id)} className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200">
                                     <Edit />
                                 </button>
-                                <button onClick={() => handleDelete(Number(adherent?.id))}
-                                    className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
-                                >
-                                    <Trash2 />
-                                </button>
+                                {canDeleteAdherents && (
+                                    <button onClick={() => handleDelete(Number(adherent?.id))}
+                                        className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                    >
+                                        <Trash2 />
+                                    </button>
+                                )}
 
                                 <button onClick={() => loadAdherentInfos(id)}
                                     className="cursor-pointer p-2.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
@@ -670,7 +677,7 @@ export default function AdherentFiche() {
                             ) : ("")
                         }
                         {
-                            adherent?.logs && adherent.logs.length > 0 ? (
+                            canViewLogs&&adherent?.logs && adherent.logs.length > 0 ? (
                                 <section className="bg-gray-50 rounded-xl p-4 shadow">
                                     <LogsHistory logs={adherent?.logs ?? []} />
                                 </section>

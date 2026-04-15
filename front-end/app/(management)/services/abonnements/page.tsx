@@ -13,12 +13,15 @@ import { GroupeAbonnementType } from "@/lib/validators/groupeAbonnements"
 import GroupeContainer from "@/components/ui/containers/groupesContainer"
 import Create from "@/components/ui/modals/abonnements/Create"
 import CreateGroupe from "@/components/ui/modals/groupes/Create"
+import { usePermission } from "@/hooks/usePermission"
 
 export default function Abonnements() {
     const [clubs, setClubs] = useState([])
     const [isBusy, setIsBusy] = useState(false)
     const [groupes, setGroupes] = useState<GroupeAbonnementType[]>([])
     const [isOpneModalCreateGroupe, setIsOpneModalCreateGroupe] = useState(false)
+    // Permissions
+    const canCreateGroupeAbonnements = usePermission("create_groupe_abonnements")
     const loadGroupesByClubId = async (clubId: number) => {
         setIsBusy(true)
         try {
@@ -90,13 +93,17 @@ export default function Abonnements() {
                                 </DropdownMenuContent>
 
                             </DropdownMenu>
-                            <div>
-                                <button className="cursor-pointer flex items-centery"
-                                    onClick={() => setIsOpneModalCreateGroupe(true)}
-                                >
-                                    <Plus />
-                                </button>
-                            </div>
+                            {
+                                canCreateGroupeAbonnements && (
+                                    <div>
+                                        <button className="cursor-pointer flex items-centery"
+                                            onClick={() => setIsOpneModalCreateGroupe(true)}
+                                        >
+                                            <Plus />
+                                        </button>
+                                    </div>
+                                )
+                            }
                         </div>
                         <div className="relative overflow-x-auto shadow-xs rounded-base border border-default rounded-lg">
                             <div className="p-4 sm:p-8">

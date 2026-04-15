@@ -96,6 +96,7 @@ class IndexController extends Controller
             $adherent->registrationDate = now()->format("Y-m-d");
             $adherent->insuranceEndDate = now()->addYear()->format("Y-m-d");
             $adherent->addedByUserId = $request->user()->id;
+            $adherent->added_by = strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName);
             $adherent->brancheId = $request->user()->brancheId;
             $adherent->save();
             $adherent->load("branche");

@@ -12,6 +12,7 @@ import DeleteAbonnement from "../modals/abonnements/delete";
 import { AbonnementsService } from "@/services/abonnementService";
 import { AbonnementType } from "@/lib/validators/abonnements";
 import EditAbonnement from "../modals/abonnements/Edit";
+import { usePermission } from "@/hooks/usePermission";
 
 type props = {
     groupes: GroupeAbonnementType[],
@@ -32,6 +33,13 @@ export default function GroupeContainer({ groupes, isBusy, reload, clubs }: prop
     const [modelEditAbonnement, setModelEditAbonnement] = useState(false)
     const [AbonnementToEdit, setAbonnementToEdit] = useState<AbonnementType | null>(null)
     const [GroupeId, setGroupeId] = useState<number>(0)
+    // Permissions
+    const canCreateAbonnements = usePermission("create_abonnements")
+    const canEditAbonnements = usePermission("edit_abonnements")
+    const canDeleteAbonnements = usePermission("delete_abonnements")
+    const canEditGroupeAbonnements = usePermission("edit_abonnements")
+    const canDeleteGroupeAbonnements = usePermission("delete_abonnements")
+
     const handleDelete = (id: number) => {
         setModelOpenDelete(true)
         setGroupeIdToDelete(id)
@@ -140,7 +148,7 @@ export default function GroupeContainer({ groupes, isBusy, reload, clubs }: prop
                     return (
                         <details
                             key={groupe.id}
-                            className={`group bg-white rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 h-[${3+(groupe.abonnements?.filter(a => Number(a.isArchived) == 0).length || 0)}00px] overflow-hidden`}
+                            className={`group bg-white rounded-2xl p-5 sm:p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-gray-100 h-[${3 + (groupe.abonnements?.filter(a => Number(a.isArchived) == 0).length || 0)}00px] overflow-hidden`}
                         >
                             {/* SUMMARY */}
                             <summary className="list-none cursor-pointer outline-none">
@@ -150,21 +158,31 @@ export default function GroupeContainer({ groupes, isBusy, reload, clubs }: prop
                                     </h2>
 
                                     <div className="flex gap-2">
-                                        <button onClick={(e) => { e.preventDefault(); handleEdit(Number(groupe.id)) }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
-                                            <Edit size={16} />
-                                        </button>
-
-                                        <button onClick={(e) => { e.preventDefault(); handleDelete(Number(groupe.id)) }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
-                                            <Trash2 size={16} />
-                                        </button>
-
-                                        <button onClick={(e) => {
-                                            e.preventDefault();
-                                            setModelCreateAbonnement(true)
-                                            setGroupeId(Number(groupe.id))
-                                        }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
-                                            <Plus size={16} />
-                                        </button>
+                                        {
+                                            canEditGroupeAbonnements && (
+                                                <button onClick={(e) => { e.preventDefault(); handleEdit(Number(groupe.id)) }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
+                                                    <Edit size={16} />
+                                                </button>
+                                            )
+                                        }
+                                        {
+                                            canDeleteGroupeAbonnements && (
+                                                <button onClick={(e) => { e.preventDefault(); handleDelete(Number(groupe.id)) }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )
+                                        }
+                                        {
+                                            canCreateAbonnements && (
+                                                <button onClick={(e) => {
+                                                    e.preventDefault();
+                                                    setModelCreateAbonnement(true)
+                                                    setGroupeId(Number(groupe.id))
+                                                }} className="cursor-pointer bg-white/60 p-2 rounded-lg hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md">
+                                                    <Plus size={16} />
+                                                </button>
+                                            )
+                                        }
                                     </div>
                                 </div>
 
@@ -209,26 +227,33 @@ export default function GroupeContainer({ groupes, isBusy, reload, clubs }: prop
 
                                                     {/* ACTIONS */}
                                                     <div className="flex gap-1.5 ml-3 flex-shrink-0">
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.preventDefault(); e.stopPropagation();
-                                                                handleEditAbonnement(abonnement.id)
-                                                                setGroupeId(Number(groupe.id))
-                                                            }}
-                                                            className="bg-red-500 text-white px-2.5 py-1.5 rounded-lg text-xs hover:bg-red-600 transition-all shadow-sm hover:shadow-md flex items-center gap-1"
-                                                        >
-                                                            <Edit size={14} />
-                                                        </button>
-
-                                                        <button
-                                                            onClick={(e) => {
-                                                                e.preventDefault(); e.stopPropagation();
-                                                                handleDeleteAbonnement(abonnement.id)
-                                                            }}
-                                                            className="border border-red-500 text-red-500 px-2.5 py-1.5 rounded-lg text-xs hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center gap-1"
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                                        {
+                                                            canEditAbonnements && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault(); e.stopPropagation();
+                                                                        handleEditAbonnement(abonnement.id)
+                                                                        setGroupeId(Number(groupe.id))
+                                                                    }}
+                                                                    className="bg-red-500 text-white px-2.5 py-1.5 rounded-lg text-xs hover:bg-red-600 transition-all shadow-sm hover:shadow-md flex items-center gap-1"
+                                                                >
+                                                                    <Edit size={14} />
+                                                                </button>
+                                                            )
+                                                        }
+                                                        {
+                                                            canDeleteAbonnements && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault(); e.stopPropagation();
+                                                                        handleDeleteAbonnement(abonnement.id)
+                                                                    }}
+                                                                    className="border border-red-500 text-red-500 px-2.5 py-1.5 rounded-lg text-xs hover:bg-red-500 hover:text-white transition-all shadow-sm hover:shadow-md flex items-center gap-1"
+                                                                >
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            )
+                                                        }
                                                     </div>
                                                 </div>
                                             )
