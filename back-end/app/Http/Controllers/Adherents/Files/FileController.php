@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Adherents\Files;
 
 use App\Exports\Adherents\ExportAll;
 use App\Exports\Adherents\ExportByFilters;
+use App\Exports\Transactions\All;
 use App\Helpers\ApiResponse;
 use App\Http\Controllers\Controller;
 use App\Models\Abonnement;
@@ -442,10 +443,11 @@ class FileController extends Controller
             );
         }
     }
-    public function downLoadAdherentsByAbonnements($abonnementId) {
-         try {
-           $allAdherents = Adherent::with("abonnements")->orderby("id", "desc")->get();
-           $abonnement=Abonnement::find($abonnementId);
+    public function downLoadAdherentsByAbonnements($abonnementId)
+    {
+        try {
+            $allAdherents = Adherent::with("abonnements")->orderby("id", "desc")->get();
+            $abonnement = Abonnement::find($abonnementId);
             $adherents = $allAdherents->filter(function ($adherent) use ($abonnementId) {
                 if ($adherent->abonnements->isEmpty()) {
                     return false;
@@ -453,12 +455,79 @@ class FileController extends Controller
                 $abonnement = $adherent->abonnements->last();
                 return $abonnement->id == $abonnementId;
             })->values();
-            return Excel::download(new ExportByFilters($adherents), 'Adhérents'.$abonnement->title.'.xlsx');
+            return Excel::download(new ExportByFilters($adherents), 'Adhérents' . $abonnement->title . '.xlsx');
         } catch (\Exception $e) {
             return ApiResponse::error(
                 'Erreur serveur: ' . $e->getMessage(),
                 500
             );
+        }
+    }
+    public function DownloadTransactionsByDay(string $day, Request $request)
+    {
+        try {
+            $parsedDate = \Carbon\Carbon::parse($day)->format('Y-m-d');
+            $query = DB::table("transactions")
+                ->select([
+                    "transactions.id",
+                    "transactions.montant",
+                    "transactions.transactionDate",
+                    "transactions.executedByUserId",
+                    "transactions.targetAdherentId",
+                    "transactions.description",
+                    "transactions.modePaiement",
+                    "transactions.updated_at",
+                    "transactions.created_at",
+                    "adherents.firstName",
+                    "adherents.lastName",
+                    "users.firstName as userFirstName",
+                    "users.lastName as userLastName"
+                ])
+                ->leftJoin("adherents", "transactions.targetAdherentId", "=", "adherents.id")
+                ->leftJoin("users", "transactions.executedByUserId", "=", "users.id")
+                ->where('transactions.brancheId', $request->user()->brancheId)
+                ->where('transactions.type', 'income')
+                ->whereDate('transactions.transactionDate', $parsedDate);
+
+            $transactions = $query->get();
+
+            return Excel::download(new All($transactions), 'transactions.xlsx');
+        } catch (\Exception $e) {
+            return ApiResponse::error("Date invalide: {$day}", 400, $e->getMessage());
+        }
+    }
+    public function DownloadTransactionsByPeriode(string $startDate, string $endDate, Request $request)
+    {
+        try {
+            $start = \Carbon\Carbon::parse($startDate)->format('Y-m-d');
+            $end = \Carbon\Carbon::parse($endDate)->format('Y-m-d');
+            $query = DB::table("transactions")
+                ->select([
+                    "transactions.id",
+                    "transactions.montant",
+                    "transactions.transactionDate",
+                    "transactions.executedByUserId",
+                    "transactions.targetAdherentId",
+                    "transactions.description",
+                    "transactions.modePaiement",
+                    "transactions.updated_at",
+                    "transactions.created_at",
+                    "adherents.firstName",
+                    "adherents.lastName",
+                    "users.firstName as userFirstName",
+                    "users.lastName as userLastName"
+                ])
+                ->leftJoin("adherents", "transactions.targetAdherentId", "=", "adherents.id")
+                ->leftJoin("users", "transactions.executedByUserId", "=", "users.id")
+                ->where('transactions.brancheId', $request->user()->brancheId)
+                ->where('transactions.type', 'income')
+                ->whereBetween('transactionDate', [$start, $end]);
+
+            $transactions = $query->get();
+
+            return Excel::download(new All($transactions), 'transactions.xlsx');
+        } catch (\Exception $e) {
+            return ApiResponse::error("Periode  invalide ", 400, $e->getMessage());
         }
     }
 }

@@ -44,5 +44,13 @@ export const FilesService = {
     async downLoadAdherentsByAbonnements(abonnementId: number) {
         const res = await http.get(`/api/adherents/abonnements/${abonnementId}/download`, { responseType: "blob" })
         return res
+    },
+    async DownloadTransactionsByDay(day: string) {
+        const res = await http.get(`/api/transactions/${day}/download`, { responseType: "blob" })
+        return res
+    },
+    async DownloadTransactionsByPeriode(startDate: string, endDate: string) {
+        const res = await http.get(`/api/transactions/${startDate}/${endDate}/download`,{responseType:"blob"})
+        return res
     }
 };

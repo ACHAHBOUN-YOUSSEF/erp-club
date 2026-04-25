@@ -58,4 +58,6 @@ Route::middleware(AuthenticateSanctumJson::class)->group(function () {
     Route::get("adherents/status/inactifs/download", [FileController::class, "downloadInActiveAdherents"]);
     Route::get("adherents/status/HasRemainingAmount/download", [FileController::class, "downloadAdherentsHasRemainingAmount"]);
     Route::get("adherents/abonnements/{abonnementId}/download", [FileController::class, "downLoadAdherentsByAbonnements"]);
+    Route::get("transactions/{day}/download",[FileController::class,"DownloadTransactionsByDay"]);
+    Route::get("transactions/{startDate}/{endDate}/download",[FileController::class,"DownloadTransactionsByPeriode"]);
 });

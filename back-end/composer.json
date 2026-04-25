@@ -10,6 +10,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
+        "paperdoc-dev/paperdoc-lib": "^0.4.0",
         "phpoffice/phpword": "^1.4",
         "spatie/laravel-permission": "^6.24"
     },

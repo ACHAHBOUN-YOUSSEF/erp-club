@@ -347,7 +347,11 @@ export default function AdherentFiche() {
                                     <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => copy(String(adherent?.firstName.toLocaleUpperCase() + " " + adherent?.lastName.toLocaleUpperCase()), "Nom Complet copiée")} />
                                 </div>
                                 <Info label="Branche" value={adherent?.club?.name} />
-                                <Info label="Téléphone" value={adherent?.phonePrimary} />
+                                <div className="flex items-center" >
+                                    <Info label="Téléphone" value={adherent?.phonePrimary} />
+                                    <Copy size={16} className="rounded cursor-pointer ml-4" onClick={() => copy(adherent?.phonePrimary.toLocaleUpperCase(),"Téléphone  copiée")} />
+
+                                </div>
                                 {
                                     adherent?.phoneSecondary && (<Info label="Téléphone Secondaire" value={adherent?.phoneSecondary} />)
                                 }
@@ -677,7 +681,7 @@ export default function AdherentFiche() {
                             ) : ("")
                         }
                         {
-                            canViewLogs&&adherent?.logs && adherent.logs.length > 0 ? (
+                            canViewLogs && adherent?.logs && adherent.logs.length > 0 ? (
                                 <section className="bg-gray-50 rounded-xl p-4 shadow">
                                     <LogsHistory logs={adherent?.logs ?? []} />
                                 </section>

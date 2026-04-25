@@ -1,5 +1,5 @@
 "use client";
-import { Calendar, Check, Plus, X } from "lucide-react"
+import { Calendar, Check, Download, Plus, X } from "lucide-react"
 import { clubsService } from "@/services/clubs.Service"
 import { useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -8,6 +8,8 @@ import { transactionService } from "@/services/transactionService";
 import { TransactionCards } from "@/components/ui/cards/TransactionCards";
 import { TransactionType } from "@/lib/validators/transactions";
 import Create from "@/components/ui/modals/transactions/Create";
+import { downloadBlob } from "@/helpers/helpers";
+import { FilesService } from "@/services/filesServices";
 
 export default function Transactions() {
     const [clubs, setClubs] = useState([])
@@ -57,6 +59,36 @@ export default function Transactions() {
         setIsBusy(false)
 
     }
+    const DownloadTransactionsByDay = async () => {
+        setIsBusy(true);
+        try {
+            const response = await FilesService.DownloadTransactionsByDay(dateUnique);
+            let filename = `transactons ${dateUnique} .xlsx`
+            downloadBlob(response.data, filename);
+            toast.success('Fichier téléchargé !');
+        } catch (err) {
+            toast.error('Probléme téléchargement');
+        } finally {
+            setIsBusy(false);
+        }
+    }
+    const DownloadTransactionsByPeriode = async () => {
+        setIsBusy(true);
+        try {
+            const response = await FilesService.DownloadTransactionsByPeriode(dateDebut, dateFin);
+            let filename = `transactons ${dateDebut} -- ${dateFin} .xlsx`
+            downloadBlob(response.data, filename);
+            toast.success('Fichier téléchargé !');
+        } catch (err) {
+            toast.error('Probléme téléchargement');
+        } finally {
+            setIsBusy(false);
+        }
+    }
+    const hide = () => {
+        setTransactionsByDay([])
+        setTransactionsByPeriode([])
+    }
     return (
         <>
             <div className="bg-red-100 dark:bg-black m-2 p-2 rounded-lg">
@@ -81,7 +113,7 @@ export default function Transactions() {
                                     {/* Boutons principaux toujours visibles - RESPONSIVE */}
                                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-6 sm:mb-8 justify-center">
                                         <button
-                                            onClick={() => setActiveForm(activeForm === 'date' ? null : 'date')}
+                                            onClick={() =>{hide();setActiveForm(activeForm === 'date' ? null : 'date')}}
                                             className={`cursor-pointer px-4 sm:px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 w-full sm:w-auto ${activeForm === 'date'
                                                 ? 'bg-red-600 text-white shadow-lg text-sm sm:text-base'
                                                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-sm'
@@ -91,7 +123,7 @@ export default function Transactions() {
                                             <span className="whitespace-nowrap">Date Unique</span>
                                         </button>
                                         <button
-                                            onClick={() => setActiveForm(activeForm === 'periode' ? null : 'periode')}
+                                            onClick={() =>{hide();setActiveForm(activeForm === 'periode' ? null : 'periode')}}
                                             className={`cursor-pointer px-4 sm:px-6 py-3 rounded-lg font-medium transition-all flex items-center justify-center gap-2 w-full sm:w-auto ${activeForm === 'periode'
                                                 ? 'bg-red-600 text-white shadow-lg text-sm sm:text-base'
                                                 : 'bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-sm'
@@ -150,6 +182,17 @@ export default function Transactions() {
                                                     <X className="w-4 h-4 flex-shrink-0" />
                                                     Reset
                                                 </button>
+                                                {
+                                                    transactionsByPeriode.length > 0 && (
+                                                        <button
+                                                            onClick={() => { DownloadTransactionsByPeriode() }}
+                                                            className="cursor-pointer px-6 sm:px-8 py-3 bg-green-700 text-white rounded-lg font-medium hover:bg-green-600 flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
+                                                        >
+                                                            <Download className="w-4 h-4 flex-shrink-0" />
+                                                            Donwload
+                                                        </button>
+                                                    )
+                                                }
                                             </div>
                                             {transactionsByPeriode.length > 0 && (
                                                 <div className="mt-6">
@@ -192,6 +235,17 @@ export default function Transactions() {
                                                     <X className="w-4 h-4 flex-shrink-0" />
                                                     Reset
                                                 </button>
+                                                {
+                                                    transactionsByDay.length > 0 && (
+                                                        <button
+                                                            onClick={() => { DownloadTransactionsByDay() }}
+                                                            className="cursor-pointer px-6 sm:px-8 py-3 bg-green-700 text-white rounded-lg font-medium hover:bg-green-600 flex items-center justify-center gap-2 transition-all w-full sm:w-auto text-sm sm:text-base"
+                                                        >
+                                                            <Download className="w-4 h-4 flex-shrink-0" />
+                                                            Donwload
+                                                        </button>
+                                                    )
+                                                }
                                             </div>
 
                                             {/* ✅ TransactionCards avec info */}
