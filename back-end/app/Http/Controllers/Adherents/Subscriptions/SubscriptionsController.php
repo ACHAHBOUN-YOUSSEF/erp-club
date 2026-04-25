@@ -13,6 +13,7 @@ use App\Models\Transaction;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class SubscriptionsController extends Controller
@@ -104,7 +105,7 @@ class SubscriptionsController extends Controller
                     $amount = (float) $request->montant;
                     if ($amount >= 0) {
                         $description = "Nouvelle souscription enregistrée ! Paiement reçu : {$request->montant} DH. Reste à payer : {$request->remainingAmount} DH. Continuez vos efforts !";
-                        Transaction::create([
+                        $transaction = Transaction::create([
                             "type" => "income",
                             "montant" => $request->montant,
                             "transactionDate" => Carbon::now()->format('Y-m-d H:i'),
@@ -115,6 +116,7 @@ class SubscriptionsController extends Controller
                             "modePaiement" => $request->modePaiement,
                             "subscriptionsId" => $subscription->id
                         ]);
+                        Log::channel("transactions_logs")->info("T" . $transaction->id . "- Création d'une nouvelle transaction avec le montant  « " . $transaction->montant . " » via " . $request->user()->firstName . " " . $request->user()->lastName);
                     }
                 }
                 DB::commit();
@@ -250,7 +252,7 @@ class SubscriptionsController extends Controller
                 $amount = (float) $request->montant;
                 if ($amount >= 0) {
                     $description = "Paiement mis à jour : {$request->montant} DH ajoutés. Restez motivé et dépassez vos limites !";
-                    Transaction::create([
+                    $transaction=Transaction::create([
                         "type" => "income",
                         "montant" => $request->montant,
                         "transactionDate" => Carbon::now()->format('Y-m-d H:i'),
@@ -261,6 +263,7 @@ class SubscriptionsController extends Controller
                         "modePaiement" => $request->modePaiement,
                         "subscriptionsId" => $subscription->id
                     ]);
+                    Log::channel("transactions_logs")->info("T" . $transaction->id . "- Création d'une nouvelle transaction avec le montant  « " . $transaction->montant . " » via " . $request->user()->firstName . " " . $request->user()->lastName);
                 }
             }
             $subscription->save();

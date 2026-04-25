@@ -63,7 +63,7 @@ export default function Transactions() {
         setIsBusy(true);
         try {
             const response = await FilesService.DownloadTransactionsByDay(dateUnique);
-            let filename = `transactons ${dateUnique} .xlsx`
+            let filename = `transactions ${dateUnique} .xlsx`
             downloadBlob(response.data, filename);
             toast.success('Fichier téléchargé !');
         } catch (err) {
@@ -76,7 +76,7 @@ export default function Transactions() {
         setIsBusy(true);
         try {
             const response = await FilesService.DownloadTransactionsByPeriode(dateDebut, dateFin);
-            let filename = `transactons ${dateDebut} -- ${dateFin} .xlsx`
+            let filename = `transactions ${dateDebut} -- ${dateFin} .xlsx`
             downloadBlob(response.data, filename);
             toast.success('Fichier téléchargé !');
         } catch (err) {

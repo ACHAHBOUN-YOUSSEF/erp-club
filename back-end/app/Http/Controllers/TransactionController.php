@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
@@ -63,6 +64,8 @@ class TransactionController extends Controller
             $transaction->targetAdherentId = $validated['adherentId'];
             $transaction->brancheId = $request->user()->brancheId;
             $transaction->save();
+            Log::channel("transactions_logs")->info("T" . $transaction->id . "- Création d'une nouvelle transaction avec le montant  « " . $transaction->montant . " » via " . $request->user()->firstName . " " . $request->user()->lastName);
+
             return ApiResponse::success(new TransactionResource($transaction), 'Transaction criée avec succès');
         } catch (ValidationException $e) {
             return ApiResponse::error('Erreur de validation', 422, $e->errors());
@@ -114,11 +117,32 @@ class TransactionController extends Controller
                 'description.max' => 'La description ne doit pas dépasser 255 caractères',
             ]);
             $transaction = Transaction::findOrFail($id);
-            $transaction->montant = $validated["montant"];
-            $transaction->modePaiement = $validated["modePaiement"];
+            $oldValues = $transaction->getAttributes(); // valeurs avant
+
+            // Appliquer les nouvelles valeurs
+            $transaction->montant         = $validated["montant"];
+            $transaction->modePaiement    = $validated["modePaiement"];
             $transaction->transactionDate = $validated["transactionDate"];
-            $transaction->description = $validated["description"];
+            $transaction->description     = $validated["description"];
+            $newValues = $transaction->getAttributes(); // valeurs après
+
+            // Comparer champ par champ
+            $changes = [];
+            foreach ($newValues as $field => $newValue) {
+                if (isset($oldValues[$field]) && $oldValues[$field] !== $newValue) {
+                    $changes[$field] = [
+                        'old' => $oldValues[$field],
+                        'new' => $newValue,
+                    ];
+                }
+            }
+
+            // Loguer seulement si des champs ont changé
+            if (!empty($changes)) {
+                Log::channel("transactions_logs")->info("T{$transaction->id} - Modification de la transaction: " . "Champs modifiés: " . json_encode($changes) . " via " . $request->user()->firstName . " " . $request->user()->lastName);
+            }
             $transaction->save();
+
             return ApiResponse::success(new TransactionResource($transaction), 'Transaction mise à jour avec succès');
         } catch (ValidationException $e) {
             return ApiResponse::error('Erreur de validation', 422, $e->errors());
@@ -126,7 +150,6 @@ class TransactionController extends Controller
             return ApiResponse::error('Erreur serveur: ' . $e->getMessage(), 500);
         }
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -143,6 +166,7 @@ class TransactionController extends Controller
                 "targetAdherentId" => $transaction->adherentId,
                 'description' => "Suppression de la transaction avec le montant  « " . $transaction->montant . " »",
             ]);
+            Log::channel("transactions_logs")->warning("Suppression de la transaction avec le montant  « " . $transaction->montant . " » via " . $request->user()->firstName . " " . $request->user()->lastName);
             $transaction->delete();
             return ApiResponse::success(null, 'Transaction supprimé avec succès');
         } catch (\Exception $e) {
