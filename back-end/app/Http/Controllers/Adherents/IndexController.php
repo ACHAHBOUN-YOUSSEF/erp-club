@@ -108,6 +108,7 @@ class IndexController extends Controller
             AdherentLog::create([
                 "action" => "Nouvelle inscription",
                 "executedByUserId" => $request->user()->id,
+                "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                 "targetAdherentId" => $adherent->id,
                 "description" => "Nouvel adhérent inscrit au club.",
             ]);
@@ -244,11 +245,11 @@ class IndexController extends Controller
                     'oldValue' => $ancienneValeur,
                     'newValue' => $nouvelleValeur,
                     'executedByUserId' => $request->user()->id,
+                    "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                     'targetAdherentId' => $adherent->id,
                     'description' => "Changement $label : '$ancienneValeur' → '$nouvelleValeur'",
                 ]);
             }
-
             // Sauvegarder enfin
             $adherent->save();
 

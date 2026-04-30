@@ -106,6 +106,7 @@ class PeriodeController extends Controller
                     "action" => "Nouveau periode",
                     "executedByUserId" => $request->user()->id,
                     "targetAdherentId" => $adherent->id,
+                "executedByUser"=>strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                     'description' => "Ajout d'une nouvelle periode avec la durée de « " . $periode->durationDays . "Jours »",
                 ]);
                 if ($request->filled('montant')) {
@@ -118,6 +119,7 @@ class PeriodeController extends Controller
                             "transactionDate" => Carbon::now()->format('Y-m-d H:i'),
                             "description" => $description,
                             "executedByUserId" => $request->user()->id,
+                            "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                             "targetAdherentId" => $validated['adherentId'],
                             "brancheId" => $request->user()->brancheId,
                             "modePaiement" => $request->modePaiement,
@@ -273,6 +275,7 @@ class PeriodeController extends Controller
                         'oldValue' => $oldValue,
                         'newValue' => $newValue,
                         'executedByUserId' => $request->user()->id,
+                        "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                         'description' => "Modification sur $champLisible pour la periode « " . $periode->durationDays . " Jours »",
                     ]);
                 }
@@ -286,6 +289,7 @@ class PeriodeController extends Controller
                             "transactionDate" => Carbon::now()->format('Y-m-d H:i'),
                             "description" => $description,
                             "executedByUserId" => $request->user()->id,
+                            "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                             "targetAdherentId" => $validated['adherentId'],
                             "brancheId" => $request->user()->brancheId,
                             "modePaiement" => $request->modePaiement,

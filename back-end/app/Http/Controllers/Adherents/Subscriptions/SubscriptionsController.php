@@ -99,6 +99,7 @@ class SubscriptionsController extends Controller
                     "action" => "Nouveau subscription",
                     "executedByUserId" => $request->user()->id,
                     "targetAdherentId" => $adherent->id,
+                    "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                     'description' => "Ajout d'une nouvelle souscription avec l'abonnement « " . $abonnement->title . " »",
                 ]);
                 if ($request->filled('montant')) {
@@ -111,6 +112,7 @@ class SubscriptionsController extends Controller
                             "transactionDate" => Carbon::now()->format('Y-m-d H:i'),
                             "description" => $description,
                             "executedByUserId" => $request->user()->id,
+                            "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                             "targetAdherentId" => $subscription->adherentId,
                             "brancheId" => $request->user()->brancheId,
                             "modePaiement" => $request->modePaiement,
@@ -244,6 +246,7 @@ class SubscriptionsController extends Controller
                     'oldValue' => $oldValue,
                     'newValue' => $newValue,
                     'executedByUserId' => $request->user()->id,
+                    "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                     'description' => "Modification sur $champLisible pour l'abonnement « "
                         . $abonnement->title . " »",
                 ]);
@@ -252,12 +255,13 @@ class SubscriptionsController extends Controller
                 $amount = (float) $request->montant;
                 if ($amount >= 0) {
                     $description = "Paiement mis à jour : {$request->montant} DH ajoutés. Restez motivé et dépassez vos limites !";
-                    $transaction=Transaction::create([
+                    $transaction = Transaction::create([
                         "type" => "income",
                         "montant" => $request->montant,
                         "transactionDate" => Carbon::now()->format('Y-m-d H:i'),
                         "description" => $description,
                         "executedByUserId" => $request->user()->id,
+                        "executedByUser" => strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                         "targetAdherentId" => $subscription->adherentId,
                         "brancheId" => $request->user()->brancheId,
                         "modePaiement" => $request->modePaiement,
@@ -295,6 +299,7 @@ class SubscriptionsController extends Controller
                 "action" => "Suppression subscription",
                 "executedByUserId" => $request->user()->id,
                 "targetAdherentId" => $subscription->adherentId,
+                "executedByUser"=>strtoupper($request->user()->roles->first()?->name) . " " . strtoupper($request->user()->firstName) . " " . strtoupper($request->user()->lastName),
                 'description' => "Suppression de la souscription pour l'abonnement « " . $abonnement->title . " »",
             ]);
             return ApiResponse::success(null, 'Subscription supprimé avec succès');

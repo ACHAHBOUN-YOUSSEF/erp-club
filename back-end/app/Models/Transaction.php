@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Transaction extends Model
 {
     protected $table = "transactions";
-    protected $fillable = ["type", "montant", "transactionDate", "description", "executedByUserId", "subscriptionsId","periodeId","targetAdherentId", "brancheId", "modePaiement"];
+    protected $fillable = ["type", "montant", "transactionDate", "description", "executedByUserId","executedByUser", "subscriptionsId","periodeId","targetAdherentId", "brancheId", "modePaiement"];
     public function user()
     {
         return $this->belongsTo(User::class, "executedByUserId");

@@ -6,21 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class AdherentLog extends Model
 {
-    protected $table="adherents_logs";
-     protected $fillable = [
+    protected $table = "adherents_logs";
+    protected $fillable = [
         'action',
         'fieldName',
         'oldValue',
         'newValue',
         'description',
         'executedByUserId',
+        'executedByUser',
         'targetAdherentId',
     ];
     public function adherent()
     {
-        return $this->belongsTo(Adherent::class,"targetAdherentId");
+        return $this->belongsTo(Adherent::class, "targetAdherentId");
     }
-    public function user() {
-        return $this->belongsTo(User::class,"executedByUserId");
+    public function user()
+    {
+        return $this->belongsTo(User::class, "executedByUserId");
     }
 }
